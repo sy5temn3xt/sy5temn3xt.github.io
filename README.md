@@ -6,10 +6,15 @@ Browser utilities that understand context.
 Built by a 15-year IT support veteran who believes 
 precision engineering should feel human.
 
-## Context Clip
-A cross-browser extension to clip, search, and copy 
-content contextually. Currently in review.
+## VaultTab
+Secure tab management for sensitive workflows. Currently in review.
 
+[Chrome Web Store] (coming soon)
+
+## MultiClip
+Advanced clipboard handling for power users. Currently in review.
+
+[Chrome Web Store] (coming soon)
 [Chrome Web Store] (coming soon)
 [Firefox Add-ons] (coming soon)
 
