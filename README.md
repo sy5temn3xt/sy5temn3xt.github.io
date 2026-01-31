@@ -1,3 +1,4 @@
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 # SY5TEM N3XT
 
 HARDWIRED FOR HUM4NS
