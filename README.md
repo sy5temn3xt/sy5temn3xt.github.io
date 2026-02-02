@@ -7,6 +7,9 @@ HARDWIRED FOR HUM4NS
 We build tools that respect your attention. No bloat. No tracking. Just utilities that work the way you think.
 
 ## MultiClip
+
+![MultiClip Icon](icon.png)
+
 Advanced clipboard handling for power users. Currently in review.
 
 [Chrome Web Store] (coming soon)  
