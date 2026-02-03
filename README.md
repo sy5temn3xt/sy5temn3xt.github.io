@@ -1,4 +1,7 @@
-# SY5TEM N3XT
+<style>
+  body { animation: fadeIn 1.5s ease-in; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style># SY5TEM N3XT
 
 HARDWIRED FOR HUM4NS
 
