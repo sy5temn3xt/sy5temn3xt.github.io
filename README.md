@@ -23,8 +23,6 @@
 
 <h1 class="typewriter">SY5TEM N3XT</h1>
 
-SY5TEM N3XT
-
 We build tools that respect your attention. No bloat. No tracking. Just utilities that work the way you think.
 
 ## MultiClip
