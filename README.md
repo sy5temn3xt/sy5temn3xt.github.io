@@ -7,12 +7,13 @@
     letter-spacing: .15em;
     animation: 
       typing 2s steps(10, end),
-      blink-caret .75s step-end infinite;
+      blink-caret .75s step-end infinite,
+      loop 7s infinite;
   }
 
   @keyframes typing {
-    from { width: 0 }
-    to { width: 100% }
+    0%, 100% { width: 0 }
+    28%, 72% { width: 100% }
   }
 
   @keyframes blink-caret {
