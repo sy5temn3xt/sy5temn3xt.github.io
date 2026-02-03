@@ -18,15 +18,15 @@
     background: 
       repeating-linear-gradient(
         0deg,
-        rgba(0, 255, 0, 0.03) 0px,
-        transparent 2px,
-        rgba(0, 255, 0, 0.03) 4px
+        rgba(0, 255, 0, 0.15) 0px,
+        transparent 1px,
+        rgba(0, 255, 0, 0.15) 2px
       ),
       repeating-linear-gradient(
         90deg,
-        rgba(0, 255, 0, 0.03) 0px,
-        transparent 2px,
-        rgba(0, 255, 0, 0.03) 4px
+        rgba(0, 255, 0, 0.15) 0px,
+        transparent 1px,
+        rgba(0, 255, 0, 0.15) 2px
       );
     pointer-events: none;
     z-index: -1;
