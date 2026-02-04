@@ -30,32 +30,33 @@
             100% { width: 100%; }
         }
         
-        .glitch-text {
-            position: relative;
-            animation: glitch 4s infinite;
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            5% { opacity: 0.8; }
+            10% { opacity: 1; }
+            15% { opacity: 0.3; }
+            20% { opacity: 1; }
+            50% { opacity: 1; }
+            52% { opacity: 0.4; }
+            54% { opacity: 1; }
+            90% { opacity: 1; }
+            95% { opacity: 0.6; }
         }
         
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.8;
-        }
-        
-        .glitch-text::before {
-            animation: glitchTop 3s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-            text-shadow: -2px 0 rgba(255, 255, 255, 0.7);
-        }
-        
-        .glitch-text::after {
-            animation: glitchBottom 3s infinite;
-            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            text-shadow: 2px 0 rgba(200, 200, 200, 0.7);
+        @keyframes flicker-intense {
+            0%, 100% { opacity: 1; }
+            3% { opacity: 0.2; }
+            6% { opacity: 1; }
+            9% { opacity: 0.1; }
+            12% { opacity: 1; }
+            15% { opacity: 0.4; }
+            18% { opacity: 1; }
+            50% { opacity: 1; }
+            53% { opacity: 0.2; }
+            56% { opacity: 1; }
+            80% { opacity: 1; }
+            83% { opacity: 0.3; }
+            86% { opacity: 1; }
         }
         
         @keyframes glitch {
@@ -81,6 +82,63 @@
             75% { transform: translateX(2px); }
         }
         
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        
+        .glitch-text {
+            position: relative;
+            animation: glitch 0.3s infinite;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        
+        .glitch-text::before {
+            animation: glitchTop 0.3s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            text-shadow: -2px 0 rgba(255, 255, 255, 0.7);
+        }
+        
+        .glitch-text::after {
+            animation: glitchBottom 0.3s infinite;
+            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            text-shadow: 2px 0 rgba(200, 200, 200, 0.7);
+        }
+        
+        .flicker {
+            animation: flicker 2s infinite;
+        }
+        
+        .flicker-intense {
+            animation: flicker-intense 1.5s infinite;
+        }
+        
+        .typewriter-container {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 0.15em solid #fff;
+            animation: blink 0.75s step-end infinite;
+            width: 0;
+        }
+        
+        .typewriter-animate {
+            animation: typewriter 2s steps(18) forwards, blink 0.75s step-end infinite;
+        }
+        
         @media (max-width: 640px) {
             .glitch-text::before,
             .glitch-text::after {
@@ -92,14 +150,38 @@
             display: block;
         }
         
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #main-content {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+        
+        #main-content.visible {
+            opacity: 1;
+        }
+        
         .w-full { width: 100%; }
         .min-h-screen { min-height: 100vh; }
         .bg-black { background-color: #000; }
         .relative { position: relative; }
         .absolute { position: absolute; }
+        .fixed { position: fixed; }
         .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
         .overflow-hidden { overflow: hidden; }
         .z-10 { z-index: 10; }
+        .z-50 { z-index: 50; }
         .flex { display: flex; }
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
@@ -111,11 +193,15 @@
         .mb-8 { margin-bottom: 2rem; }
         .mt-12 { margin-top: 3rem; }
         .block { display: block; }
+        .inline-block { display: inline-block; }
         .text-4xl { font-size: 2.25rem; }
+        .text-6xl { font-size: 3.75rem; }
+        .text-8xl { font-size: 6rem; }
         .text-base { font-size: 1rem; }
         .text-xs { font-size: 0.75rem; }
         .font-bold { font-weight: 700; }
         .tracking-wider { letter-spacing: 0.05em; }
+        .tracking-widest { letter-spacing: 0.1em; }
         .leading-tight { line-height: 1.25; }
         .opacity-70 { opacity: 0.7; }
         .opacity-80 { opacity: 0.8; }
@@ -126,6 +212,7 @@
         .border { border-width: 1px; }
         .border-gray-700 { border-color: #374151; }
         .rounded { border-radius: 0.25rem; }
+        .rounded-full { border-radius: 9999px; }
         .p-4 { padding: 1rem; }
         .grid { display: grid; }
         .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
@@ -140,7 +227,6 @@
         .to-gray-500 { --tw-gradient-to: #6b7280; }
         .flex-wrap { flex-wrap: wrap; }
         .gap-3 { gap: 0.75rem; }
-        .rounded-full { border-radius: 9999px; }
         .w-1 { width: 0.25rem; }
         .h-1 { height: 0.25rem; }
         .bg-gray-400 { background-color: #9ca3af; }
@@ -150,6 +236,9 @@
         .bg-gray-700 { background-color: #374151; }
         .h-32 { height: 8rem; }
         .pointer-events-none { pointer-events: none; }
+        .cursor-pointer { cursor: pointer; }
+        .transition-colors { transition-property: color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .hover\:text-white:hover { color: #fff; }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -196,7 +285,17 @@
 </head>
 <body>
 
-<div class="w-full min-h-screen bg-black relative overflow-hidden">
+<!-- Intro Overlay with Big Typing Text -->
+<div id="intro-overlay">
+    <div class="text-center">
+        <div id="typewriter-text" class="text-6xl sm:text-8xl lg:text-9xl font-bold text-white tracking-widest font-mono" style="text-shadow: 0 0 30px rgba(255,255,255,0.8);">
+            <span id="typing-content"></span><span class="animate-pulse">_</span>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content (Hidden Initially) -->
+<div id="main-content" class="w-full min-h-screen bg-black relative overflow-hidden">
     <!-- Three.js Canvas Container -->
     <div id="canvas-container" class="absolute inset-0 w-full h-full" style="touch-action: none;"></div>
 
@@ -213,16 +312,18 @@
             <!-- Pretitle -->
             <div class="mb-4 sm:mb-6 flex items-center justify-center gap-2 sm:gap-3">
                 <div class="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gray-500"></div>
-                <span class="text-gray-400 text-xs sm:text-sm font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase opacity-70">
+                <span class="text-gray-400 text-xs sm:text-sm font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase opacity-70 flicker">
                     System Initialize
                 </span>
                 <div class="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-gray-500"></div>
             </div>
 
-            <!-- Main Title -->
-            <h1 class="mb-6 sm:mb-8">
-                <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white glitch-text leading-tight" data-text="SY5TEM N3XT" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
-                    SY5TEM N3XT
+            <!-- Main Title with Flickering 5 and 3 -->
+            <h1 class="mb-6 sm:mb-8 glitch-text" data-text="SY5TEM N3XT">
+                <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
+                    <span class="flicker">S</span><span class="flicker">Y</span><span class="flicker-intense">5</span><span class="flicker">T</span><span class="flicker">E</span><span class="flicker">M</span>
+                    <span class="mx-2"></span>
+                    <span class="flicker">N</span><span class="flicker-intense">3</span><span class="flicker">X</span><span class="flicker">T</span>
                 </span>
             </h1>
 
@@ -254,7 +355,7 @@
                     </div>
                 </div>
 
-                <!-- VaultTab -->
+                <!-- Context Clip -->
                 <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300" style="animation-delay: 0.2s;">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
@@ -262,15 +363,15 @@
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
 
                     <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider">PRODUCT 02</div>
-                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">VaultTab</div>
-                    <div class="text-xs text-gray-400">Secure tab management. Archived.</div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Context Clip</div>
+                    <div class="text-xs text-gray-400">Smart content clipping. In development.</div>
 
                     <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
-                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 100%; animation: loadingBar 2s ease-out 0.2s;"></div>
+                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 70%; animation: loadingBar 2s ease-out 0.2s;"></div>
                     </div>
                 </div>
 
-                <!-- Coming Soon -->
+                <!-- Link Dump -->
                 <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300" style="animation-delay: 0.4s;">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
@@ -278,8 +379,8 @@
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
 
                     <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider">PRODUCT 03</div>
-                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">???</div>
-                    <div class="text-xs text-gray-400">Next utility in development.</div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Link Dump</div>
+                    <div class="text-xs text-gray-400">Bookmark management. Coming soon.</div>
 
                     <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 30%; animation: loadingBar 2s ease-out 0.4s;"></div>
@@ -287,8 +388,18 @@
                 </div>
             </div>
 
+            <!-- X Badge -->
+            <div class="mb-8">
+                <a href="https://x.com/sy5temn3xt" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:border-white transition-colors group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    <span class="text-gray-400 group-hover:text-white transition-colors text-sm font-mono">@sy5temn3xt</span>
+                </a>
+            </div>
+
             <!-- Contact -->
-            <div class="mt-12 sm:mt-14 lg:mt-16 text-center">
+            <div class="text-center mb-8">
                 <div class="text-xs sm:text-sm font-mono text-gray-500/60 tracking-wider mb-2">CONTACT</div>
                 <a href="mailto:sy5temn3xt@proton.me" class="text-gray-300 hover:text-white transition-colors text-sm sm:text-base">
                     sy5temn3xt@proton.me
@@ -320,6 +431,37 @@
 </div>
 
 <script>
+// Intro Animation
+const text = "System Initialize";
+const typingElement = document.getElementById('typing-content');
+const introOverlay = document.getElementById('intro-overlay');
+const mainContent = document.getElementById('main-content');
+
+let charIndex = 0;
+
+function typeText() {
+    if (charIndex < text.length) {
+        typingElement.textContent += text.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeText, 100);
+    } else {
+        // Wait 3 seconds after typing completes
+        setTimeout(() => {
+            // Fade out intro
+            introOverlay.style.opacity = '0';
+            introOverlay.style.transition = 'opacity 1s ease-out';
+            
+            setTimeout(() => {
+                introOverlay.style.display = 'none';
+                mainContent.classList.add('visible');
+            }, 1000);
+        }, 3000);
+    }
+}
+
+// Start typing after 1 second delay
+setTimeout(typeText, 1000);
+
 // Three.js Scene Setup
 const container = document.getElementById('canvas-container');
 const width = container.clientWidth;
@@ -340,7 +482,7 @@ container.appendChild(renderer.domElement);
 const mouse = { x: 0, y: 0 };
 const targetMouse = { x: 0, y: 0 };
 
-// Matrix Rain Particles - WHITE/GREY COLORS
+// Matrix Rain Particles - GREY/WHITE
 const particleCount = window.innerWidth < 768 ? 1000 : window.innerWidth < 1024 ? 1500 : 2000;
 const geometry = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
@@ -350,17 +492,15 @@ const colors = new Float32Array(particleCount * 3);
 
 for (let i = 0; i < particleCount; i++) {
     const i3 = i * 3;
-    // Start from back (positive Z) and move to front (negative Z)
     positions[i3] = (Math.random() - 0.5) * 80;
     positions[i3 + 1] = (Math.random() - 0.5) * 80;
-    positions[i3 + 2] = Math.random() * 50 + 10; // Start from back (10 to 60)
+    positions[i3 + 2] = Math.random() * 50 + 10;
     velocities[i] = Math.random() * 0.08 + 0.02;
     sizes[i] = Math.random() * 0.3 + 0.1;
-    // WHITE/GREY colors instead of green
     const brightness = Math.random() * 0.6 + 0.4;
-    colors[i3] = brightness;     // Red channel (white)
-    colors[i3 + 1] = brightness; // Green channel (white)
-    colors[i3 + 2] = brightness; // Blue channel (white)
+    colors[i3] = brightness;
+    colors[i3 + 1] = brightness;
+    colors[i3 + 2] = brightness;
 }
 
 geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -380,7 +520,7 @@ const particleMaterial = new THREE.PointsMaterial({
 const particleSystem = new THREE.Points(geometry, particleMaterial);
 scene.add(particleSystem);
 
-// Grid - GREY instead of green
+// Grid - GREY
 const gridSize = 50;
 const gridDivisions = 50;
 const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x444444, 0x222222);
@@ -397,49 +537,9 @@ verticalGrid.material.transparent = true;
 verticalGrid.material.opacity = 0.15;
 scene.add(verticalGrid);
 
-// Floating Shapes - GREY/WHITE instead of green
-const shapeGeometries = [
-    new THREE.TetrahedronGeometry(1.5, 0),
-    new THREE.OctahedronGeometry(1.2, 0),
-    new THREE.IcosahedronGeometry(1.3, 0),
-    new THREE.TorusGeometry(1, 0.4, 8, 16),
-];
+// NO FLOATING SHAPES - Removed completely
 
-const shapeCount = window.innerWidth < 768 ? 4 : window.innerWidth < 1024 ? 6 : 8;
-const shapes = [];
-for (let i = 0; i < shapeCount; i++) {
-    const geom = shapeGeometries[Math.floor(Math.random() * shapeGeometries.length)];
-    const material = new THREE.MeshBasicMaterial({
-        color: 0x666666, // Grey instead of green
-        wireframe: true,
-        transparent: true,
-        opacity: Math.random() * 0.2 + 0.15
-    });
-    const mesh = new THREE.Mesh(geom, material);
-    mesh.position.set(
-        (Math.random() - 0.5) * 30,
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 20
-    );
-    mesh.rotation.set(
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2,
-        Math.random() * Math.PI * 2
-    );
-    shapes.push({
-        mesh,
-        rotationSpeed: {
-            x: (Math.random() - 0.5) * 0.02,
-            y: (Math.random() - 0.5) * 0.02,
-            z: (Math.random() - 0.5) * 0.02
-        },
-        floatSpeed: Math.random() * 0.5 + 0.3,
-        floatOffset: Math.random() * Math.PI * 2
-    });
-    scene.add(mesh);
-}
-
-// Lights - WHITE/GREY instead of green
+// Lights - WHITE/GREY
 const ambientLight = new THREE.AmbientLight(0x444444, 0.3);
 scene.add(ambientLight);
 
@@ -464,9 +564,7 @@ function animate() {
     const positions = particleSystem.geometry.attributes.position.array;
     for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
-        // Move toward camera (decreasing Z)
         positions[i3 + 2] -= velocities[i] * 2;
-        // Reset when past camera
         if (positions[i3 + 2] < -20) {
             positions[i3 + 2] = 60;
             positions[i3] = (Math.random() - 0.5) * 80;
@@ -476,13 +574,7 @@ function animate() {
     particleSystem.geometry.attributes.position.needsUpdate = true;
     particleSystem.rotation.y += 0.0001;
 
-    // Update shapes
-    shapes.forEach((shape) => {
-        shape.mesh.rotation.x += shape.rotationSpeed.x;
-        shape.mesh.rotation.y += shape.rotationSpeed.y;
-        shape.mesh.rotation.z += shape.rotationSpeed.z;
-        shape.mesh.position.y += Math.sin(time * shape.floatSpeed + shape.floatOffset) * 0.01;
-    });
+    // NO SHAPE UPDATES - Removed completely
 
     // Camera movement
     camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
