@@ -12,12 +12,13 @@
             box-sizing: border-box;
         }
         
-        body {
+        html, body {
             margin: 0;
             padding: 0;
             overflow-x: hidden;
             background: #000;
             font-family: 'Courier New', monospace;
+            height: 100%;
         }
         
         @keyframes scanlines {
@@ -108,6 +109,9 @@
         #main-content {
             opacity: 0;
             transition: opacity 1s ease-in;
+            min-height: 100vh;
+            min-height: 100dvh;
+            position: relative;
         }
         
         #main-content.visible {
@@ -147,11 +151,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .w-full { width: 100%; }
-        .min-h-screen { min-height: 100vh; }
         .bg-black { background-color: #000; }
         .relative { position: relative; }
         .absolute { position: absolute; }
@@ -165,11 +168,11 @@
         .justify-center { justify-content: center; }
         .text-center { text-align: center; }
         .px-4 { padding-left: 1rem; padding-right: 1rem; }
-        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
         .mb-4 { margin-bottom: 1rem; }
         .mb-6 { margin-bottom: 1.5rem; }
         .mb-8 { margin-bottom: 2rem; }
-        .mt-12 { margin-top: 3rem; }
+        .mt-8 { margin-top: 2rem; }
         .block { display: block; }
         .inline-block { display: inline-block; }
         .text-4xl { font-size: 2.25rem; }
@@ -212,12 +215,12 @@
         .h-3 { height: 0.75rem; }
         .w-px { width: 1px; }
         .bg-gray-700 { background-color: #374151; }
-        .h-32 { height: 8rem; }
         .pointer-events-none { pointer-events: none; }
         .cursor-pointer { cursor: pointer; }
         .transition-colors { transition-property: color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
         .hover\:text-white:hover { color: #fff; }
         .gap-2 { gap: 0.5rem; }
+        .pb-20 { padding-bottom: 5rem; }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -229,6 +232,19 @@
             .scanlines-mobile {
                 opacity: 0.02 !important;
                 background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, 0.15) 3px, rgba(255, 255, 255, 0.15) 6px) !important;
+            }
+            
+            .mobile-compact {
+                padding-top: 1.5rem !important;
+                padding-bottom: 6rem !important;
+            }
+            
+            .mobile-gap > * {
+                margin-bottom: 1.25rem !important;
+            }
+            
+            .mobile-gap > *:last-child {
+                margin-bottom: 0 !important;
             }
         }
         
@@ -243,7 +259,6 @@
             .sm\:mt-14 { margin-top: 3.5rem; }
             .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .sm\:gap-6 { gap: 1.5rem; }
-            .sm\:h-40 { height: 10rem; }
             .sm\:text-xs { font-size: 0.875rem; }
             .sm\:h-4 { height: 1rem; }
         }
@@ -261,7 +276,6 @@
             .lg\:mb-10 { margin-bottom: 2.5rem; }
             .lg\:mb-12 { margin-bottom: 3rem; }
             .lg\:mt-16 { margin-top: 4rem; }
-            .lg\:h-48 { height: 12rem; }
         }
         
         @media (min-width: 1280px) {
@@ -282,7 +296,7 @@
 </div>
 
 <!-- Main Content (Hidden Initially) -->
-<div id="main-content" class="w-full min-h-screen bg-black relative overflow-hidden">
+<div id="main-content" class="w-full bg-black relative overflow-hidden">
     <!-- Three.js Canvas Container -->
     <div id="canvas-container" class="absolute inset-0 w-full h-full" style="touch-action: none;"></div>
 
@@ -293,8 +307,8 @@
     <div id="scanlines" class="absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 2px, rgba(255, 255, 255, 0.3) 4px); animation: scanlines 8s linear infinite;"></div>
 
     <!-- Content -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-16 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <div class="text-center max-w-5xl w-full">
+    <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20 mobile-compact">
+        <div class="text-center max-w-5xl w-full mobile-gap">
 
             <!-- Pretitle -->
             <div class="mb-6 sm:mb-6 flex items-center justify-center gap-2 sm:gap-3">
@@ -306,7 +320,7 @@
             </div>
 
             <!-- Main Title with Flickering 5 and 3 -->
-            <h1 class="mb-8 sm:mb-8">
+            <h1 class="mb-6 sm:mb-8">
                 <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
                     <span class="flicker">S</span><span class="flicker">Y</span><span class="flicker-intense">5</span><span class="flicker">T</span><span class="flicker">E</span><span class="flicker">M</span>
                     <span class="mx-2 sm:mx-4"></span>
@@ -315,7 +329,7 @@
             </h1>
 
             <!-- Subtitle -->
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-300 mb-10 sm:mb-10 lg:mb-12 tracking-[0.15em] sm:tracking-[0.2em] font-mono opacity-80 leading-relaxed px-2">
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-300 mb-8 sm:mb-10 lg:mb-12 tracking-[0.15em] sm:tracking-[0.2em] font-mono opacity-80 leading-relaxed px-2">
                 HARDWIRED FOR HUM4NS
                 <br>
                 <span class="text-xs sm:text-sm md:text-base lg:text-lg text-gray-500/60 tracking-[0.2em] sm:tracking-[0.3em] block mt-3">
@@ -324,7 +338,7 @@
             </p>
 
             <!-- Products Section -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6 max-w-3xl mx-auto px-2 mb-10">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-2 mb-8">
                 
                 <!-- MultiClip -->
                 <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
@@ -375,8 +389,26 @@
                 </div>
             </div>
 
+            <!-- Tech Specs - MOVED UP before social icons -->
+            <div class="flex flex-wrap gap-3 sm:gap-4 lg:gap-6 justify-center items-center text-[10px] sm:text-xs font-mono text-gray-500/40 tracking-wider sm:tracking-widest px-2 mb-6">
+                <div class="flex items-center gap-2">
+                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></span>
+                    <span>NO BLOAT</span>
+                </div>
+                <div class="w-px h-3 sm:h-4 bg-gray-700"></div>
+                <div class="flex items-center gap-2">
+                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.3s;"></span>
+                    <span>NO TRACKING</span>
+                </div>
+                <div class="w-px h-3 sm:h-4 bg-gray-700"></div>
+                <div class="flex items-center gap-2">
+                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.6s;"></span>
+                    <span>PRIVACY FIRST</span>
+                </div>
+            </div>
+
             <!-- Social Icons - X, Email, and GitHub on same line -->
-            <div class="social-container mb-8">
+            <div class="social-container">
                 <!-- X Icon -->
                 <a href="https://x.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="Follow us on X">
                     <svg viewBox="0 0 24 24">
@@ -398,29 +430,11 @@
                     </svg>
                 </a>
             </div>
-
-            <!-- Tech Specs - Changed to PRIVACY FIRST -->
-            <div class="flex flex-wrap gap-3 sm:gap-4 lg:gap-6 justify-center items-center text-[10px] sm:text-xs font-mono text-gray-500/40 tracking-wider sm:tracking-widest px-2">
-                <div class="flex items-center gap-2">
-                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></span>
-                    <span>NO BLOAT</span>
-                </div>
-                <div class="w-px h-3 sm:h-4 bg-gray-700"></div>
-                <div class="flex items-center gap-2">
-                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.3s;"></span>
-                    <span>NO TRACKING</span>
-                </div>
-                <div class="w-px h-3 sm:h-4 bg-gray-700"></div>
-                <div class="flex items-center gap-2">
-                    <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse" style="animation-delay: 0.6s;"></span>
-                    <span>PRIVACY FIRST</span>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Bottom Gradient Fade - Reduced height -->
-    <div class="absolute bottom-0 left-0 right-0 h-12 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
+    <!-- Bottom Gradient Fade - Much smaller -->
+    <div class="absolute bottom-0 left-0 right-0 h-8 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
 </div>
 
 <script>
