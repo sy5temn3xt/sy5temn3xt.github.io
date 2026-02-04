@@ -172,6 +172,33 @@
             opacity: 1;
         }
         
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #4b5563;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .social-icon:hover {
+            border-color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .social-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #9ca3af;
+            transition: fill 0.2s ease;
+        }
+        
+        .social-icon:hover svg {
+            fill: #fff;
+        }
+        
         .w-full { width: 100%; }
         .min-h-screen { min-height: 100vh; }
         .bg-black { background-color: #000; }
@@ -239,6 +266,7 @@
         .cursor-pointer { cursor: pointer; }
         .transition-colors { transition-property: color; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
         .hover\:text-white:hover { color: #fff; }
+        .gap-2 { gap: 0.5rem; }
         
         @keyframes pulse {
             0%, 100% { opacity: 1; }
@@ -388,13 +416,12 @@
                 </div>
             </div>
 
-            <!-- X Badge -->
+            <!-- Small X Icon -->
             <div class="mb-8">
-                <a href="https://x.com/sy5temn3xt" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-full hover:border-white transition-colors group">
-                    <svg class="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <a href="https://x.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="Follow us on X">
+                    <svg viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
-                    <span class="text-gray-400 group-hover:text-white transition-colors text-sm font-mono">@sy5temn3xt</span>
                 </a>
             </div>
 
@@ -445,9 +472,7 @@ function typeText() {
         charIndex++;
         setTimeout(typeText, 100);
     } else {
-        // Wait 3 seconds after typing completes
         setTimeout(() => {
-            // Fade out intro
             introOverlay.style.opacity = '0';
             introOverlay.style.transition = 'opacity 1s ease-out';
             
@@ -459,7 +484,6 @@ function typeText() {
     }
 }
 
-// Start typing after 1 second delay
 setTimeout(typeText, 1000);
 
 // Three.js Scene Setup
@@ -478,11 +502,9 @@ renderer.setSize(width, height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 container.appendChild(renderer.domElement);
 
-// Mouse tracking
 const mouse = { x: 0, y: 0 };
 const targetMouse = { x: 0, y: 0 };
 
-// Matrix Rain Particles - GREY/WHITE
 const particleCount = window.innerWidth < 768 ? 1000 : window.innerWidth < 1024 ? 1500 : 2000;
 const geometry = new THREE.BufferGeometry();
 const positions = new Float32Array(particleCount * 3);
@@ -520,7 +542,6 @@ const particleMaterial = new THREE.PointsMaterial({
 const particleSystem = new THREE.Points(geometry, particleMaterial);
 scene.add(particleSystem);
 
-// Grid - GREY
 const gridSize = 50;
 const gridDivisions = 50;
 const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x444444, 0x222222);
@@ -537,9 +558,6 @@ verticalGrid.material.transparent = true;
 verticalGrid.material.opacity = 0.15;
 scene.add(verticalGrid);
 
-// NO FLOATING SHAPES - Removed completely
-
-// Lights - WHITE/GREY
 const ambientLight = new THREE.AmbientLight(0x444444, 0.3);
 scene.add(ambientLight);
 
@@ -551,7 +569,6 @@ const pointLight2 = new THREE.PointLight(0x888888, 0.5, 50);
 pointLight2.position.set(-10, -10, -10);
 scene.add(pointLight2);
 
-// Animation
 let time = 0;
 function animate() {
     requestAnimationFrame(animate);
@@ -560,7 +577,6 @@ function animate() {
     mouse.x += (targetMouse.x - mouse.x) * 0.05;
     mouse.y += (targetMouse.y - mouse.y) * 0.05;
 
-    // Update particles - MOVE FROM BACK TO FRONT
     const positions = particleSystem.geometry.attributes.position.array;
     for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -574,9 +590,6 @@ function animate() {
     particleSystem.geometry.attributes.position.needsUpdate = true;
     particleSystem.rotation.y += 0.0001;
 
-    // NO SHAPE UPDATES - Removed completely
-
-    // Camera movement
     camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
     camera.position.y += (-mouse.y * 3 - camera.position.y) * 0.03;
     camera.lookAt(0, 0, 0);
@@ -585,7 +598,6 @@ function animate() {
 }
 animate();
 
-// Event Handlers
 function handleResize() {
     const newWidth = container.clientWidth;
     const newHeight = container.clientHeight;
