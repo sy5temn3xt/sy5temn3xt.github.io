@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SY5TEM N3XT - HARDWIRED FOR HUM4NS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -151,7 +151,11 @@
         }
         
         .w-full { width: 100%; }
-        .min-h-screen { min-height: 100vh; }
+        /* Fix for mobile viewport height - use min-height with dvh fallback */
+        .min-h-screen { 
+            min-height: 100vh;
+            min-height: 100dvh; /* Dynamic viewport height - accounts for mobile browser chrome */
+        }
         .bg-black { background-color: #000; }
         .relative { position: relative; }
         .absolute { position: absolute; }
@@ -230,6 +234,22 @@
                 opacity: 0.02 !important;
                 background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, 0.15) 3px, rgba(255, 255, 255, 0.15) 6px) !important;
             }
+            
+            /* CRITICAL FIX: Ensure content is not cut off on mobile */
+            .mobile-safe-content {
+                padding-bottom: 2rem !important;
+            }
+            
+            /* Remove bottom gradient on mobile to prevent overlap */
+            .mobile-hide-gradient {
+                display: none !important;
+            }
+            
+            /* Tech specs - ensure visibility on mobile */
+            .tech-specs-mobile {
+                padding-bottom: env(safe-area-inset-bottom, 1rem);
+                margin-bottom: 1rem;
+            }
         }
         
         @media (min-width: 640px) {
@@ -294,7 +314,7 @@
 
     <!-- Content -->
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 py-16 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <div class="text-center max-w-5xl w-full">
+        <div class="text-center max-w-5xl w-full mobile-safe-content">
 
             <!-- Pretitle -->
             <div class="mb-6 sm:mb-6 flex items-center justify-center gap-2 sm:gap-3">
@@ -400,7 +420,7 @@
             </div>
 
             <!-- Tech Specs - Changed to PRIVACY FIRST -->
-            <div class="flex flex-wrap gap-3 sm:gap-4 lg:gap-6 justify-center items-center text-[10px] sm:text-xs font-mono text-gray-500/40 tracking-wider sm:tracking-widest px-2">
+            <div class="flex flex-wrap gap-3 sm:gap-4 lg:gap-6 justify-center items-center text-[10px] sm:text-xs font-mono text-gray-500/40 tracking-wider sm:tracking-widest px-2 tech-specs-mobile">
                 <div class="flex items-center gap-2">
                     <span class="w-1 h-1 bg-gray-400 rounded-full animate-pulse"></span>
                     <span>NO BLOAT</span>
@@ -419,8 +439,8 @@
         </div>
     </div>
 
-    <!-- Bottom Gradient Fade - Reduced height -->
-    <div class="absolute bottom-0 left-0 right-0 h-12 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
+    <!-- Bottom Gradient Fade - Hidden on mobile to prevent overlap -->
+    <div class="absolute bottom-0 left-0 right-0 h-12 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none mobile-hide-gradient"></div>
 </div>
 
 <script>
@@ -604,4 +624,4 @@ container.addEventListener('touchmove', handleTouchMove, { passive: true });
 </script>
 
 </body>
-</html>
+</html> 
