@@ -1,70 +1,25 @@
-<style>
-  body {
-    background: #000;
-    color: #0f0;
-    font-family: monospace;
-    margin: 0;
-    min-height: 100vh;
-    position: relative;
-  }
-  
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 255, 0, 0.15) 0px,
-        transparent 1px,
-        rgba(0, 255, 0, 0.15) 2px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        rgba(0, 255, 0, 0.15) 0px,
-        transparent 1px,
-        rgba(0, 255, 0, 0.15) 2px
-      );
-    pointer-events: none;
-    z-index: -1;
-  }
-  
-  .glitch {
-    color: #0f0;
-    font-size: 2.5em;
-    font-weight: bold;
-    letter-spacing: 0.1em;
-    text-shadow: 0 0 10px #0f0;
-    animation: glitch-skew 4s infinite;
-  }
-  
-  @keyframes glitch-skew {
-    0%, 95%, 100% { transform: skew(0deg); opacity: 1; }
-    96% { transform: skew(-20deg); opacity: 0.8; }
-    97% { transform: skew(20deg); opacity: 0.9; }
-    98% { transform: skew(-10deg); opacity: 0.8; }
-    99% { transform: skew(10deg); opacity: 1; }
-  }
-</style>
+# SY5TEM N3XT
 
-<h1 class="glitch">SY5TEM N3XT</h1>
-
-HARDWIRED FOR HUM4NS
+**HARDWIRED FOR HUM4NS**
 
 We build tools that respect your attention. No bloat. No tracking. Just utilities that work the way you think.
 
-## MultiClip
+---
 
-![MultiClip Icon](icon.png)
+## Products
 
-Advanced clipboard handling for power users. Currently in review.
+### Clip Locker
+Advanced clipboard handling for power users. Auto-captures everything you copy - text, images, links. Access your full copy history anywhere with a right-click. Currently in review.
 
-[Chrome Web Store] (coming soon)  
-[Firefox Add-ons] (coming soon)
+### Snap Stash
+Smart content clipping and organization. Save, tag, and organize your most important clips into folders. Quick access via right-click menu with "Paste from History" feature. In development.
+
+### Link Dump
+Bookmark management reimagined. Save links with context, notes, and tags. Search and filter your collection instantly. Coming soon.
 
 ---
 
-Built by SY5TEM N3XT · HARDWIRED FOR HUM4NS
+## Contact
+- X: [@sy5temn3xt](https://x.com/sy5temn3xt)
+- Email: sy5temn3xt@proton.me
+- GitHub: [github.com/sy5temn3xt](https://github.com/sy5temn3xt)
