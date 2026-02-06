@@ -109,11 +109,26 @@
             opacity: 1;
         }
         
-        /* Audio Toggle */
-        .audio-toggle {
+        /* 53 Logo - Top Left */
+        .logo-53 {
             position: fixed;
             top: 20px;
             left: 20px;
+            z-index: 50;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: -2px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+        
+        /* Audio Toggle - Bottom Right */
+        .audio-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             z-index: 50;
             display: flex;
             align-items: center;
@@ -401,9 +416,15 @@
                 background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, 0.15) 3px, rgba(255, 255, 255, 0.15) 6px) !important;
             }
             
-            .audio-toggle {
+            .logo-53 {
                 top: 10px;
                 left: 10px;
+                font-size: 20px;
+            }
+            
+            .audio-toggle {
+                bottom: 10px;
+                right: 10px;
                 padding: 6px 10px;
                 font-size: 11px;
             }
@@ -461,6 +482,17 @@
             .md\:text-7xl { font-size: 4.5rem; }
             .md\:text-xl { font-size: 1.25rem; }
             
+            .logo-53 {
+                top: 30px;
+                left: 30px;
+                font-size: 28px;
+            }
+            
+            .audio-toggle {
+                bottom: 30px;
+                right: 30px;
+            }
+            
             .status-container {
                 top: 30px;
                 right: 30px;
@@ -472,11 +504,6 @@
             
             .status-latency {
                 font-size: 14px;
-            }
-            
-            .audio-toggle {
-                top: 30px;
-                left: 30px;
             }
         }
         
@@ -499,13 +526,8 @@
 </head>
 <body>
 
-<!-- Audio Toggle -->
-<div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">
-    <svg class="audio-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-    </svg>
-    <span id="audioText">Enable Audio</span>
-</div>
+<!-- 53 Logo - Top Left -->
+<div class="logo-53">53</div>
 
 <!-- Intro Overlay -->
 <div id="intro-overlay">
@@ -664,7 +686,16 @@
         </div>
     </div>
 
+    <!-- Bottom Gradient Fade -->
     <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
+</div>
+
+<!-- Audio Toggle - Bottom Right -->
+<div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">
+    <svg class="audio-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+    </svg>
+    <span id="audioText">Enable Audio</span>
 </div>
 
 <script>
@@ -688,8 +719,8 @@ const katakana = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒ�
 let rainIntervals = [];
 let isInfected = false;
 
-// Intro Animation
-const text = "System Initialize";
+// Intro Animation - INITIALIZE SY5TEM 53
+const text = "INITIALIZE SY5TEM 53";
 const typingElement = document.getElementById('typing-content');
 const introOverlay = document.getElementById('intro-overlay');
 const mainContent = document.getElementById('main-content');
