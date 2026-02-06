@@ -59,18 +59,12 @@
             86% { opacity: 1; }
         }
         
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-        
-        @keyframes statusPulse {
+        @keyframes heartbeat {
             0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.8; }
+            10% { transform: scale(1.02); opacity: 0.9; }
+            20% { transform: scale(1); opacity: 1; }
+            30% { transform: scale(1.02); opacity: 0.9; }
+            40% { transform: scale(1); opacity: 1; }
         }
         
         @keyframes colorCycle {
@@ -85,47 +79,12 @@
             50% { opacity: 1; }
         }
         
-        @keyframes scanlineMove {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        @keyframes glitchShake {
-            0%, 100% { transform: translate(0); }
-            10% { transform: translate(-2px, 2px); }
-            20% { transform: translate(2px, -2px); }
-            30% { transform: translate(-2px, -2px); }
-            40% { transform: translate(2px, 2px); }
-            50% { transform: translate(-1px, 1px); }
-            60% { transform: translate(1px, -1px); }
-            70% { transform: translate(-1px, -1px); }
-            80% { transform: translate(1px, 1px); }
-            90% { transform: translate(0); }
-        }
-        
-        @keyframes redPulse {
-            0%, 100% { color: #ff4444; text-shadow: 0 0 10px rgba(255, 68, 68, 0.8); }
-            50% { color: #ff6666; text-shadow: 0 0 20px rgba(255, 102, 102, 1); }
-        }
-        
         .flicker {
             animation: flicker 2s infinite;
         }
         
         .flicker-intense {
             animation: flicker-intense 1.5s infinite;
-        }
-        
-        .typewriter-container {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 0.15em solid #fff;
-            animation: blink 0.75s step-end infinite;
-            width: 0;
-        }
-        
-        .typewriter-animate {
-            animation: typewriter 2s steps(18) forwards, blink 0.75s step-end infinite;
         }
         
         canvas {
@@ -204,7 +163,9 @@
         }
         
         .status-container.virus {
-            animation: redPulse 0.5s ease-in-out infinite;
+            animation: none;
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
         }
         
         .status-line {
@@ -221,14 +182,13 @@
             height: 10px;
             border-radius: 50%;
             background-color: currentColor;
-            animation: statusPulse 0.8s ease-in-out infinite;
             box-shadow: 0 0 15px currentColor;
         }
         
         .status-container.virus .status-dot {
-            background-color: #ff4444;
-            box-shadow: 0 0 20px #ff4444;
-            animation: statusPulse 0.3s ease-in-out infinite;
+            background-color: #ff0000;
+            box-shadow: 0 0 25px #ff0000;
+            animation: none;
         }
         
         .status-latency {
@@ -264,54 +224,24 @@
         }
         
         .status-container.virus .status-bar {
-            background-color: #ff4444;
-            opacity: 0.2;
-            animation: barWave 0.2s ease-in-out infinite;
+            background-color: #ff0000;
+            opacity: 0.3;
+            animation: none;
         }
         
         .status-container.virus .status-bar.active {
             opacity: 0.8;
-            box-shadow: 0 0 10px #ff4444;
+            box-shadow: 0 0 15px #ff0000;
         }
         
-        /* Scanline effect for HARDWIRED FOR HUM4NS */
-        .hardwired-container {
-            position: relative;
-            display: inline-block;
+        /* Virus effects */
+        .virus-active {
+            animation: heartbeat 2s ease-in-out infinite;
         }
         
-        .scanline {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 65, 0.8) 50%, transparent 100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .scanline.active {
-            opacity: 1;
-            animation: scanlineMove 0.5s linear;
-        }
-        
-        .hardwired-text {
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.15em;
-            color: #d1d5db;
-            transition: all 0.1s ease;
-        }
-        
-        .hardwired-text.virus {
-            animation: glitchShake 0.5s ease-in-out;
-            color: #00ff41;
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
-        }
-        
-        .hardwired-char {
-            display: inline-block;
-            transition: all 0.05s ease;
+        .virus-text {
+            color: #ff0040 !important;
+            text-shadow: 0 0 20px rgba(255, 0, 64, 0.8), 0 0 40px rgba(255, 0, 64, 0.4) !important;
         }
         
         .social-icon {
@@ -538,7 +468,7 @@
     <span id="audioText">Enable Audio</span>
 </div>
 
-<!-- Intro Overlay with Big Typing Text -->
+<!-- Intro Overlay -->
 <div id="intro-overlay">
     <div class="text-center">
         <div id="typewriter-text" class="text-6xl sm:text-8xl lg:text-9xl font-bold text-white tracking-widest font-mono" style="text-shadow: 0 0 30px rgba(255,255,255,0.8);">
@@ -547,7 +477,7 @@
     </div>
 </div>
 
-<!-- Status Indicator - Top Right -->
+<!-- Status Indicator -->
 <div class="status-container" id="status-container">
     <div class="status-line">
         <div class="status-dot"></div>
@@ -563,23 +493,19 @@
     </div>
 </div>
 
-<!-- Main Content (Hidden Initially) -->
+<!-- Main Content -->
 <div id="main-content" class="w-full min-h-screen bg-black relative overflow-hidden">
-    <!-- Three.js Canvas Container -->
     <div id="canvas-container" class="absolute inset-0 w-full h-full" style="touch-action: none;"></div>
 
-    <!-- Vignette Overlay -->
     <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.9) 100%);"></div>
 
-    <!-- Scanlines -->
     <div id="scanlines" class="absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 2px, rgba(255, 255, 255, 0.3) 4px); animation: scanlines 8s linear infinite;"></div>
 
-    <!-- Content -->
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div class="text-center max-w-5xl w-full">
+        <div class="text-center max-w-5xl w-full" id="main-text-container">
 
-            <!-- Main Title with Flickering 5 and 3 -->
-            <h1 class="mb-6 sm:mb-8">
+            <!-- Main Title -->
+            <h1 class="mb-6 sm:mb-8 virus-target" data-original="SY5TEM N3XT">
                 <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
                     <span class="flicker">S</span><span class="flicker">Y</span><span class="flicker-intense">5</span><span class="flicker">T</span><span class="flicker">E</span><span class="flicker">M</span>
                     <span class="mx-2 sm:mx-4"></span>
@@ -587,63 +513,57 @@
                 </span>
             </h1>
 
-            <!-- HARDWIRED FOR HUM4NS with Scanline -->
-            <div class="hardwired-container mb-2 sm:mb-4">
-                <div class="scanline" id="scanline"></div>
-                <p class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-mono opacity-80 leading-relaxed px-2">
-                    <span id="hardwired-text" class="hardwired-text">HARDWIRED FOR HUM4NS</span>
-                </p>
-            </div>
+            <!-- HARDWIRED FOR HUM4NS -->
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-gray-300 mb-2 sm:mb-4 tracking-[0.15em] sm:tracking-[0.2em] font-mono opacity-80 leading-relaxed px-2 virus-target" data-original="HARDWIRED FOR HUM4NS" id="subtitle-text">
+                HARDWIRED FOR HUM4NS
+            </p>
             
-            <p class="text-xs sm:text-sm md:text-base lg:text-lg text-gray-500/60 tracking-[0.2em] sm:tracking-[0.3em] block mb-8 sm:mb-10 lg:mb-12">
+            <p class="text-xs sm:text-sm md:text-base lg:text-lg text-gray-500/60 tracking-[0.2em] sm:tracking-[0.3em] block mb-8 sm:mb-10 lg:mb-12 virus-target" data-original="We build tools that respect your attention" id="description-text">
                 We build tools that respect your attention
             </p>
 
-            <!-- Products Section -->
+            <!-- Products -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-2 mb-12">
                 
-                <!-- Clip Locker -->
-                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 virus-target" data-original="PRODUCT 01">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
 
-                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider">PRODUCT 01</div>
-                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Clip Locker</div>
-                    <div class="text-xs text-gray-400">Advanced clipboard handling. In review.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider virus-target" data-original="PRODUCT 01">PRODUCT 01</div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2 virus-target" data-original="Clip Locker">Clip Locker</div>
+                    <div class="text-xs text-gray-400 virus-target" data-original="Advanced clipboard handling. In review.">Advanced clipboard handling. In review.</div>
 
                     <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 100%; animation: loadingBar 2s ease-out 0s;"></div>
                     </div>
                 </div>
 
-                <!-- Snap Stash -->
-                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300" style="animation-delay: 0.2s;">
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 virus-target" data-original="PRODUCT 02">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
 
-                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider">PRODUCT 02</div>
-                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Snap Stash</div>
-                    <div class="text-xs text-gray-400">Smart content clipping. In development.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider virus-target" data-original="PRODUCT 02">PRODUCT 02</div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2 virus-target" data-original="Snap Stash">Snap Stash</div>
+                    <div class="text-xs text-gray-400 virus-target" data-original="Smart content clipping. In development.">Smart content clipping. In development.</div>
 
                     <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 70%; animation: loadingBar 2s ease-out 0.2s;"></div>
                     </div>
                 </div>
 
-                <!-- Link Dump -->
-                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300" style="animation-delay: 0.4s;">
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 virus-target" data-original="PRODUCT 03">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
 
-                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider">PRODUCT 03</div>
-                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Link Dump</div>
-                    <div class="text-xs text-gray-400">Bookmark management. Coming soon.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider virus-target" data-original="PRODUCT 03">PRODUCT 03</div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2 virus-target" data-original="Link Dump">Link Dump</div>
+                    <div class="text-xs text-gray-400 virus-target" data-original="Bookmark management. Coming soon.">Bookmark management. Coming soon.</div>
 
                     <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 30%; animation: loadingBar 2s ease-out 0.4s;"></div>
@@ -675,7 +595,6 @@
         </div>
     </div>
 
-    <!-- Bottom Gradient Fade -->
     <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
 </div>
 
@@ -685,12 +604,21 @@ let audioContext = null;
 let audioEnabled = false;
 let spaceOscillator = null;
 let spaceGain = null;
+let spaceLFO = null;
 
-// Virus Event Timing (30 second cycle)
-const CYCLE_DURATION = 30000;
-const WARNING_TIME = 25000;
-const INFECTION_TIME = 25500;
-const RECOVERY_TIME = 28500;
+// 60 Second Cycle
+const CYCLE_DURATION = 60000;
+const WARNING_TIME = 45000;
+const INFECTION_TIME = 45500;
+const RECOVERY_START = 52500;
+
+// Katakana-heavy character set
+const matrixChars = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍﾄﾁﾙﾚﾛﾝﾞﾟﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789▓░▒█";
+
+// Store original text elements
+const virusTargets = [];
+let isInfected = false;
+let recoveryInterval = null;
 
 // Intro Animation
 const text = "System Initialize";
@@ -713,6 +641,7 @@ function typeText() {
             setTimeout(() => {
                 introOverlay.style.display = 'none';
                 mainContent.classList.add('visible');
+                initVirusTargets();
                 initAudio();
                 startVirusLoop();
                 startStatusAnimations();
@@ -722,6 +651,19 @@ function typeText() {
 }
 
 setTimeout(typeText, 1000);
+
+// Initialize virus targets
+function initVirusTargets() {
+    const targets = document.querySelectorAll('.virus-target');
+    targets.forEach(target => {
+        const original = target.getAttribute('data-original');
+        virusTargets.push({
+            element: target,
+            original: original,
+            current: original
+        });
+    });
+}
 
 // Audio System
 function initAudio() {
@@ -755,27 +697,25 @@ function toggleAudio() {
     }
 }
 
-// Space Ambient Sound
+// Space Ambient
 function startSpaceAmbient() {
     if (!audioEnabled || !audioContext) return;
     
-    // Create space drone using multiple oscillators
     spaceOscillator = audioContext.createOscillator();
     spaceGain = audioContext.createGain();
+    spaceLFO = audioContext.createOscillator();
+    const lfoGain = audioContext.createGain();
     
     spaceOscillator.type = 'sine';
-    spaceOscillator.frequency.setValueAtTime(60, audioContext.currentTime);
+    spaceOscillator.frequency.setValueAtTime(50, audioContext.currentTime);
     
-    // Add subtle frequency modulation for movement
-    const lfo = audioContext.createOscillator();
-    const lfoGain = audioContext.createGain();
-    lfo.frequency.setValueAtTime(0.1, audioContext.currentTime);
-    lfoGain.gain.setValueAtTime(10, audioContext.currentTime);
-    lfo.connect(lfoGain);
+    spaceLFO.frequency.setValueAtTime(0.05, audioContext.currentTime);
+    lfoGain.gain.setValueAtTime(20, audioContext.currentTime);
+    spaceLFO.connect(lfoGain);
     lfoGain.connect(spaceOscillator.frequency);
-    lfo.start();
+    spaceLFO.start();
     
-    spaceGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+    spaceGain.gain.setValueAtTime(0.03, audioContext.currentTime);
     
     spaceOscillator.connect(spaceGain);
     spaceGain.connect(audioContext.destination);
@@ -787,8 +727,9 @@ function stopSpaceAmbient() {
         spaceOscillator.stop();
         spaceOscillator = null;
     }
-    if (spaceGain) {
-        spaceGain.gain.setValueAtTime(0, audioContext.currentTime);
+    if (spaceLFO) {
+        spaceLFO.stop();
+        spaceLFO = null;
     }
 }
 
@@ -800,82 +741,8 @@ function playWarningSound() {
     const gain = audioContext.createGain();
     
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(800, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-    
-    gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-    
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.3);
-}
-
-// Virus Chaos Sound
-function playVirusSound() {
-    if (!audioEnabled || !audioContext) return;
-    
-    // Create distorted noise burst
-    const bufferSize = audioContext.sampleRate * 2;
-    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-    }
-    
-    const noise = audioContext.createBufferSource();
-    noise.buffer = buffer;
-    
-    const filter = audioContext.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(1000, audioContext.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 2);
-    
-    const gain = audioContext.createGain();
-    gain.gain.setValueAtTime(0.08, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
-    
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioContext.destination);
-    
-    noise.start();
-    noise.stop(audioContext.currentTime + 2);
-    
-    // Add glitch tones
-    for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-            const glitch = audioContext.createOscillator();
-            const glitchGain = audioContext.createGain();
-            
-            glitch.type = 'square';
-            glitch.frequency.setValueAtTime(200 + Math.random() * 600, audioContext.currentTime);
-            
-            glitchGain.gain.setValueAtTime(0.05, audioContext.currentTime);
-            glitchGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-            
-            glitch.connect(glitchGain);
-            glitchGain.connect(audioContext.destination);
-            
-            glitch.start();
-            glitch.stop(audioContext.currentTime + 0.1);
-        }, i * 200);
-    }
-}
-
-// Recovery Sound
-function playRecoverySound() {
-    if (!audioEnabled || !audioContext) return;
-    
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(200, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.5);
+    osc.frequency.setValueAtTime(600, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
     
     gain.gain.setValueAtTime(0.1, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
@@ -887,92 +754,185 @@ function playRecoverySound() {
     osc.stop(audioContext.currentTime + 0.5);
 }
 
+// Virus Chaos Sound
+function playVirusSound() {
+    if (!audioEnabled || !audioContext) return;
+    
+    // Deep drone
+    const drone = audioContext.createOscillator();
+    const droneGain = audioContext.createGain();
+    drone.type = 'sawtooth';
+    drone.frequency.setValueAtTime(40, audioContext.currentTime);
+    droneGain.gain.setValueAtTime(0.08, audioContext.currentTime);
+    drone.connect(droneGain);
+    droneGain.connect(audioContext.destination);
+    drone.start();
+    drone.stop(audioContext.currentTime + 7);
+    
+    // Heartbeat pulses
+    for (let i = 0; i < 14; i++) {
+        setTimeout(() => {
+            const pulse = audioContext.createOscillator();
+            const pulseGain = audioContext.createGain();
+            pulse.type = 'square';
+            pulse.frequency.setValueAtTime(80, audioContext.currentTime);
+            pulseGain.gain.setValueAtTime(0.1, audioContext.currentTime);
+            pulseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            pulse.connect(pulseGain);
+            pulseGain.connect(audioContext.destination);
+            pulse.start();
+            pulse.stop(audioContext.currentTime + 0.3);
+        }, i * 500);
+    }
+    
+    // Glitch noises
+    for (let i = 0; i < 20; i++) {
+        setTimeout(() => {
+            const glitch = audioContext.createOscillator();
+            const glitchGain = audioContext.createGain();
+            glitch.type = 'square';
+            glitch.frequency.setValueAtTime(100 + Math.random() * 400, audioContext.currentTime);
+            glitchGain.gain.setValueAtTime(0.03, audioContext.currentTime);
+            glitchGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            glitch.connect(glitchGain);
+            glitchGain.connect(audioContext.destination);
+            glitch.start();
+            glitch.stop(audioContext.currentTime + 0.05);
+        }, i * 350);
+    }
+}
+
+// Recovery Sound
+function playRecoverySound() {
+    if (!audioEnabled || !audioContext) return;
+    
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1);
+    
+    gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+    
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    
+    osc.start();
+    osc.stop(audioContext.currentTime + 1);
+}
+
 // Virus Loop
 function startVirusLoop() {
-    const loop = () => {
-        const now = Date.now();
-        const cyclePosition = now % CYCLE_DURATION;
+    const checkCycle = () => {
+        const now = Date.now() % CYCLE_DURATION;
         
-        if (cyclePosition >= WARNING_TIME && cyclePosition < INFECTION_TIME) {
-            // Warning phase
-            playWarningSound();
-        } else if (cyclePosition >= INFECTION_TIME && cyclePosition < RECOVERY_TIME) {
-            // Infection phase
+        if (now >= WARNING_TIME && now < INFECTION_TIME) {
+            if (!isInfected) {
+                playWarningSound();
+            }
+        } else if (now >= INFECTION_TIME && now < RECOVERY_START) {
             if (!isInfected) {
                 triggerInfection();
             }
-        } else if (cyclePosition >= RECOVERY_TIME && isInfected) {
-            // Recovery phase
+        } else if (now >= RECOVERY_START && isInfected) {
             triggerRecovery();
         }
         
-        requestAnimationFrame(loop);
+        requestAnimationFrame(checkCycle);
     };
     
-    let isInfected = false;
-    
-    function triggerInfection() {
-        isInfected = true;
-        playVirusSound();
-        
-        // Visual effects
-        document.getElementById('status-container').classList.add('virus');
-        document.getElementById('status-text').textContent = 'OFFLINE';
-        document.getElementById('hardwired-text').classList.add('virus');
-        document.getElementById('scanline').classList.add('active');
-        
-        // Scramble text
-        scrambleText();
-    }
-    
-    function triggerRecovery() {
-        isInfected = false;
-        playRecoverySound();
-        
-        // Restore visuals
-        document.getElementById('status-container').classList.remove('virus');
-        document.getElementById('status-text').textContent = 'CONNECTED';
-        document.getElementById('hardwired-text').classList.remove('virus');
-        document.getElementById('scanline').classList.remove('active');
-        
-        // Restore text
-        restoreText();
-    }
-    
-    loop();
+    checkCycle();
 }
 
-// Text Scramble
-const originalText = "HARDWIRED FOR HUM4NS";
-const chars = "▓░█¤#@$%&*+=-?";
-let scrambleInterval;
+function triggerInfection() {
+    isInfected = true;
+    playVirusSound();
+    
+    // Visual effects
+    document.getElementById('status-container').classList.add('virus');
+    document.getElementById('status-text').textContent = 'OFFLINE';
+    document.getElementById('main-text-container').classList.add('virus-active');
+    
+    // Apply virus text to all targets
+    virusTargets.forEach(target => {
+        target.element.classList.add('virus-text');
+        infectText(target);
+    });
+    
+    // Red particles
+    particleSystem.material.color.setHex(0xff0040);
+}
 
-function scrambleText() {
-    const element = document.getElementById('hardwired-text');
-    let iteration = 0;
-    
-    clearInterval(scrambleInterval);
-    
-    scrambleInterval = setInterval(() => {
-        element.textContent = originalText
-            .split("")
-            .map((char, index) => {
-                if (char === ' ') return ' ';
-                return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join("");
-        
-        iteration++;
-        if (iteration > 20) {
-            clearInterval(scrambleInterval);
+function infectText(target) {
+    const original = target.original;
+    let infected = '';
+    for (let i = 0; i < original.length; i++) {
+        if (original[i] === ' ') {
+            infected += ' ';
+        } else {
+            infected += matrixChars[Math.floor(Math.random() * matrixChars.length)];
         }
-    }, 50);
+    }
+    target.element.textContent = infected;
 }
 
-function restoreText() {
-    const element = document.getElementById('hardwired-text');
-    element.textContent = originalText;
-    clearInterval(scrambleInterval);
+function triggerRecovery() {
+    playRecoverySound();
+    
+    // Start slow recovery
+    let progress = 0;
+    const totalChars = virusTargets.reduce((sum, t) => sum + t.original.length, 0);
+    const charsPerInterval = Math.ceil(totalChars / 80); // 8 seconds, ~10 updates/sec
+    
+    recoveryInterval = setInterval(() => {
+        progress += charsPerInterval;
+        
+        virusTargets.forEach(target => {
+            const original = target.original;
+            const current = target.element.textContent;
+            let newText = '';
+            let restoredCount = 0;
+            
+            for (let i = 0; i < original.length; i++) {
+                if (original[i] === ' ') {
+                    newText += ' ';
+                    restoredCount++;
+                } else if (restoredCount < progress && Math.random() > 0.3) {
+                    newText += original[i];
+                    restoredCount++;
+                } else {
+                    newText += matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                }
+            }
+            
+            target.element.textContent = newText;
+        });
+        
+        if (progress >= totalChars * 1.5) {
+            clearInterval(recoveryInterval);
+            completeRecovery();
+        }
+    }, 100);
+}
+
+function completeRecovery() {
+    isInfected = false;
+    
+    // Restore visuals
+    document.getElementById('status-container').classList.remove('virus');
+    document.getElementById('status-text').textContent = 'CONNECTED';
+    document.getElementById('main-text-container').classList.remove('virus-active');
+    
+    // Restore text
+    virusTargets.forEach(target => {
+        target.element.classList.remove('virus-text');
+        target.element.textContent = target.original;
+    });
+    
+    // Restore particles
+    particleSystem.material.color.setHex(0xffffff);
 }
 
 // Status Animations
@@ -980,12 +940,20 @@ const latencyElement = document.getElementById('latency');
 const statusBars = document.querySelectorAll('.status-bar');
 
 function updateLatency() {
+    if (isInfected) {
+        latencyElement.textContent = '---';
+        return;
+    }
     const latency = Math.floor(Math.random() * 16) + 8;
     latencyElement.textContent = latency + 'ms';
 }
 
 function updateBars() {
     statusBars.forEach((bar, index) => {
+        if (isInfected) {
+            bar.classList.toggle('active', Math.random() > 0.5);
+            return;
+        }
         const isActive = Math.random() > 0.2;
         bar.classList.toggle('active', isActive);
     });
@@ -998,7 +966,7 @@ function startStatusAnimations() {
     updateBars();
 }
 
-// Mobile scanline fix
+// Mobile fix
 if (window.innerWidth < 768) {
     document.getElementById('scanlines').classList.add('scanlines-mobile');
 }
