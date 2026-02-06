@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SY5TEM N3XT - HARDWIRED FOR HUM4NS</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -66,6 +66,11 @@
         
         @keyframes blink {
             50% { border-color: transparent; }
+        }
+        
+        @keyframes statusPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
         
         .flicker {
@@ -151,6 +156,34 @@
             margin-top: 3rem;
         }
         
+        /* Status indicator styling */
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #8fa88f;
+            border-radius: 50%;
+            animation: statusPulse 2s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(143, 168, 143, 0.4);
+        }
+        
+        .status-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: #8fa88f;
+            text-transform: uppercase;
+            min-width: 90px;
+            text-align: left;
+        }
+        
         .w-full { width: 100%; }
         .min-h-screen { min-height: 100vh; }
         .bg-black { background-color: #000; }
@@ -231,6 +264,16 @@
                 opacity: 0.02 !important;
                 background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, 0.15) 3px, rgba(255, 255, 255, 0.15) 6px) !important;
             }
+            
+            .status-text {
+                font-size: 0.65rem;
+                letter-spacing: 0.15em;
+            }
+            
+            .status-dot {
+                width: 5px;
+                height: 5px;
+            }
         }
         
         @media (min-width: 640px) {
@@ -247,6 +290,11 @@
             .sm\:h-40 { height: 10rem; }
             .sm\:text-xs { font-size: 0.875rem; }
             .sm\:h-4 { height: 1rem; }
+            
+            .status-text {
+                font-size: 0.8rem;
+                letter-spacing: 0.25em;
+            }
         }
         
         @media (min-width: 768px) {
@@ -297,13 +345,10 @@
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
         <div class="text-center max-w-5xl w-full">
 
-            <!-- Pretitle - REMOVED flicker class -->
-            <div class="mb-4 sm:mb-6 flex items-center justify-center gap-2 sm:gap-3">
-                <div class="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-gray-500"></div>
-                <span class="text-gray-400 text-xs sm:text-sm font-mono tracking-[0.2em] sm:tracking-[0.3em] uppercase opacity-70">
-                    System Initialize
-                </span>
-                <div class="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-gray-500"></div>
+            <!-- Status Indicator with Decode Animation -->
+            <div class="status-container mb-4 sm:mb-6">
+                <div class="status-dot"></div>
+                <span id="status-text" class="status-text">CONNECTED</span>
             </div>
 
             <!-- Main Title with Flickering 5 and 3 -->
@@ -379,7 +424,7 @@
             <!-- Social Icons - X, Email, and GitHub on same line -->
             <div class="social-container">
                 <!-- X Icon -->
-                <a href="https://x.com/sy5temn3xt " target="_blank" class="social-icon" aria-label="Follow us on X">
+                <a href="https://x.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="Follow us on X">
                     <svg viewBox="0 0 24 24">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                     </svg>
@@ -393,7 +438,7 @@
                 </a>
 
                 <!-- GitHub Icon -->
-                <a href="https://github.com/sy5temn3xt " target="_blank" class="social-icon" aria-label="GitHub">
+                <a href="https://github.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="GitHub">
                     <svg viewBox="0 0 24 24">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
@@ -429,12 +474,60 @@ function typeText() {
             setTimeout(() => {
                 introOverlay.style.display = 'none';
                 mainContent.classList.add('visible');
+                // Start the status decode loop after intro
+                setTimeout(startStatusLoop, 2000);
             }, 1000);
         }, 3000);
     }
 }
 
 setTimeout(typeText, 1000);
+
+// Status Text Decode Animation
+const statusText = "CONNECTED";
+const statusElement = document.getElementById('status-text');
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+let decodeInterval;
+let isDecoding = false;
+
+function decodeText() {
+    if (isDecoding) return;
+    isDecoding = true;
+    
+    let iteration = 0;
+    const maxIterations = 10;
+    
+    clearInterval(decodeInterval);
+    
+    decodeInterval = setInterval(() => {
+        statusElement.textContent = statusText
+            .split("")
+            .map((char, index) => {
+                if (index < iteration) {
+                    return statusText[index];
+                }
+                return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join("");
+        
+        if (iteration >= statusText.length) {
+            clearInterval(decodeInterval);
+            isDecoding = false;
+        }
+        
+        iteration += 1/2;
+    }, 50);
+}
+
+function startStatusLoop() {
+    // Initial decode
+    decodeText();
+    
+    // Loop every 10 seconds
+    setInterval(() => {
+        decodeText();
+    }, 10000);
+}
 
 // Apply mobile scanline fix
 if (window.innerWidth < 768) {
