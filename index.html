@@ -246,22 +246,17 @@
             display: inline-block;
         }
 
-        .letter-text {
-            position: relative;
-            z-index: 2;
-            display: inline-block;
-        }
-
         .matrix-rain {
             position: absolute;
             top: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
             height: 100%;
             overflow: hidden;
             pointer-events: none;
             opacity: 0;
-            z-index: 1;
+            z-index: 10;
         }
 
         .matrix-rain.active {
@@ -271,27 +266,25 @@
         .matrix-char {
             position: absolute;
             color: #ff0040;
-            font-size: 0.15em;
-            text-shadow: 0 0 5px #ff0040, 0 0 10px #ff0040;
+            font-size: 0.3em;
+            text-shadow: 0 0 5px #ff0040;
             animation: matrixFall 0.8s linear infinite;
-            opacity: 0.9;
-            font-weight: bold;
-            line-height: 1;
+            opacity: 0.8;
         }
 
         @keyframes matrixFall {
             0% {
-                transform: translateY(-20%);
+                transform: translateY(-100%);
                 opacity: 0;
             }
             10% {
-                opacity: 0.9;
+                opacity: 0.8;
             }
             90% {
-                opacity: 0.9;
+                opacity: 0.8;
             }
             100% {
-                transform: translateY(120%);
+                transform: translateY(200%);
                 opacity: 0;
             }
         }
@@ -566,36 +559,36 @@
             <h1 class="mb-6 sm:mb-8" id="main-title">
                 <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
                     <span class="letter-container">
-                        <span class="letter-text flicker">S</span>
+                        <span class="flicker">S</span>
                         <div class="matrix-rain" id="rain-S"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">Y</span>
+                        <span class="flicker">Y</span>
                         <div class="matrix-rain" id="rain-Y"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker-intense" id="letter-5">5</span>
+                        <span class="flicker-intense" id="letter-5">5</span>
                         <div class="matrix-rain" id="rain-5"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">T</span>
+                        <span class="flicker">T</span>
                         <div class="matrix-rain" id="rain-T"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">E</span>
+                        <span class="flicker">E</span>
                         <div class="matrix-rain" id="rain-E"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">M</span>
+                        <span class="flicker">M</span>
                         <div class="matrix-rain" id="rain-M"></div>
                     </span>
                     <span class="mx-2 sm:mx-4"></span>
                     <span class="letter-container">
-                        <span class="letter-text flicker">N</span>
+                        <span class="flicker">N</span>
                         <div class="matrix-rain" id="rain-N"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker-intense" id="letter-3">3</span>
+                        <span class="flicker-intense" id="letter-3">3</span>
                         <div class="matrix-rain" id="rain-3"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">X</span>
+                        <span class="flicker">X</span>
                         <div class="matrix-rain" id="rain-X"></div>
                     </span><span class="letter-container">
-                        <span class="letter-text flicker">T</span>
+                        <span class="flicker">T</span>
                         <div class="matrix-rain" id="rain-T2"></div>
                     </span>
                 </span>
@@ -928,38 +921,29 @@ function startMatrixRain() {
         container.classList.add('active');
         container.innerHTML = '';
 
-        // Create multiple streams per letter for denser effect
-        const streamCount = 4;
-        
-        for (let s = 0; s < streamCount; s++) {
-            const interval = setInterval(() => {
-                if (!isInfected) {
-                    clearInterval(interval);
-                    return;
+        const interval = setInterval(() => {
+            if (!isInfected) {
+                clearInterval(interval);
+                return;
+            }
+
+            const char = document.createElement('span');
+            char.className = 'matrix-char';
+            char.textContent = katakana[Math.floor(Math.random() * katakana.length)];
+            char.style.left = Math.random() * 80 + 10 + '%';
+            char.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
+            char.style.animationDelay = Math.random() * 0.5 + 's';
+
+            container.appendChild(char);
+
+            setTimeout(() => {
+                if (char.parentNode) {
+                    char.parentNode.removeChild(char);
                 }
+            }, 1000);
+        }, 100 + Math.random() * 200);
 
-                const char = document.createElement('span');
-                char.className = 'matrix-char';
-                char.textContent = katakana[Math.floor(Math.random() * katakana.length)];
-                
-                // Position within the letter bounds - spread across width
-                const leftPos = 15 + (Math.random() * 50) + (s * 10);
-                char.style.left = Math.min(leftPos, 85) + '%';
-                char.style.top = '-10%';
-                char.style.animationDuration = (0.5 + Math.random() * 0.6) + 's';
-                char.style.animationDelay = Math.random() * 0.2 + 's';
-
-                container.appendChild(char);
-
-                setTimeout(() => {
-                    if (char.parentNode) {
-                        char.parentNode.removeChild(char);
-                    }
-                }, 1200);
-            }, 60 + Math.random() * 100 + (s * 40));
-
-            rainIntervals.push(interval);
-        }
+        rainIntervals.push(interval);
     });
 }
 
