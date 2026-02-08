@@ -105,14 +105,6 @@
             50% { opacity: 1; }
         }
 
-        @keyframes horizontalRoll {
-            0% { transform: translateY(0); }
-            10% { transform: translateY(3px); }
-            20% { transform: translateY(-2px); }
-            30% { transform: translateY(0); }
-            100% { transform: translateY(0); }
-        }
-
         .flicker {
             animation: flicker 2s infinite;
         }
@@ -129,7 +121,6 @@
             display: block;
         }
 
-        /* BOOT SEQUENCE STYLES */
         #boot-sequence {
             position: fixed;
             top: 0;
@@ -288,28 +279,26 @@
             font-family: 'VT323', monospace;
             font-size: 28px;
             font-weight: bold;
-            color: #ffb000;
+            color: #fff;
             letter-spacing: -2px;
-            text-shadow: 0 0 15px rgba(255, 176, 0, 0.6);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             pointer-events: none;
         }
 
-        /* TERMINAL INTERFACE */
+        /* TERMINAL INTERFACE - TRANSPARENT BACKGROUND, BLACK BEZEL */
         .terminal-interface {
             position: fixed;
             bottom: 20px;
             right: 20px;
             width: 380px;
             height: 220px;
-            background: #0a0a0a;
-            border: 2px solid #333;
-            border-radius: 8px;
+            background: transparent;
+            border: 1px solid #000;
+            border-radius: 4px;
             z-index: 50;
             overflow: hidden;
             font-family: 'VT323', monospace;
-            box-shadow: 
-                0 0 20px rgba(0,0,0,0.8),
-                inset 0 0 20px rgba(0,0,0,0.5);
+            pointer-events: none;
         }
 
         .terminal-bezel {
@@ -318,45 +307,43 @@
             left: 0;
             right: 0;
             bottom: 0;
-            border: 8px solid #1a1a1a;
-            border-radius: 6px;
+            border: 4px solid #050505;
+            border-radius: 2px;
             pointer-events: none;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         .terminal-screw {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #444;
+            width: 6px;
+            height: 6px;
+            background: #111;
             border-radius: 50%;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        .terminal-screw.tl { top: 4px; left: 4px; }
-        .terminal-screw.tr { top: 4px; right: 4px; }
-        .terminal-screw.bl { bottom: 4px; left: 4px; }
-        .terminal-screw.br { bottom: 4px; right: 4px; }
+        .terminal-screw.tl { top: 2px; left: 2px; }
+        .terminal-screw.tr { top: 2px; right: 2px; }
+        .terminal-screw.bl { bottom: 2px; left: 2px; }
+        .terminal-screw.br { bottom: 2px; right: 2px; }
 
         .terminal-label {
             position: absolute;
-            bottom: 2px;
+            bottom: 1px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 8px;
-            color: #666;
+            font-size: 7px;
+            color: #222;
             letter-spacing: 1px;
         }
 
         .terminal-screen {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            bottom: 16px;
-            background: radial-gradient(ellipse at center, #1a0f00 0%, #0a0a0a 100%);
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 10px;
+            background: transparent;
             overflow: hidden;
-            padding: 8px;
+            padding: 6px;
         }
 
         .terminal-scanlines {
@@ -369,20 +356,9 @@
                 0deg,
                 transparent,
                 transparent 3px,
-                rgba(255, 179, 0, 0.05) 3px,
-                rgba(255, 179, 0, 0.05) 6px
+                rgba(255, 179, 0, 0.02) 3px,
+                rgba(255, 179, 0, 0.02) 6px
             );
-            pointer-events: none;
-            animation: scanlines 6s linear infinite;
-        }
-
-        .terminal-curvature {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at center, transparent 0%, transparent 80%, rgba(0,0,0,0.6) 100%);
             pointer-events: none;
         }
 
@@ -421,10 +397,11 @@
         }
 
         .terminal-interface.virus {
-            border-color: #ff0040;
-            box-shadow: 
-                0 0 30px rgba(255, 0, 64, 0.4),
-                inset 0 0 20px rgba(255, 0, 64, 0.1);
+            border-color: #330000;
+        }
+
+        .terminal-interface.virus .terminal-bezel {
+            border-color: #220000;
         }
 
         .terminal-interface.virus .terminal-content {
@@ -442,12 +419,11 @@
                 0deg,
                 transparent,
                 transparent 3px,
-                rgba(255, 0, 64, 0.08) 3px,
-                rgba(255, 0, 64, 0.08) 6px
+                rgba(255, 0, 64, 0.03) 3px,
+                rgba(255, 0, 64, 0.03) 6px
             );
         }
 
-        /* AUDIO TOGGLE - BOTTOM LEFT */
         .audio-toggle {
             position: fixed;
             bottom: 20px;
@@ -768,7 +744,7 @@
 
             .terminal-interface {
                 width: calc(100% - 40px);
-                height: 160px;
+                height: 140px;
                 bottom: 80px;
                 right: 20px;
                 left: 20px;
@@ -849,8 +825,8 @@
             .terminal-interface {
                 bottom: 30px;
                 right: 30px;
-                width: 420px;
-                height: 260px;
+                width: 400px;
+                height: 180px;
             }
 
             .status-container {
@@ -887,7 +863,6 @@
 </head>
 <body>
 
-<!-- BOOT SEQUENCE -->
 <div id="boot-sequence">
     <div class="crt-screen">
         <div class="crt-curvature"></div>
@@ -1063,7 +1038,6 @@
     <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
 </div>
 
-<!-- TERMINAL INTERFACE -->
 <div class="terminal-interface" id="terminal-interface">
     <div class="terminal-bezel"></div>
     <div class="terminal-screw tl"></div>
@@ -1074,7 +1048,6 @@
     
     <div class="terminal-screen">
         <div class="terminal-scanlines"></div>
-        <div class="terminal-curvature"></div>
         <div class="terminal-content" id="terminal-content">
             <div id="terminal-lines"></div>
             <div class="terminal-line"><span class="terminal-cursor"></span></div>
@@ -1082,7 +1055,6 @@
     </div>
 </div>
 
-<!-- AUDIO TOGGLE -->
 <div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">
     <div class="audio-led"></div>
     <span class="audio-label">AUD-IO</span>
@@ -1095,7 +1067,6 @@ let spaceOscillator = null;
 let spaceGain = null;
 let spaceLFO = null;
 
-// TIMING
 const CYCLE_DURATION = 50000;
 const WARNING_TIME = 19000;
 const INFECTION_TIME = 20000;
@@ -1107,7 +1078,6 @@ let rainIntervals = [];
 let isInfected = false;
 let terminalInterval = null;
 
-// BOOT SEQUENCE DATA
 const bootLines = [
     "> SYS_BOOT_SEQUENCE_INIT",
     "> MEMORY_CHECK... 64K OK",
@@ -1124,7 +1094,6 @@ const bootLines = [
     "> WAITING FOR INPUT..."
 ];
 
-// TERMINAL LINES - BLADE RUNNER FLAVOR
 const normalTerminalLines = [
     "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
     "ORIGAMI CITY :: SECTOR 53",
@@ -1203,7 +1172,6 @@ const recoveryTerminalLines = [
     "WAITING FOR INPUT..."
 ];
 
-// BOOT SEQUENCE
 function runBootSequence() {
     const bootContainer = document.getElementById('boot-lines');
     let lineIndex = 0;
@@ -1215,11 +1183,9 @@ function runBootSequence() {
             line.innerHTML = bootLines[lineIndex];
             bootContainer.appendChild(line);
             
-            // Trigger reflow
             line.offsetHeight;
             line.classList.add('visible');
             
-            // Play type sound if audio enabled
             if (audioEnabled && audioContext) {
                 playTypeSound();
             }
@@ -1227,11 +1193,9 @@ function runBootSequence() {
             lineIndex++;
             setTimeout(typeLine, 150 + Math.random() * 100);
         } else {
-            // Show system name
             setTimeout(() => {
                 document.getElementById('system-name').style.display = 'block';
                 
-                // CRT turn on effect
                 setTimeout(() => {
                     document.getElementById('boot-sequence').style.opacity = '0';
                     document.getElementById('boot-sequence').style.transition = 'opacity 0.5s ease-out';
@@ -1263,7 +1227,6 @@ function playTypeSound() {
     osc.stop(audioContext.currentTime + 0.03);
 }
 
-// MAIN INTRO
 const introText = "INITIALIZE SY5TEM 53";
 const typingElement = document.getElementById('typing-content');
 const introOverlay = document.getElementById('intro-overlay');
@@ -1297,7 +1260,6 @@ function startMainIntro() {
     typeText();
 }
 
-// TERMINAL INTERFACE
 function startTerminal() {
     const terminalContent = document.getElementById('terminal-lines');
     let lineIndex = 0;
@@ -1315,27 +1277,22 @@ function startTerminal() {
         
         terminalContent.appendChild(line);
         
-        // Remove old lines
         while (terminalContent.children.length > maxLines) {
             terminalContent.removeChild(terminalContent.firstChild);
         }
         
-        // Play subtle sound if audio enabled
         if (audioEnabled && audioContext && Math.random() > 0.7) {
             playTypeSound();
         }
     }
     
-    // Initial lines
     for (let i = 0; i < 4; i++) {
         addTerminalLine();
     }
     
-    // Continue adding lines
     terminalInterval = setInterval(addTerminalLine, 2000 + Math.random() * 1000);
 }
 
-// AUDIO
 function initAudio() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1398,7 +1355,6 @@ function stopSpaceAmbient() {
     }
 }
 
-// VIRUS SYSTEM
 function playWarningSound() {
     if (!audioEnabled || !audioContext) return;
     const osc = audioContext.createOscillator();
@@ -1578,7 +1534,6 @@ function triggerRecovery() {
     }
 }
 
-// STATUS
 const latencyElement = document.getElementById('latency');
 const statusBars = document.querySelectorAll('.status-bar');
 
@@ -1609,7 +1564,6 @@ function startStatusAnimations() {
     updateBars();
 }
 
-// THREE.JS
 if (window.innerWidth < 768) {
     document.getElementById('scanlines').classList.add('scanlines-mobile');
 }
@@ -1751,7 +1705,6 @@ window.addEventListener('resize', handleResize);
 container.addEventListener('mousemove', handleMouseMove);
 container.addEventListener('touchmove', handleTouchMove, { passive: true });
 
-// START BOOT SEQUENCE ON LOAD
 window.addEventListener('load', () => {
     setTimeout(runBootSequence, 500);
 });
