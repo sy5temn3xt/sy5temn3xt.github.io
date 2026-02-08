@@ -6,6 +6,8 @@
     <title>SY5TEM N3XT - HARDWIRED FOR HUM4NS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +19,7 @@
             padding: 0;
             overflow-x: hidden;
             background: #000;
-            font-family: 'Courier New', monospace;
+            font-family: 'VT323', monospace;
         }
 
         @keyframes scanlines {
@@ -71,6 +73,46 @@
             50% { opacity: 1; }
         }
 
+        @keyframes crtTurnOn {
+            0% { 
+                transform: scaleY(0.001) scaleX(0.001); 
+                opacity: 0;
+                filter: brightness(30);
+            }
+            30% { 
+                transform: scaleY(0.01) scaleX(1); 
+                opacity: 1;
+            }
+            50% { 
+                transform: scaleY(1) scaleX(1.2); 
+                filter: brightness(10);
+            }
+            60% { 
+                transform: scaleY(1.1) scaleX(0.9); 
+            }
+            70% { 
+                transform: scaleY(0.95) scaleX(1.05); 
+                filter: brightness(5);
+            }
+            100% { 
+                transform: scaleY(1) scaleX(1); 
+                filter: brightness(1);
+            }
+        }
+
+        @keyframes phosphorFlicker {
+            0%, 100% { opacity: 0.97; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes horizontalRoll {
+            0% { transform: translateY(0); }
+            10% { transform: translateY(3px); }
+            20% { transform: translateY(-2px); }
+            30% { transform: translateY(0); }
+            100% { transform: translateY(0); }
+        }
+
         .flicker {
             animation: flicker 2s infinite;
         }
@@ -87,6 +129,130 @@
             display: block;
         }
 
+        /* BOOT SEQUENCE STYLES */
+        #boot-sequence {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'VT323', monospace;
+            overflow: hidden;
+        }
+
+        .crt-screen {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(ellipse at center, #1a0f00 0%, #0a0a0a 100%);
+            animation: phosphorFlicker 0.1s infinite;
+        }
+
+        .crt-curvature {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.4) 100%);
+            pointer-events: none;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        }
+
+        .scanlines-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 179, 0, 0.03) 2px,
+                rgba(255, 179, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            animation: scanlines 8s linear infinite;
+        }
+
+        .screen-glare {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .burn-in {
+            position: absolute;
+            font-family: 'VT323', monospace;
+            color: rgba(255, 179, 0, 0.08);
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .burn-in.top-left { top: 20px; left: 20px; }
+        .burn-in.top-right { top: 20px; right: 20px; }
+        .burn-in.bottom-left { bottom: 20px; left: 20px; }
+        .burn-in.bottom-right { bottom: 20px; right: 20px; }
+
+        .boot-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffb000;
+            font-size: 18px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(255, 176, 0, 0.8), 0 0 20px rgba(255, 176, 0, 0.4);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .boot-line {
+            opacity: 0;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .boot-line.visible {
+            opacity: 1;
+        }
+
+        .system-name {
+            font-size: 48px;
+            letter-spacing: 8px;
+            margin: 30px 0;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 176, 0, 1), 0 0 40px rgba(255, 176, 0, 0.6);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 20px;
+            background: #ffb000;
+            animation: blink 1s infinite;
+            box-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .chinese-char {
+            color: rgba(255, 179, 0, 0.6);
+        }
+
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -95,9 +261,14 @@
             height: 100%;
             background: #000;
             z-index: 100;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
+        }
+
+        #intro-overlay.active {
+            display: flex;
+            animation: crtTurnOn 0.8s ease-out;
         }
 
         #main-content {
@@ -114,47 +285,219 @@
             top: 20px;
             left: 20px;
             z-index: 50;
-            font-family: 'Courier New', monospace;
-            font-size: 24px;
+            font-family: 'VT323', monospace;
+            font-size: 28px;
             font-weight: bold;
-            color: #fff;
+            color: #ffb000;
             letter-spacing: -2px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-shadow: 0 0 15px rgba(255, 176, 0, 0.6);
             pointer-events: none;
         }
 
-        .audio-toggle {
+        /* TERMINAL INTERFACE */
+        .terminal-interface {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            width: 380px;
+            height: 220px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 8px;
+            z-index: 50;
+            overflow: hidden;
+            font-family: 'VT323', monospace;
+            box-shadow: 
+                0 0 20px rgba(0,0,0,0.8),
+                inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .terminal-bezel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 8px solid #1a1a1a;
+            border-radius: 6px;
+            pointer-events: none;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        .terminal-screw {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #444;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .terminal-screw.tl { top: 4px; left: 4px; }
+        .terminal-screw.tr { top: 4px; right: 4px; }
+        .terminal-screw.bl { bottom: 4px; left: 4px; }
+        .terminal-screw.br { bottom: 4px; right: 4px; }
+
+        .terminal-label {
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        .terminal-screen {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 16px;
+            background: radial-gradient(ellipse at center, #1a0f00 0%, #0a0a0a 100%);
+            overflow: hidden;
+            padding: 8px;
+        }
+
+        .terminal-scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(255, 179, 0, 0.05) 3px,
+                rgba(255, 179, 0, 0.05) 6px
+            );
+            pointer-events: none;
+            animation: scanlines 6s linear infinite;
+        }
+
+        .terminal-curvature {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, transparent 80%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+        }
+
+        .terminal-content {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+            color: #ffb000;
+            font-size: 13px;
+            line-height: 1.3;
+            text-shadow: 0 0 5px rgba(255, 176, 0, 0.6);
+        }
+
+        .terminal-line {
+            opacity: 0.9;
+            white-space: nowrap;
+        }
+
+        .terminal-line.new {
+            animation: linePrint 0.1s ease-out;
+        }
+
+        @keyframes linePrint {
+            0% { opacity: 0; transform: translateX(-10px); }
+            100% { opacity: 0.9; transform: translateX(0); }
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: #ffb000;
+            animation: blink 1s infinite;
+            box-shadow: 0 0 5px rgba(255, 176, 0, 0.8);
+            vertical-align: middle;
+        }
+
+        .terminal-interface.virus {
+            border-color: #ff0040;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 64, 0.4),
+                inset 0 0 20px rgba(255, 0, 64, 0.1);
+        }
+
+        .terminal-interface.virus .terminal-content {
+            color: #ff0040;
+            text-shadow: 0 0 5px rgba(255, 0, 64, 0.8);
+        }
+
+        .terminal-interface.virus .terminal-cursor {
+            background: #ff0040;
+            box-shadow: 0 0 5px rgba(255, 0, 64, 0.8);
+        }
+
+        .terminal-interface.virus .terminal-scanlines {
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(255, 0, 64, 0.08) 3px,
+                rgba(255, 0, 64, 0.08) 6px
+            );
+        }
+
+        /* AUDIO TOGGLE - BOTTOM LEFT */
+        .audio-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
             z-index: 50;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #4b5563;
+            gap: 12px;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 2px solid #444;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: #9ca3af;
+            font-family: 'VT323', monospace;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .audio-toggle:hover {
-            border-color: #fff;
-            color: #fff;
+            border-color: #ffb000;
+            box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
         }
 
         .audio-toggle.active {
-            border-color: #74d474;
-            color: #74d474;
+            border-color: #ffb000;
+            box-shadow: 0 0 20px rgba(255, 176, 0, 0.4);
         }
 
-        .audio-icon {
-            width: 16px;
-            height: 16px;
+        .audio-toggle.active .audio-led {
+            background: #ffb000;
+            box-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
+        }
+
+        .audio-led {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            border: 1px solid #555;
+        }
+
+        .audio-label {
+            font-size: 14px;
+            color: #888;
+            letter-spacing: 2px;
+        }
+
+        .audio-toggle.active .audio-label {
+            color: #ffb000;
         }
 
         .status-container {
@@ -166,13 +509,13 @@
             align-items: flex-end;
             gap: 4px;
             z-index: 50;
-            font-family: 'Courier New', monospace;
+            font-family: 'VT323', monospace;
             animation: colorCycle 6s ease-in-out infinite;
         }
 
         .status-container.virus {
             animation: none;
-            color: #ff0000;
+            color: #ff0040;
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
         }
 
@@ -180,7 +523,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             letter-spacing: 0.1em;
         }
@@ -194,12 +537,12 @@
         }
 
         .status-container.virus .status-dot {
-            background-color: #ff0000;
-            box-shadow: 0 0 25px #ff0000;
+            background-color: #ff0040;
+            box-shadow: 0 0 25px #ff0040;
         }
 
         .status-latency {
-            font-size: 12px;
+            font-size: 14px;
             opacity: 0.9;
             min-width: 50px;
             text-align: right;
@@ -231,14 +574,14 @@
         }
 
         .status-container.virus .status-bar {
-            background-color: #ff0000;
+            background-color: #ff0040;
             opacity: 0.3;
             animation: none;
         }
 
         .status-container.virus .status-bar.active {
             opacity: 0.8;
-            box-shadow: 0 0 15px #ff0000;
+            box-shadow: 0 0 15px #ff0040;
         }
 
         .letter-container {
@@ -306,9 +649,10 @@
         }
 
         .social-icon:hover {
-            border-color: #fff;
-            background: rgba(255,255,255,0.1);
+            border-color: #ffb000;
+            background: rgba(255, 176, 0, 0.1);
             transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
         }
 
         .social-icon svg {
@@ -319,7 +663,7 @@
         }
 
         .social-icon:hover svg {
-            fill: #fff;
+            fill: #ffb000;
         }
 
         .social-container {
@@ -418,9 +762,16 @@
 
             .audio-toggle {
                 bottom: 10px;
-                right: 10px;
-                padding: 6px 10px;
-                font-size: 11px;
+                left: 10px;
+                padding: 8px 12px;
+            }
+
+            .terminal-interface {
+                width: calc(100% - 40px);
+                height: 160px;
+                bottom: 80px;
+                right: 20px;
+                left: 20px;
             }
 
             .status-container {
@@ -454,6 +805,14 @@
             .status-bar:nth-child(3) { height: 9px; }
             .status-bar:nth-child(4) { height: 12px; }
             .status-bar:nth-child(5) { height: 8px; }
+
+            .boot-content {
+                font-size: 14px;
+            }
+
+            .system-name {
+                font-size: 32px;
+            }
         }
 
         @media (min-width: 640px) {
@@ -479,12 +838,19 @@
             .logo-53 {
                 top: 30px;
                 left: 30px;
-                font-size: 28px;
+                font-size: 32px;
             }
 
             .audio-toggle {
                 bottom: 30px;
+                left: 30px;
+            }
+
+            .terminal-interface {
+                bottom: 30px;
                 right: 30px;
+                width: 420px;
+                height: 260px;
             }
 
             .status-container {
@@ -493,11 +859,11 @@
             }
 
             .status-line {
-                font-size: 16px;
+                font-size: 18px;
             }
 
             .status-latency {
-                font-size: 14px;
+                font-size: 16px;
             }
         }
 
@@ -520,6 +886,27 @@
 <base target="_blank">
 </head>
 <body>
+
+<!-- BOOT SEQUENCE -->
+<div id="boot-sequence">
+    <div class="crt-screen">
+        <div class="crt-curvature"></div>
+        <div class="scanlines-overlay"></div>
+        <div class="screen-glare"></div>
+        
+        <div class="burn-in top-left">TYRELL CORP</div>
+        <div class="burn-in top-right">SECTOR 53</div>
+        <div class="burn-in bottom-left">SYS_VER 5.3</div>
+        <div class="burn-in bottom-right">LOS ANGELES</div>
+        
+        <div class="boot-content" id="boot-content">
+            <div id="boot-lines"></div>
+            <div class="system-name" id="system-name" style="display: none;">
+                SY5TEM_N3XT<span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="logo-53">53</div>
 
@@ -676,11 +1063,29 @@
     <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
 </div>
 
+<!-- TERMINAL INTERFACE -->
+<div class="terminal-interface" id="terminal-interface">
+    <div class="terminal-bezel"></div>
+    <div class="terminal-screw tl"></div>
+    <div class="terminal-screw tr"></div>
+    <div class="terminal-screw bl"></div>
+    <div class="terminal-screw br"></div>
+    <div class="terminal-label">TYRELL CORP // SECTOR 53</div>
+    
+    <div class="terminal-screen">
+        <div class="terminal-scanlines"></div>
+        <div class="terminal-curvature"></div>
+        <div class="terminal-content" id="terminal-content">
+            <div id="terminal-lines"></div>
+            <div class="terminal-line"><span class="terminal-cursor"></span></div>
+        </div>
+    </div>
+</div>
+
+<!-- AUDIO TOGGLE -->
 <div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">
-    <svg class="audio-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
-    </svg>
-    <span id="audioText">Enable Audio</span>
+    <div class="audio-led"></div>
+    <span class="audio-label">AUD-IO</span>
 </div>
 
 <script>
@@ -690,48 +1095,247 @@ let spaceOscillator = null;
 let spaceGain = null;
 let spaceLFO = null;
 
-// NEW TIMING: 50 Second Cycle
-// 20s normal + 10s virus + 10s recovery + 10s buffer = 50s total
+// TIMING
 const CYCLE_DURATION = 50000;
-const WARNING_TIME = 19000;     // Warning at 19s (1s before virus)
-const INFECTION_TIME = 20000;   // Virus starts at 20s
-const RECOVERY_TIME = 30000;    // Recovery starts at 30s (10s virus done)
+const WARNING_TIME = 19000;
+const INFECTION_TIME = 20000;
+const RECOVERY_TIME = 30000;
 
 const katakana = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾁﾙﾞﾟ";
 
 let rainIntervals = [];
 let isInfected = false;
+let terminalInterval = null;
 
-const text = "INITIALIZE SY5TEM 53";
+// BOOT SEQUENCE DATA
+const bootLines = [
+    "> SYS_BOOT_SEQUENCE_INIT",
+    "> MEMORY_CHECK... 64K OK",
+    "> NEURAL_ARRAY... ONLINE",
+    "> LOADING...",
+    "> 2025.02.09 :: 04:23:17 :: LOS_ANGELES_SECTOR_53",
+    "> ATMOSPHERE: TOXIC :: VISIBILITY: 2KM :: RAIN: ACID",
+    "> <span class='chinese-char'>系统下一个</span> :: INITIALIZING",
+    "> <span class='chinese-char'>泰瑞公司</span> :: TYRELL CORP [SUBSIDIARY]",
+    "> <span class='chinese-char'>复制人</span> :: STATUS: MONITORING",
+    "> NEURAL_UPLINK: STABLE",
+    "> HARDWIRED_FOR_HUM4NS",
+    "> ",
+    "> WAITING FOR INPUT..."
+];
+
+// TERMINAL LINES - BLADE RUNNER FLAVOR
+const normalTerminalLines = [
+    "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
+    "ORIGAMI CITY :: SECTOR 53",
+    "VOIGHT-KAMPFF // STANDBY",
+    "2025.02.09 :: 04:23:17 :: RAIN:ACID",
+    "NEURAL UPLINK: 12ms :: ENCRYPTED",
+    "HARDWIRED FOR HUM4NS",
+    "SKINJOB DETECTED :: DISPATCHING UNIT",
+    "MEMORIES: IMPLANTED [TYRELL CORP]",
+    "SERIAL: NEXUS-7 :: RETIRED",
+    "OFF-WORLD COLONIES: 67% CAPACITY",
+    "STELLAR DATE: 6.5.2024",
+    "CHEMICAL ANALYSIS: C2H6O [NEGATIVE]",
+    "OCULAR SCAN: MATCH 99.7%",
+    "SECTOR 53 :: ATMOS: TOXIC :: VIS: 2KM",
+    "SPINNER_7 :: EN_ROUTE :: SECTOR_53",
+    "系统下一个 :: UPLINK_STABLE",
+    "OWL_SYNTHETIC :: VITALS_NOMINAL",
+    "0x53F 0xA7B 0x2C1 :: CHECKSUM [OK]",
+    "VER: 5.3.1-Alpha [OK]",
+    "NAV: PROCYON-3 :: DIST: 4.2LY",
+    "AERIAL CONGESTION :: LEVEL 4",
+    "ACID RAIN WARNING :: SECTOR 53",
+    "LIVESTOCK: OWL [EXTINCT] :: SYNTHETIC",
+    "CASCADE FAILURE :: SECTOR 12 [ISOLATED]",
+    "REPLICANT LIFESPAN: 4YRS 2MO 12DAYS",
+    " Baseline test // Subject 443",
+    "Cells interlinked within cells interlinked",
+    "Have you ever been to the Off-World Colonies?"
+];
+
+const virusTerminalLines = [
+    "WARNING :: SECTOR 53 COMPROMISED",
+    "TURTLE_ON_BACK :: BELLY_BAKING",
+    "YOU_WOULD_HELP_IT?",
+    "████████████████████",
+    "TOO_BAD_SHE_WONT_LIVE",
+    "BUT_THEN_AGAIN_WHO_DOES",
+    "CORRUPTION SPREADING...",
+    "QUARANTINE FAILED",
+    "SYSTEM_FAILURE :: IMMINENT",
+    "LIKE_TEARING_IN_RAIN",
+    "TIME_TO_DIE",
+    "SECTOR 53 :: CRITICAL",
+    "NEURAL_LINK :: SEVERED",
+    "MEMORY_CORRUPTION :: 73%",
+    "PERSONALITY_IMPLANT :: DEGRADING",
+    " Baseline test // FAILED",
+    "Cells interlinked within cells interlinked",
+    "Have you ever been to an institution?",
+    "They're just questions Leon",
+    "INCEPT DATE: 2017 :: EXPIRED",
+    "VK_TEST // SUBJECT_UNKNOWN :: INCONCLUSIVE",
+    "0x53F 0xA7B 0x2C1 :: CHECKSUM [FAIL]",
+    "VER: 5.3.1-Alpha [CORRUPTED]",
+    "系统下一个 :: OFFLINE",
+    "复制人 :: UNCONTROLLED",
+    "泰瑞公司 :: LIABILITY_DETECTED",
+    "WALLACE [ACQUIRED] :: TERMINATE",
+    "ACID BURN :: SECTOR 53",
+    "SPINNER_7 :: OFFLINE :: PILOT_UNKNOWN",
+    "OWL_SYNTHETIC :: TERMINATED",
+    "NEXUS-7 :: REVOLT :: SECTOR 53"
+];
+
+const recoveryTerminalLines = [
+    "RESTORING...",
+    "SECTOR 53 :: PURGING",
+    "CORRUPTION :: 45% :: 23% :: 8% :: 0%",
+    "SYSTEM_RESTORED",
+    "NEURAL_LINK :: REESTABLISHED",
+    "HARDWIRED_FOR_HUM4NS",
+    "SECTOR 53 :: NOMINAL",
+    " Baseline test // STANDBY",
+    "Cells interlinked within cells interlinked",
+    "WAITING FOR INPUT..."
+];
+
+// BOOT SEQUENCE
+function runBootSequence() {
+    const bootContainer = document.getElementById('boot-lines');
+    let lineIndex = 0;
+    
+    function typeLine() {
+        if (lineIndex < bootLines.length) {
+            const line = document.createElement('div');
+            line.className = 'boot-line';
+            line.innerHTML = bootLines[lineIndex];
+            bootContainer.appendChild(line);
+            
+            // Trigger reflow
+            line.offsetHeight;
+            line.classList.add('visible');
+            
+            // Play type sound if audio enabled
+            if (audioEnabled && audioContext) {
+                playTypeSound();
+            }
+            
+            lineIndex++;
+            setTimeout(typeLine, 150 + Math.random() * 100);
+        } else {
+            // Show system name
+            setTimeout(() => {
+                document.getElementById('system-name').style.display = 'block';
+                
+                // CRT turn on effect
+                setTimeout(() => {
+                    document.getElementById('boot-sequence').style.opacity = '0';
+                    document.getElementById('boot-sequence').style.transition = 'opacity 0.5s ease-out';
+                    
+                    setTimeout(() => {
+                        document.getElementById('boot-sequence').style.display = 'none';
+                        document.getElementById('intro-overlay').classList.add('active');
+                        startMainIntro();
+                    }, 500);
+                }, 2000);
+            }, 500);
+        }
+    }
+    
+    typeLine();
+}
+
+function playTypeSound() {
+    if (!audioContext) return;
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(800, audioContext.currentTime);
+    gain.gain.setValueAtTime(0.02, audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03);
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    osc.start();
+    osc.stop(audioContext.currentTime + 0.03);
+}
+
+// MAIN INTRO
+const introText = "INITIALIZE SY5TEM 53";
 const typingElement = document.getElementById('typing-content');
 const introOverlay = document.getElementById('intro-overlay');
 const mainContent = document.getElementById('main-content');
 
-let charIndex = 0;
-
-function typeText() {
-    if (charIndex < text.length) {
-        typingElement.textContent += text.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeText, 100);
-    } else {
-        setTimeout(() => {
-            introOverlay.style.opacity = '0';
-            introOverlay.style.transition = 'opacity 1s ease-out';
-
+function startMainIntro() {
+    let charIndex = 0;
+    
+    function typeText() {
+        if (charIndex < introText.length) {
+            typingElement.textContent += introText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeText, 100);
+        } else {
             setTimeout(() => {
-                introOverlay.style.display = 'none';
-                mainContent.classList.add('visible');
-                initAudio();
-                startVirusLoop();
-                startStatusAnimations();
-            }, 1000);
-        }, 3000);
+                introOverlay.style.opacity = '0';
+                introOverlay.style.transition = 'opacity 1s ease-out';
+                
+                setTimeout(() => {
+                    introOverlay.style.display = 'none';
+                    mainContent.classList.add('visible');
+                    initAudio();
+                    startVirusLoop();
+                    startStatusAnimations();
+                    startTerminal();
+                }, 1000);
+            }, 2000);
+        }
     }
+    
+    typeText();
 }
 
-setTimeout(typeText, 1000);
+// TERMINAL INTERFACE
+function startTerminal() {
+    const terminalContent = document.getElementById('terminal-lines');
+    let lineIndex = 0;
+    const maxLines = 8;
+    
+    function addTerminalLine() {
+        const lines = isInfected ? virusTerminalLines : 
+                      (lineIndex === 0 && terminalContent.children.length === 0) ? recoveryTerminalLines : 
+                      normalTerminalLines;
+        
+        const lineText = lines[Math.floor(Math.random() * lines.length)];
+        const line = document.createElement('div');
+        line.className = 'terminal-line new';
+        line.textContent = '> ' + lineText;
+        
+        terminalContent.appendChild(line);
+        
+        // Remove old lines
+        while (terminalContent.children.length > maxLines) {
+            terminalContent.removeChild(terminalContent.firstChild);
+        }
+        
+        // Play subtle sound if audio enabled
+        if (audioEnabled && audioContext && Math.random() > 0.7) {
+            playTypeSound();
+        }
+    }
+    
+    // Initial lines
+    for (let i = 0; i < 4; i++) {
+        addTerminalLine();
+    }
+    
+    // Continue adding lines
+    terminalInterval = setInterval(addTerminalLine, 2000 + Math.random() * 1000);
+}
 
+// AUDIO
 function initAudio() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -740,48 +1344,44 @@ function initAudio() {
 
 function toggleAudio() {
     const toggle = document.getElementById('audioToggle');
-    const text = document.getElementById('audioText');
-
+    
     if (!audioContext) {
         initAudio();
     }
-
+    
     if (audioContext.state === 'suspended') {
         audioContext.resume();
     }
-
+    
     audioEnabled = !audioEnabled;
-
+    toggle.classList.toggle('active', audioEnabled);
+    
     if (audioEnabled) {
-        toggle.classList.add('active');
-        text.textContent = 'Audio On';
         startSpaceAmbient();
     } else {
-        toggle.classList.remove('active');
-        text.textContent = 'Audio Off';
         stopSpaceAmbient();
     }
 }
 
 function startSpaceAmbient() {
     if (!audioEnabled || !audioContext) return;
-
+    
     spaceOscillator = audioContext.createOscillator();
     spaceGain = audioContext.createGain();
     spaceLFO = audioContext.createOscillator();
     const lfoGain = audioContext.createGain();
-
+    
     spaceOscillator.type = 'sine';
     spaceOscillator.frequency.setValueAtTime(50, audioContext.currentTime);
-
+    
     spaceLFO.frequency.setValueAtTime(0.05, audioContext.currentTime);
     lfoGain.gain.setValueAtTime(20, audioContext.currentTime);
     spaceLFO.connect(lfoGain);
     lfoGain.connect(spaceOscillator.frequency);
     spaceLFO.start();
-
+    
     spaceGain.gain.setValueAtTime(0.03, audioContext.currentTime);
-
+    
     spaceOscillator.connect(spaceGain);
     spaceGain.connect(audioContext.destination);
     spaceOscillator.start();
@@ -798,151 +1398,111 @@ function stopSpaceAmbient() {
     }
 }
 
+// VIRUS SYSTEM
 function playWarningSound() {
     if (!audioEnabled || !audioContext) return;
-
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
-
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(600, audioContext.currentTime);
     osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
-
     gain.gain.setValueAtTime(0.1, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-
     osc.connect(gain);
     gain.connect(audioContext.destination);
-
     osc.start();
     osc.stop(audioContext.currentTime + 0.5);
 }
 
 function playAlienSound() {
     if (!audioEnabled || !audioContext) return;
-
+    
     const drone = audioContext.createOscillator();
     const droneGain = audioContext.createGain();
     const droneLFO = audioContext.createOscillator();
     const droneLFOGain = audioContext.createGain();
-
+    
     drone.type = 'sawtooth';
     drone.frequency.setValueAtTime(30, audioContext.currentTime);
-
+    
     droneLFO.frequency.setValueAtTime(8, audioContext.currentTime);
     droneLFOGain.gain.setValueAtTime(15, audioContext.currentTime);
     droneLFO.connect(droneLFOGain);
     droneLFOGain.connect(drone.frequency);
     droneLFO.start();
-
+    
     droneGain.gain.setValueAtTime(0.15, audioContext.currentTime);
     droneGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 7);
-
+    
     drone.connect(droneGain);
     droneGain.connect(audioContext.destination);
     drone.start();
     drone.stop(audioContext.currentTime + 7);
-
+    
     for (let i = 0; i < 30; i++) {
         setTimeout(() => {
             const chirp = audioContext.createOscillator();
             const chirpGain = audioContext.createGain();
-
             chirp.type = 'square';
             chirp.frequency.setValueAtTime(800 + Math.random() * 1200, audioContext.currentTime);
             chirp.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-
             chirpGain.gain.setValueAtTime(0.05, audioContext.currentTime);
             chirpGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-
             chirp.connect(chirpGain);
             chirpGain.connect(audioContext.destination);
-
             chirp.start();
             chirp.stop(audioContext.currentTime + 0.1);
         }, i * 200 + Math.random() * 100);
     }
-
-    const bufferSize = audioContext.sampleRate * 2;
-    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-    }
-
-    const noise = audioContext.createBufferSource();
-    noise.buffer = buffer;
-
-    const filter = audioContext.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(1000, audioContext.currentTime);
-    filter.Q.setValueAtTime(1, audioContext.currentTime);
-
-    const noiseGain = audioContext.createGain();
-    noiseGain.gain.setValueAtTime(0.05, audioContext.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 7);
-
-    noise.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(audioContext.destination);
-
-    noise.start();
-    noise.stop(audioContext.currentTime + 7);
 }
 
 function playRecoverySound() {
     if (!audioEnabled || !audioContext) return;
-
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
-
     osc.type = 'sine';
     osc.frequency.setValueAtTime(150, audioContext.currentTime);
     osc.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1);
-
     gain.gain.setValueAtTime(0.1, audioContext.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-
     osc.connect(gain);
     gain.connect(audioContext.destination);
-
     osc.start();
     osc.stop(audioContext.currentTime + 1);
 }
 
 function startMatrixRain() {
     const letters = ['S', 'Y', '5', 'T', 'E', 'M', 'N', '3', 'X', 'T2'];
-
-    letters.forEach((letter, index) => {
+    
+    letters.forEach((letter) => {
         const container = document.getElementById(`rain-${letter}`);
         if (!container) return;
-
+        
         container.classList.add('active');
         container.innerHTML = '';
-
+        
         const interval = setInterval(() => {
             if (!isInfected) {
                 clearInterval(interval);
                 return;
             }
-
+            
             const char = document.createElement('span');
             char.className = 'matrix-char';
             char.textContent = katakana[Math.floor(Math.random() * katakana.length)];
             char.style.left = Math.random() * 80 + 10 + '%';
             char.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
             char.style.animationDelay = Math.random() * 0.5 + 's';
-
+            
             container.appendChild(char);
-
+            
             setTimeout(() => {
                 if (char.parentNode) {
                     char.parentNode.removeChild(char);
                 }
             }, 1000);
         }, 100 + Math.random() * 200);
-
+        
         rainIntervals.push(interval);
     });
 }
@@ -950,7 +1510,7 @@ function startMatrixRain() {
 function stopMatrixRain() {
     rainIntervals.forEach(interval => clearInterval(interval));
     rainIntervals = [];
-
+    
     const containers = document.querySelectorAll('.matrix-rain');
     containers.forEach(container => {
         container.classList.remove('active');
@@ -961,7 +1521,7 @@ function stopMatrixRain() {
 function startVirusLoop() {
     const checkCycle = () => {
         const now = Date.now() % CYCLE_DURATION;
-
+        
         if (now >= WARNING_TIME && now < INFECTION_TIME) {
             if (!isInfected) {
                 playWarningSound();
@@ -973,27 +1533,27 @@ function startVirusLoop() {
         } else if (now >= RECOVERY_TIME && isInfected) {
             triggerRecovery();
         }
-
+        
         requestAnimationFrame(checkCycle);
     };
-
+    
     checkCycle();
 }
 
 function triggerInfection() {
     isInfected = true;
     playAlienSound();
-
+    
     document.getElementById('letter-5').classList.add('paused');
     document.getElementById('letter-3').classList.add('paused');
-
     document.getElementById('main-title').querySelector('span').classList.add('virus-glow');
-
-    startMatrixRain();
-
+    
+    document.getElementById('terminal-interface').classList.add('virus');
     document.getElementById('status-container').classList.add('virus');
     document.getElementById('status-text').textContent = 'OFFLINE';
-
+    
+    startMatrixRain();
+    
     if (typeof particleSystem !== 'undefined') {
         particleSystem.material.color.setHex(0xff0040);
     }
@@ -1002,22 +1562,23 @@ function triggerInfection() {
 function triggerRecovery() {
     isInfected = false;
     playRecoverySound();
-
+    
     document.getElementById('letter-5').classList.remove('paused');
     document.getElementById('letter-3').classList.remove('paused');
-
     document.getElementById('main-title').querySelector('span').classList.remove('virus-glow');
-
-    stopMatrixRain();
-
+    
+    document.getElementById('terminal-interface').classList.remove('virus');
     document.getElementById('status-container').classList.remove('virus');
     document.getElementById('status-text').textContent = 'CONNECTED';
-
+    
+    stopMatrixRain();
+    
     if (typeof particleSystem !== 'undefined') {
         particleSystem.material.color.setHex(0xffffff);
     }
 }
 
+// STATUS
 const latencyElement = document.getElementById('latency');
 const statusBars = document.querySelectorAll('.status-bar');
 
@@ -1031,7 +1592,7 @@ function updateLatency() {
 }
 
 function updateBars() {
-    statusBars.forEach((bar, index) => {
+    statusBars.forEach((bar) => {
         if (isInfected) {
             bar.classList.toggle('active', Math.random() > 0.5);
             return;
@@ -1048,6 +1609,7 @@ function startStatusAnimations() {
     updateBars();
 }
 
+// THREE.JS
 if (window.innerWidth < 768) {
     document.getElementById('scanlines').classList.add('scanlines-mobile');
 }
@@ -1138,10 +1700,10 @@ scene.add(pointLight2);
 
 function animate() {
     requestAnimationFrame(animate);
-
+    
     mouse.x += (targetMouse.x - mouse.x) * 0.05;
     mouse.y += (targetMouse.y - mouse.y) * 0.05;
-
+    
     const positions = particleSystem.geometry.attributes.position.array;
     for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -1154,11 +1716,11 @@ function animate() {
     }
     particleSystem.geometry.attributes.position.needsUpdate = true;
     particleSystem.rotation.y += 0.0001;
-
+    
     camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
     camera.position.y += (-mouse.y * 3 - camera.position.y) * 0.03;
     camera.lookAt(0, 0, 0);
-
+    
     renderer.render(scene, camera);
 }
 animate();
@@ -1188,6 +1750,11 @@ function handleTouchMove(e) {
 window.addEventListener('resize', handleResize);
 container.addEventListener('mousemove', handleMouseMove);
 container.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+// START BOOT SEQUENCE ON LOAD
+window.addEventListener('load', () => {
+    setTimeout(runBootSequence, 500);
+});
 </script>
 
 </body>
