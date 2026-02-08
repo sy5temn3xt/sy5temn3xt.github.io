@@ -244,12 +244,12 @@
         .letter-container {
             position: relative;
             display: inline-block;
-            overflow: hidden;
         }
 
-        .letter-container span {
+        .letter-text {
             position: relative;
             z-index: 2;
+            display: inline-block;
         }
 
         .matrix-rain {
@@ -271,16 +271,17 @@
         .matrix-char {
             position: absolute;
             color: #ff0040;
-            font-size: 0.25em;
+            font-size: 0.15em;
             text-shadow: 0 0 5px #ff0040, 0 0 10px #ff0040;
-            animation: matrixFall 1s linear infinite;
+            animation: matrixFall 0.8s linear infinite;
             opacity: 0.9;
             font-weight: bold;
+            line-height: 1;
         }
 
         @keyframes matrixFall {
             0% {
-                transform: translateY(-100%);
+                transform: translateY(-20%);
                 opacity: 0;
             }
             10% {
@@ -290,7 +291,7 @@
                 opacity: 0.9;
             }
             100% {
-                transform: translateY(250%);
+                transform: translateY(120%);
                 opacity: 0;
             }
         }
@@ -565,36 +566,36 @@
             <h1 class="mb-6 sm:mb-8" id="main-title">
                 <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
                     <span class="letter-container">
-                        <span class="flicker">S</span>
+                        <span class="letter-text flicker">S</span>
                         <div class="matrix-rain" id="rain-S"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">Y</span>
+                        <span class="letter-text flicker">Y</span>
                         <div class="matrix-rain" id="rain-Y"></div>
                     </span><span class="letter-container">
-                        <span class="flicker-intense" id="letter-5">5</span>
+                        <span class="letter-text flicker-intense" id="letter-5">5</span>
                         <div class="matrix-rain" id="rain-5"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">T</span>
+                        <span class="letter-text flicker">T</span>
                         <div class="matrix-rain" id="rain-T"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">E</span>
+                        <span class="letter-text flicker">E</span>
                         <div class="matrix-rain" id="rain-E"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">M</span>
+                        <span class="letter-text flicker">M</span>
                         <div class="matrix-rain" id="rain-M"></div>
                     </span>
                     <span class="mx-2 sm:mx-4"></span>
                     <span class="letter-container">
-                        <span class="flicker">N</span>
+                        <span class="letter-text flicker">N</span>
                         <div class="matrix-rain" id="rain-N"></div>
                     </span><span class="letter-container">
-                        <span class="flicker-intense" id="letter-3">3</span>
+                        <span class="letter-text flicker-intense" id="letter-3">3</span>
                         <div class="matrix-rain" id="rain-3"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">X</span>
+                        <span class="letter-text flicker">X</span>
                         <div class="matrix-rain" id="rain-X"></div>
                     </span><span class="letter-container">
-                        <span class="flicker">T</span>
+                        <span class="letter-text flicker">T</span>
                         <div class="matrix-rain" id="rain-T2"></div>
                     </span>
                 </span>
@@ -928,7 +929,7 @@ function startMatrixRain() {
         container.innerHTML = '';
 
         // Create multiple streams per letter for denser effect
-        const streamCount = 3;
+        const streamCount = 4;
         
         for (let s = 0; s < streamCount; s++) {
             const interval = setInterval(() => {
@@ -941,11 +942,12 @@ function startMatrixRain() {
                 char.className = 'matrix-char';
                 char.textContent = katakana[Math.floor(Math.random() * katakana.length)];
                 
-                // Position within the letter bounds
-                const leftPos = 10 + (Math.random() * 60) + (s * 15);
-                char.style.left = leftPos + '%';
-                char.style.animationDuration = (0.6 + Math.random() * 0.8) + 's';
-                char.style.animationDelay = Math.random() * 0.3 + 's';
+                // Position within the letter bounds - spread across width
+                const leftPos = 15 + (Math.random() * 50) + (s * 10);
+                char.style.left = Math.min(leftPos, 85) + '%';
+                char.style.top = '-10%';
+                char.style.animationDuration = (0.5 + Math.random() * 0.6) + 's';
+                char.style.animationDelay = Math.random() * 0.2 + 's';
 
                 container.appendChild(char);
 
@@ -953,8 +955,8 @@ function startMatrixRain() {
                     if (char.parentNode) {
                         char.parentNode.removeChild(char);
                     }
-                }, 1500);
-            }, 80 + Math.random() * 150 + (s * 50));
+                }, 1200);
+            }, 60 + Math.random() * 100 + (s * 40));
 
             rainIntervals.push(interval);
         }
