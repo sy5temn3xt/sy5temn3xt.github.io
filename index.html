@@ -105,6 +105,22 @@
             50% { opacity: 1; }
         }
 
+        @keyframes satellitePulse {
+            0%, 100% { 
+                opacity: 1;
+                box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+            }
+            50% { 
+                opacity: 0.6;
+                box-shadow: 0 0 2px #00ff00, 0 0 5px #00ff00;
+            }
+        }
+
+        @keyframes satelliteTransmit {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
         .flicker {
             animation: flicker 2s infinite;
         }
@@ -271,7 +287,6 @@
             opacity: 1;
         }
 
-        /* 53 LOGO - BOTTOM RIGHT, YELLOW */
         .logo-53 {
             position: fixed;
             bottom: 20px;
@@ -286,7 +301,6 @@
             pointer-events: none;
         }
 
-        /* TERMINAL INTERFACE - NOW TOP LEFT, NO BEZEL */
         .terminal-interface {
             position: fixed;
             top: 20px;
@@ -569,6 +583,56 @@
             text-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040, 0 0 90px #ff0040 !important;
         }
 
+        .satellite-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 12px;
+            height: 12px;
+            margin-left: 8px;
+            position: relative;
+        }
+
+        .satellite-icon.live {
+            animation: satellitePulse 2s infinite;
+        }
+
+        .satellite-icon.live::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #00ff00;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+        }
+
+        .satellite-icon.live::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #00ff00;
+            border-radius: 50%;
+            animation: satelliteTransmit 2s infinite;
+        }
+
+        .satellite-icon.offline::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #666;
+            border-radius: 50%;
+        }
+
+        .satellite-icon.offline::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #444;
+            border-radius: 50%;
+        }
+
         .social-icon {
             display: inline-flex;
             align-items: center;
@@ -840,7 +904,6 @@
     </div>
 </div>
 
-<!-- 53 LOGO - BOTTOM RIGHT, YELLOW -->
 <div class="logo-53">53</div>
 
 <div id="intro-overlay">
@@ -874,9 +937,9 @@
     <div id="scanlines" class="absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 2px, rgba(255, 255, 255, 0.3) 4px); animation: scanlines 8s linear infinite;"></div>
 
     <div class="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-        <div class="text-center max-w-6xl w-full">
+        <div class="text-center max-w-5xl w-full">
 
-            <h1 class="mb-8 sm:mb-12" id="main-title">
+            <h1 class="mb-6 sm:mb-8" id="main-title">
                 <span class="block text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
                     <span class="letter-container">
                         <span class="flicker">S</span>
@@ -914,61 +977,55 @@
                 </span>
             </h1>
 
-            <!-- BIGGER TAGLINE WITH MORE SPACE -->
-            <p class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-300 mb-4 sm:mb-6 tracking-[0.15em] sm:tracking-[0.2em] font-mono opacity-80 leading-relaxed px-2">
-                HARDWIRED FOR HUM4NS
-            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-2 mb-12">
 
-            <!-- SUBTITLE WITH SPACE -->
-            <p class="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-500/60 tracking-[0.2em] sm:tracking-[0.3em] block mb-16 sm:mb-20 lg:mb-24">
-                We build tools that respect your attention
-            </p>
-
-            <!-- BIGGER PRODUCTS WITH MORE SPACE -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10 max-w-6xl mx-auto px-4 mb-20 sm:mb-24">
-
-                <!-- Multi Clip - Linked to Chrome Web Store -->
-                <a href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" target="_blank" class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-8 sm:p-10 hover:border-gray-400/50 transition-all duration-300 cursor-pointer">
+                <a href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" target="_blank" class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
 
-                    <div class="text-xs sm:text-sm font-mono text-gray-500/60 mb-4 tracking-wider">PRODUCT 01</div>
-                    <div class="text-2xl sm:text-3xl font-mono text-white tracking-wide mb-4 group-hover:text-[#ffb000] transition-colors">Multi Clip</div>
-                    <div class="text-base sm:text-lg text-gray-400">Advanced clipboard handling. Available now.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider flex items-center justify-center">
+                        PRODUCT 01
+                        <span class="satellite-icon live"></span>
+                    </div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2 group-hover:text-[#ffb000] transition-colors">Multi Clip</div>
 
-                    <div class="mt-5 h-1 bg-gray-950/50 rounded-full overflow-hidden">
+                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 100%; animation: loadingBar 2s ease-out 0s;"></div>
                     </div>
                 </a>
 
-                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-8 sm:p-10 hover:border-gray-400/50 transition-all duration-300">
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
 
-                    <div class="text-xs sm:text-sm font-mono text-gray-500/60 mb-4 tracking-wider">PRODUCT 02</div>
-                    <div class="text-2xl sm:text-3xl font-mono text-white tracking-wide mb-4">Snap Stash</div>
-                    <div class="text-base sm:text-lg text-gray-400">Smart content clipping. In development.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider flex items-center justify-center">
+                        PRODUCT 02
+                        <span class="satellite-icon offline"></span>
+                    </div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Snap Stash</div>
 
-                    <div class="mt-5 h-1 bg-gray-950/50 rounded-full overflow-hidden">
+                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 70%; animation: loadingBar 2s ease-out 0.2s;"></div>
                     </div>
                 </div>
 
-                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-8 sm:p-10 hover:border-gray-400/50 transition-all duration-300">
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
                     <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
                     <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
 
-                    <div class="text-xs sm:text-sm font-mono text-gray-500/60 mb-4 tracking-wider">PRODUCT 03</div>
-                    <div class="text-2xl sm:text-3xl font-mono text-white tracking-wide mb-4">Link Dump</div>
-                    <div class="text-base sm:text-lg text-gray-400">Bookmark management. Coming soon.</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider flex items-center justify-center">
+                        PRODUCT 03
+                        <span class="satellite-icon offline"></span>
+                    </div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2">Link Dump</div>
 
-                    <div class="mt-5 h-1 bg-gray-950/50 rounded-full overflow-hidden">
+                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)]" style="width: 30%; animation: loadingBar 2s ease-out 0.4s;"></div>
                     </div>
                 </div>
@@ -1000,7 +1057,6 @@
     <div class="absolute bottom-0 left-0 right-0 h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-black via-black/50 to-transparent pointer-events-none"></div>
 </div>
 
-<!-- TERMINAL - TOP LEFT -->
 <div class="terminal-interface" id="terminal-interface">
     <div class="terminal-screen">
         <div class="terminal-scanlines"></div>
@@ -1033,6 +1089,7 @@ const katakana = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒ�
 let rainIntervals = [];
 let isInfected = false;
 let terminalInterval = null;
+let cycleStartTime = null;
 
 const bootLines = [
     "> SYS_BOOT_SEQUENCE_INIT",
@@ -1051,12 +1108,12 @@ const bootLines = [
 ];
 
 const normalTerminalLines = [
+    "HARDWIRED FOR HUM4NS",
     "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
     "ORIGAMI CITY :: SECTOR 53",
     "VOIGHT-KAMPFF // STANDBY",
     "2025.02.09 :: 04:23:17 :: RAIN:ACID",
     "NEURAL UPLINK: 12ms :: ENCRYPTED",
-    "HARDWIRED FOR HUM4NS",
     "SKINJOB DETECTED :: DISPATCHING UNIT",
     "MEMORIES: IMPLANTED [TYRELL CORP]",
     "SERIAL: NEXUS-7 :: RETIRED",
@@ -1205,6 +1262,7 @@ function startMainIntro() {
                     introOverlay.style.display = 'none';
                     mainContent.classList.add('visible');
                     initAudio();
+                    cycleStartTime = Date.now();
                     startVirusLoop();
                     startStatusAnimations();
                     startTerminal();
@@ -1432,7 +1490,13 @@ function stopMatrixRain() {
 
 function startVirusLoop() {
     const checkCycle = () => {
-        const now = Date.now() % CYCLE_DURATION;
+        if (!cycleStartTime) {
+            requestAnimationFrame(checkCycle);
+            return;
+        }
+        
+        const elapsed = Date.now() - cycleStartTime;
+        const now = elapsed % CYCLE_DURATION;
         
         if (now >= WARNING_TIME && now < INFECTION_TIME) {
             if (!isInfected) {
