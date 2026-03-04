@@ -633,6 +633,30 @@
             border-radius: 50%;
         }
 
+        /* Pending / In-review state (yellow) */
+        .satellite-icon.pending {
+            animation: satellitePulse 2.2s infinite;
+        }
+
+        .satellite-icon.pending::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #ffb000;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #ffb000, 0 0 10px #ffb000;
+        }
+
+        .satellite-icon.pending::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #ffb000;
+            border-radius: 50%;
+            animation: satelliteTransmit 2.2s infinite;
+        }
+
         .social-icon {
             display: inline-flex;
             align-items: center;
@@ -978,8 +1002,8 @@
                 </span>
             </h1>
 
-            <!-- Products: Snap Stash + Link Dump removed. Grid tightened to a single centered card. -->
-            <div class="grid grid-cols-1 gap-4 sm:gap-6 max-w-xl mx-auto px-2 mb-12">
+            <!-- Products: Multi Clip + LINK2U (pending approval) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto px-2 mb-12">
 
                 <a href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" target="_blank" class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300">
                     <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
@@ -997,6 +1021,24 @@
                         <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 100%; animation: loadingBar 2s ease-out 0s;"></div>
                     </div>
                 </a>
+
+                <div class="relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 cursor-pointer" role="button" aria-label="LINK2U (Pending approval)">
+                    <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
+                    <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
+                    <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
+                    <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
+
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/60 mb-2 tracking-wider flex items-center justify-center">
+                        PRODUCT 02
+                        <span class="satellite-icon pending" title="Pending approval"></span>
+                    </div>
+                    <div class="text-base sm:text-lg font-mono text-white tracking-wide mb-2 group-hover:text-[#ffb000] transition-colors">LINK2U</div>
+                    <div class="text-[10px] sm:text-xs font-mono text-gray-500/70 tracking-wider">STATUS: IN REVIEW</div>
+
+                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
+                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 85%; animation: loadingBar 2s ease-out 0.2s;"></div>
+                    </div>
+                </div>
 
             </div>
 
