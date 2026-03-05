@@ -1,2164 +1,1656 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SY5TEM N3XT - HARDWIRED FOR HUM4NS</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            background: #000;
-            font-family: 'VT323', monospace;
-        }
-
-        @keyframes scanlines {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(4px); }
-        }
-
-        @keyframes loadingBar {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            5% { opacity: 0.8; }
-            10% { opacity: 1; }
-            15% { opacity: 0.3; }
-            20% { opacity: 1; }
-            50% { opacity: 1; }
-            52% { opacity: 0.4; }
-            54% { opacity: 1; }
-            90% { opacity: 1; }
-            95% { opacity: 0.6; }
-        }
-
-        @keyframes flicker-intense {
-            0%, 100% { opacity: 1; }
-            3% { opacity: 0.2; }
-            6% { opacity: 1; }
-            9% { opacity: 0.1; }
-            12% { opacity: 1; }
-            15% { opacity: 0.4; }
-            18% { opacity: 1; }
-            50% { opacity: 1; }
-            53% { opacity: 0.2; }
-            56% { opacity: 1; }
-            80% { opacity: 1; }
-            83% { opacity: 0.3; }
-            86% { opacity: 1; }
-        }
-
-        @keyframes colorCycle {
-            0% { color: #d4a574; text-shadow: 0 0 10px rgba(212, 165, 116, 0.5); }
-            33% { color: #d49a74; text-shadow: 0 0 10px rgba(212, 154, 116, 0.5); }
-            66% { color: #74d474; text-shadow: 0 0 15px rgba(116, 212, 116, 0.6); }
-            100% { color: #d4a574; text-shadow: 0 0 10px rgba(212, 165, 116, 0.5); }
-        }
-
-        @keyframes barWave {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes crtTurnOn {
-            0% { 
-                transform: scaleY(0.001) scaleX(0.001); 
-                opacity: 0;
-                filter: brightness(30);
-            }
-            30% { 
-                transform: scaleY(0.01) scaleX(1); 
-                opacity: 1;
-            }
-            50% { 
-                transform: scaleY(1) scaleX(1.2); 
-                filter: brightness(10);
-            }
-            60% { 
-                transform: scaleY(1.1) scaleX(0.9); 
-            }
-            70% { 
-                transform: scaleY(0.95) scaleX(1.05); 
-                filter: brightness(5);
-            }
-            100% { 
-                transform: scaleY(1) scaleX(1); 
-                filter: brightness(1);
-            }
-        }
-
-        @keyframes phosphorFlicker {
-            0%, 100% { opacity: 0.97; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes satellitePulse {
-            0%, 100% { 
-                opacity: 1;
-                box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-            }
-            50% { 
-                opacity: 0.6;
-                box-shadow: 0 0 2px currentColor, 0 0 5px currentColor;
-            }
-        }
-
-        @keyframes satelliteTransmit {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(2); opacity: 0; }
-        }
-
-        @keyframes legendBreath {
-            0%, 100% { transform: scale(0.92); opacity: 0.72; }
-            50% { transform: scale(1.08); opacity: 1; }
-        }
-
-        @keyframes signalPulse {
-            0% { transform: scale(1); opacity: 0.0; }
-            20% { opacity: 0.55; }
-            100% { transform: scale(2.2); opacity: 0; }
-        }
-
-        .flicker {
-            animation: flicker 2s infinite;
-        }
-
-        .flicker-intense {
-            animation: flicker-intense 1.5s infinite;
-        }
-
-        .flicker-intense.paused {
-            animation: none;
-        }
-
-        canvas {
-            display: block;
-        }
-
-        #boot-sequence {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'VT323', monospace;
-            overflow: hidden;
-        }
-
-        .crt-screen {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            background: radial-gradient(ellipse at center, #1a0f00 0%, #0a0a0a 100%);
-            animation: phosphorFlicker 0.1s infinite;
-        }
-
-        .crt-curvature {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.4) 100%);
-            pointer-events: none;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
-        }
-
-        .scanlines-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255, 179, 0, 0.03) 2px,
-                rgba(255, 179, 0, 0.03) 4px
-            );
-            pointer-events: none;
-            animation: scanlines 8s linear infinite;
-        }
-
-        .screen-glare {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            right: -50%;
-            bottom: -50%;
-            background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.03) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .burn-in {
-            position: absolute;
-            font-family: 'VT323', monospace;
-            color: rgba(255, 179, 0, 0.08);
-            font-size: 12px;
-            letter-spacing: 2px;
-        }
-
-        .burn-in.top-left { top: 20px; left: 20px; }
-        .burn-in.top-right { top: 20px; right: 20px; }
-        .burn-in.bottom-left { bottom: 20px; left: 20px; }
-        .burn-in.bottom-right { bottom: 20px; right: 20px; }
-
-        .boot-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ffb000;
-            font-size: 18px;
-            line-height: 1.4;
-            text-shadow: 0 0 10px rgba(255, 176, 0, 0.8), 0 0 20px rgba(255, 176, 0, 0.4);
-            max-width: 600px;
-            width: 90%;
-        }
-
-        .boot-line {
-            opacity: 0;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .boot-line.visible {
-            opacity: 1;
-        }
-
-        .system-name {
-            font-size: 48px;
-            letter-spacing: 8px;
-            margin: 30px 0;
-            text-align: center;
-            text-shadow: 0 0 20px rgba(255, 176, 0, 1), 0 0 40px rgba(255, 176, 0, 0.6);
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 12px;
-            height: 20px;
-            background: #ffb000;
-            animation: blink 1s infinite;
-            box-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        .chinese-char {
-            color: rgba(255, 179, 0, 0.6);
-        }
-
-        #intro-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 100;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #intro-overlay.active {
-            display: flex;
-            animation: crtTurnOn 0.8s ease-out;
-        }
-
-        #main-content {
-            opacity: 0;
-            transition: opacity 1s ease-in;
-        }
-
-        #main-content.visible {
-            opacity: 1;
-        }
-
-        .logo-53 {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            font-family: 'VT323', monospace;
-            font-size: 32px;
-            font-weight: bold;
-            color: #ffb000;
-            letter-spacing: -2px;
-            text-shadow: 0 0 10px rgba(255, 176, 0, 0.8), 0 0 20px rgba(255, 176, 0, 0.4);
-            pointer-events: none;
-        }
-
-        .terminal-interface {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 380px;
-            height: 220px;
-            background: transparent;
-            z-index: 50;
-            overflow: hidden;
-            font-family: 'VT323', monospace;
-            pointer-events: none;
-        }
-
-        .terminal-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: transparent;
-            overflow: hidden;
-            padding: 10px;
-        }
-
-        .terminal-scanlines {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(255, 179, 0, 0.02) 3px,
-                rgba(255, 179, 0, 0.02) 6px
-            );
-            pointer-events: none;
-        }
-
-        .terminal-content {
-            position: relative;
-            height: 100%;
-            overflow: hidden;
-            color: #ffb000;
-            font-size: 14px;
-            line-height: 1.4;
-            text-shadow: 0 0 5px rgba(255, 176, 0, 0.6);
-        }
-
-        .terminal-line {
-            opacity: 0.9;
-            white-space: nowrap;
-        }
-
-        .terminal-line.new {
-            animation: linePrint 0.1s ease-out;
-        }
-
-        @keyframes linePrint {
-            0% { opacity: 0; transform: translateX(-10px); }
-            100% { opacity: 0.9; transform: translateX(0); }
-        }
-
-        .terminal-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background: #ffb000;
-            animation: blink 1s infinite;
-            box-shadow: 0 0 5px rgba(255, 176, 0, 0.8);
-            vertical-align: middle;
-        }
-
-        .terminal-interface.virus .terminal-content {
-            color: #ff0040;
-            text-shadow: 0 0 5px rgba(255, 0, 64, 0.8);
-        }
-
-        .terminal-interface.virus .terminal-cursor {
-            background: #ff0040;
-            box-shadow: 0 0 5px rgba(255, 0, 64, 0.8);
-        }
-
-        .terminal-interface.virus .terminal-scanlines {
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(255, 0, 64, 0.03) 3px,
-                rgba(255, 0, 64, 0.03) 6px
-            );
-        }
-
-        .audio-toggle {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 2px solid #444;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'VT323', monospace;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-
-        .audio-toggle:hover {
-            border-color: #ffb000;
-            box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
-        }
-
-        .audio-toggle.active {
-            border-color: #ffb000;
-            box-shadow: 0 0 20px rgba(255, 176, 0, 0.4);
-        }
-
-        .audio-toggle.active .audio-led {
-            background: #ffb000;
-            box-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
-        }
-
-        .audio-led {
-            width: 12px;
-            height: 12px;
-            background: #333;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            border: 1px solid #555;
-        }
-
-        .audio-label {
-            font-size: 14px;
-            color: #888;
-            letter-spacing: 2px;
-        }
-
-        .audio-toggle.active .audio-label {
-            color: #ffb000;
-        }
-
-        .status-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 4px;
-            z-index: 50;
-            font-family: 'VT323', monospace;
-            animation: colorCycle 6s ease-in-out infinite;
-        }
-
-        .status-container.virus {
-            animation: none;
-            color: #ff0040;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
-        }
-
-        .status-line {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 0.1em;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: currentColor;
-            box-shadow: 0 0 15px currentColor;
-        }
-
-        .status-container.virus .status-dot {
-            background-color: #ff0040;
-            box-shadow: 0 0 25px #ff0040;
-        }
-
-        .status-latency {
-            font-size: 14px;
-            opacity: 0.9;
-            min-width: 50px;
-            text-align: right;
-        }
-
-        .status-bars {
-            display: flex;
-            gap: 2px;
-            align-items: flex-end;
-            height: 16px;
-        }
-
-        .status-bar {
-            width: 4px;
-            background-color: currentColor;
-            opacity: 0.3;
-            transition: all 0.3s ease;
-        }
-
-        .status-bar:nth-child(1) { height: 4px; animation: barWave 0.6s ease-in-out infinite; }
-        .status-bar:nth-child(2) { height: 8px; animation: barWave 0.6s ease-in-out infinite 0.1s; }
-        .status-bar:nth-child(3) { height: 12px; animation: barWave 0.6s ease-in-out infinite 0.2s; }
-        .status-bar:nth-child(4) { height: 16px; animation: barWave 0.6s ease-in-out infinite 0.3s; }
-        .status-bar:nth-child(5) { height: 10px; animation: barWave 0.6s ease-in-out infinite 0.4s; }
-
-        .status-bar.active {
-            opacity: 1;
-            box-shadow: 0 0 8px currentColor;
-        }
-
-        .status-container.virus .status-bar {
-            background-color: #ff0040;
-            opacity: 0.3;
-            animation: none;
-        }
-
-        .status-container.virus .status-bar.active {
-            opacity: 0.8;
-            box-shadow: 0 0 15px #ff0040;
-        }
-
-        /* App legend under the Wi-Fi/status block */
-        .app-legend {
-            margin-top: 10px;
-            display: grid;
-            gap: 6px;
-            padding: 10px 12px;
-            border: 1px solid rgba(107, 114, 128, 0.35);
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(6px);
-            box-shadow: 0 0 18px rgba(255, 176, 0, 0.08);
-            max-width: 180px;
-        }
-
-        .app-legend-line {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: monospace;
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            color: rgba(255, 255, 255, 0.82);
-            white-space: nowrap;
-        }
-
-        .app-legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex: 0 0 auto;
-            animation: legendBreath 3.4s ease-in-out infinite;
-            opacity: 0.9;
-        }
-
-        .app-legend-dot.online {
-            background: rgba(0, 255, 0, 0.9);
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.45), 0 0 18px rgba(0, 255, 0, 0.18);
-            animation-duration: 3.2s;
-        }
-
-        .app-legend-dot.pending {
-            background: rgba(255, 176, 0, 0.95);
-            box-shadow: 0 0 10px rgba(255, 176, 0, 0.55), 0 0 18px rgba(255, 176, 0, 0.22);
-            animation-duration: 3.6s;
-        }
-
-        .app-legend-dot.classified {
-            background: rgba(255, 0, 64, 0.85);
-            box-shadow: 0 0 10px rgba(255, 0, 64, 0.35), 0 0 18px rgba(255, 0, 64, 0.15);
-            animation-duration: 4s;
-        }
-
-        .app-legend-text {
-            color: rgba(156, 163, 175, 0.9);
-        }
-
-        .app-legend-line:nth-child(1) .app-legend-text { color: rgba(0, 255, 0, 0.85); }
-        .app-legend-line:nth-child(2) .app-legend-text { color: rgba(255, 176, 0, 0.95); }
-        .app-legend-line:nth-child(3) .app-legend-text { color: rgba(255, 0, 64, 0.9); }
-
-        @media (prefers-reduced-motion: reduce) {
-            .app-legend-dot { animation: none !important; }
-        }
-
-        .letter-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .matrix-rain {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            opacity: 0;
-            z-index: 10;
-        }
-
-        .matrix-rain.active {
-            opacity: 1;
-        }
-
-        .matrix-char {
-            position: absolute;
-            color: #ff0040;
-            font-size: 0.3em;
-            text-shadow: 0 0 5px #ff0040;
-            animation: matrixFall 0.8s linear infinite;
-            opacity: 0.8;
-        }
-
-        @keyframes matrixFall {
-            0% {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(200%);
-                opacity: 0;
-            }
-        }
-
-        .virus-glow {
-            text-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040, 0 0 90px #ff0040 !important;
-        }
-
-        /* Satellite icons (live/pending/classified) */
-        .satellite-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 12px;
-            height: 12px;
-            margin-left: 8px;
-            position: relative;
-            color: #666;
-        }
-
-        .satellite-icon.live {
-            color: #00ff00;
-            animation: satellitePulse 2s infinite;
-        }
-
-        .satellite-icon.live::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: currentColor;
-            border-radius: 50%;
-            box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-        }
-
-        .satellite-icon.live::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 1px solid currentColor;
-            border-radius: 50%;
-            animation: satelliteTransmit 2s infinite;
-        }
-
-        .satellite-icon.offline {
-            color: #666;
-        }
-
-        .satellite-icon.offline::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: currentColor;
-            border-radius: 50%;
-        }
-
-        .satellite-icon.offline::after {
-            content: '';
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border: 1px solid #444;
-            border-radius: 50%;
-        }
-
-        .satellite-icon.pending {
-            color: #ffb000;
-            animation: satellitePulse 2.2s infinite;
-        }
-
-        .satellite-icon.pending::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: currentColor;
-            border-radius: 50%;
-            box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-        }
-
-        .satellite-icon.pending::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 1px solid currentColor;
-            border-radius: 50%;
-            animation: satelliteTransmit 2.2s infinite;
-        }
-
-        .satellite-icon.classified {
-            color: #ff0040;
-            animation: satellitePulse 1.8s infinite;
-        }
-
-        .satellite-icon.classified::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: currentColor;
-            border-radius: 50%;
-            box-shadow: 0 0 6px currentColor, 0 0 12px rgba(255,0,64,0.35);
-        }
-
-        .satellite-icon.classified::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border: 1px solid currentColor;
-            border-radius: 50%;
-            animation: satelliteTransmit 1.8s infinite;
-        }
-
-        .satellite-pulse {
-            position: absolute;
-            inset: -6px;
-            border-radius: 9999px;
-            border: 1px solid currentColor;
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .satellite-icon.pulsing .satellite-pulse {
-            opacity: 1;
-            animation: signalPulse 0.6s ease-out 1;
-        }
-
-        /* Social icons */
-        .social-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border: 1px solid #4b5563;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            margin: 0 8px;
-        }
-
-        .social-icon:hover {
-            border-color: #ffb000;
-            background: rgba(255, 176, 0, 0.1);
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 176, 0, 0.3);
-        }
-
-        .social-icon svg {
-            width: 20px;
-            height: 20px;
-            fill: #9ca3af;
-            transition: fill 0.2s ease;
-        }
-
-        .social-icon:hover svg {
-            fill: #ffb000;
-        }
-
-        .social-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 2rem;
-            margin-top: 3rem;
-        }
-
-        /* Module drawer UI */
-        .module-card {
-            position: relative;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .module-card:focus-visible {
-            outline: 2px solid rgba(255, 176, 0, 0.65);
-            outline-offset: 2px;
-        }
-
-        .module-label {
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            font-family: monospace;
-            color: rgba(107, 114, 128, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .module-title {
-            font-size: 1rem;
-            font-family: monospace;
-            color: #fff;
-            letter-spacing: 0.04em;
-            margin-top: 6px;
-        }
-
-        .module-sub {
-            margin-top: 4px;
-            font-size: 10px;
-            font-family: monospace;
-            letter-spacing: 0.14em;
-            color: rgba(156, 163, 175, 0.7);
-        }
-
-        .module-drawer {
-            margin-top: 10px;
-            border-top: 1px solid rgba(107, 114, 128, 0.25);
-            padding-top: 10px;
-            display: grid;
-            gap: 8px;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: max-height 0.35s ease, opacity 0.25s ease;
-        }
-
-        .module-card.open .module-drawer {
-            max-height: 260px;
-            opacity: 1;
-        }
-
-        .drawer-header {
-            font-family: monospace;
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            color: rgba(255, 176, 0, 0.95);
-            text-shadow: 0 0 10px rgba(255, 176, 0, 0.25);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-height: 16px;
-        }
-
-        .drawer-body {
-            font-family: monospace;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.5;
-        }
-
-        .drawer-grid {
-            display: grid;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .drawer-kv {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            color: rgba(156, 163, 175, 0.9);
-        }
-
-        .drawer-kv span:last-child {
-            color: rgba(255, 255, 255, 0.86);
-        }
-
-        .drawer-redacted {
-            font-family: monospace;
-            font-size: 12px;
-            letter-spacing: 0.18em;
-            color: rgba(255, 0, 64, 0.9);
-            text-shadow: 0 0 12px rgba(255, 0, 64, 0.22);
-            margin-top: 6px;
-        }
-
-        .drawer-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-module {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 12px;
-            border: 1px solid rgba(255, 176, 0, 0.45);
-            background: rgba(0, 0, 0, 0.35);
-            color: rgba(255, 176, 0, 0.95);
-            font-family: monospace;
-            letter-spacing: 0.16em;
-            font-size: 11px;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            text-decoration: none;
-        }
-
-        .btn-module:hover {
-            border-color: rgba(255, 176, 0, 0.85);
-            box-shadow: 0 0 18px rgba(255, 176, 0, 0.12);
-            transform: translateY(-1px);
-        }
-
-        .btn-module:active {
-            transform: translateY(0);
-        }
-
-        .hint {
-            font-family: monospace;
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            color: rgba(156, 163, 175, 0.65);
-        }
-
-        /* Utility-ish classes used in markup */
-        .w-full { width: 100%; }
-        .min-h-screen { min-height: 100vh; }
-        .bg-black { background-color: #000; }
-        .relative { position: relative; }
-        .absolute { position: absolute; }
-        .fixed { position: fixed; }
-        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-        .overflow-hidden { overflow: hidden; }
-        .z-10 { z-index: 10; }
-        .z-50 { z-index: 50; }
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .text-center { text-align: center; }
-        .px-4 { padding-left: 1rem; padding-right: 1rem; }
-        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-        .mb-12 { margin-bottom: 3rem; }
-        .block { display: block; }
-        .text-4xl { font-size: 2.25rem; }
-        .text-6xl { font-size: 3.75rem; }
-        .text-8xl { font-size: 6rem; }
-        .font-bold { font-weight: 700; }
-        .tracking-wider { letter-spacing: 0.05em; }
-        .tracking-widest { letter-spacing: 0.1em; }
-        .leading-tight { line-height: 1.25; }
-        .opacity-5 { opacity: 0.05; }
-        .pointer-events-none { pointer-events: none; }
-        .mx-auto { margin-left: auto; margin-right: auto; }
-        .max-w-5xl { max-width: 64rem; }
-        .max-w-3xl { max-width: 48rem; }
-        .grid { display: grid; }
-        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-        .gap-4 { gap: 1rem; }
-        .h-32 { height: 8rem; }
-        .bg-gradient-to-t { background-image: linear-gradient(to top, var(--tw-gradient-stops)); }
-        .from-black { --tw-gradient-from: #000; }
-        .to-transparent { --tw-gradient-to: transparent; }
-
-        @media (max-width: 768px) {
-            .scanlines-mobile {
-                opacity: 0.02 !important;
-                background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 255, 255, 0.15) 3px, rgba(255, 255, 255, 0.15) 6px) !important;
-            }
-
-            .logo-53 {
-                bottom: 10px;
-                right: 10px;
-                font-size: 24px;
-            }
-
-            .audio-toggle {
-                bottom: 10px;
-                left: 10px;
-                padding: 8px 12px;
-            }
-
-            .terminal-interface {
-                width: calc(100% - 40px);
-                height: 140px;
-                top: 80px;
-                left: 20px;
-                right: 20px;
-            }
-
-            .status-container {
-                top: 10px;
-                right: 10px;
-            }
-
-            .status-line {
-                font-size: 11px;
-            }
-
-            .status-latency {
-                font-size: 10px;
-            }
-
-            .status-dot {
-                width: 8px;
-                height: 8px;
-            }
-
-            .status-bars {
-                height: 12px;
-            }
-
-            .status-bar {
-                width: 3px;
-            }
-
-            .app-legend {
-                padding: 8px 10px;
-                max-width: 160px;
-            }
-
-            .app-legend-line {
-                font-size: 10px;
-            }
-
-            .boot-content {
-                font-size: 14px;
-            }
-
-            .system-name {
-                font-size: 32px;
-            }
-        }
-
-        @media (min-width: 640px) {
-            .sm\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-            .sm\:py-16 { padding-top: 4rem; padding-bottom: 4rem; }
-            .sm\:text-6xl { font-size: 3.75rem; }
-            .sm\:text-8xl { font-size: 6rem; }
-            .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .sm\:gap-6 { gap: 1.5rem; }
-        }
-
-        @media (min-width: 768px) {
-            .logo-53 {
-                bottom: 30px;
-                right: 30px;
-                font-size: 36px;
-            }
-
-            .audio-toggle {
-                bottom: 30px;
-                left: 30px;
-            }
-
-            .terminal-interface {
-                top: 30px;
-                left: 30px;
-                width: 400px;
-                height: 200px;
-            }
-
-            .status-container {
-                top: 30px;
-                right: 30px;
-            }
-
-            .status-line {
-                font-size: 18px;
-            }
-
-            .status-latency {
-                font-size: 16px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .satellite-icon, .satellite-icon::after, .satellite-icon::before,
-            .app-legend-dot,
-            .module-drawer {
-                animation: none !important;
-                transition: none !important;
-            }
-        }
-    </style>
-    <base target="_blank">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SY5TEM N3XT - HARDWIRED FOR HUM4NS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    :root{
+      --amber:#ffb000;
+      --amber-soft: rgba(255,176,0,0.4);
+      --panel: rgba(17, 24, 39, 0.10);
+      --panel-border: rgba(156, 163, 175, 0.22);
+      --white-glow: rgba(255,255,255,0.75);
+      --danger:#ff0040;
+      --ok:#00ff00;
+      --warn:#ffd24a;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+      background:#000;
+      font-family:'VT323', monospace;
+      color:#fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    canvas{display:block;}
+
+    /* ===================== Animations ===================== */
+    @keyframes scanlines{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
+    @keyframes loadingBar{0%{width:0%}100%{width:100%}}
+    @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+    @keyframes phosphorFlicker{0%,100%{opacity:0.97}50%{opacity:1}}
+
+    @keyframes flicker{
+      0%,100%{opacity:1}
+      5%{opacity:.82}
+      10%{opacity:1}
+      15%{opacity:.35}
+      20%{opacity:1}
+      52%{opacity:.45}
+      54%{opacity:1}
+      95%{opacity:.65}
+    }
+
+    @keyframes flicker-intense{
+      0%,100%{opacity:1}
+      3%{opacity:.2}
+      6%{opacity:1}
+      9%{opacity:.1}
+      12%{opacity:1}
+      15%{opacity:.4}
+      53%{opacity:.2}
+      56%{opacity:1}
+      83%{opacity:.3}
+      86%{opacity:1}
+    }
+
+    @keyframes colorCycle{
+      0%{color:#d4a574;text-shadow:0 0 10px rgba(212,165,116,.5)}
+      33%{color:#d49a74;text-shadow:0 0 10px rgba(212,154,116,.5)}
+      66%{color:#74d474;text-shadow:0 0 15px rgba(116,212,116,.6)}
+      100%{color:#d4a574;text-shadow:0 0 10px rgba(212,165,116,.5)}
+    }
+
+    @keyframes barWave{0%,100%{opacity:.3}50%{opacity:1}}
+
+    @keyframes crtTurnOn{
+      0%{transform:scaleY(0.001) scaleX(0.001);opacity:0;filter:brightness(30)}
+      30%{transform:scaleY(0.01) scaleX(1);opacity:1}
+      50%{transform:scaleY(1) scaleX(1.2);filter:brightness(10)}
+      60%{transform:scaleY(1.1) scaleX(0.9)}
+      70%{transform:scaleY(0.95) scaleX(1.05);filter:brightness(5)}
+      100%{transform:scaleY(1) scaleX(1);filter:brightness(1)}
+    }
+
+    @keyframes satellitePulse{
+      0%,100%{opacity:1;box-shadow:0 0 5px currentColor,0 0 10px currentColor}
+      50%{opacity:.6;box-shadow:0 0 2px currentColor,0 0 5px currentColor}
+    }
+
+    @keyframes satelliteTransmit{
+      0%{transform:scale(1);opacity:1}
+      100%{transform:scale(2);opacity:0}
+    }
+
+    @keyframes dataCrawl{
+      0%{transform:translateX(0)}
+      100%{transform:translateX(-50%)}
+    }
+
+    @keyframes breatheGlow{
+      0%,100%{filter:drop-shadow(0 0 10px rgba(255,255,255,.35))}
+      50%{filter:drop-shadow(0 0 18px rgba(255,255,255,.55))}
+    }
+
+    @keyframes subtleJitter{
+      0%,100%{transform:translate(0,0)}
+      25%{transform:translate(0.5px,-0.5px)}
+      50%{transform:translate(-0.5px,0.5px)}
+      75%{transform:translate(0.5px,0.5px)}
+    }
+
+    /* ===================== Boot sequence ===================== */
+    #boot-sequence{
+      position:fixed;inset:0;
+      background:#0a0a0a;
+      z-index:200;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      font-family:'VT323', monospace;
+    }
+
+    .crt-screen{
+      width:100%;height:100%;
+      position:relative;
+      background:radial-gradient(ellipse at center,#1a0f00 0%,#0a0a0a 100%);
+      animation:phosphorFlicker .1s infinite;
+    }
+
+    .crt-curvature{
+      position:absolute;inset:0;
+      background:radial-gradient(ellipse at center,transparent 0%,transparent 70%,rgba(0,0,0,.4) 100%);
+      pointer-events:none;
+      box-shadow:inset 0 0 100px rgba(0,0,0,.8);
+    }
+
+    .scanlines-overlay{
+      position:absolute;inset:0;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,179,0,.03) 2px,rgba(255,179,0,.03) 4px);
+      pointer-events:none;
+      animation:scanlines 8s linear infinite;
+    }
+
+    .screen-glare{
+      position:absolute;top:-50%;left:-50%;right:-50%;bottom:-50%;
+      background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.03) 0%,transparent 50%);
+      pointer-events:none;
+    }
+
+    .burn-in{
+      position:absolute;
+      font-family:'VT323', monospace;
+      color:rgba(255,179,0,.08);
+      font-size:12px;
+      letter-spacing:2px;
+    }
+
+    .burn-in.top-left{top:20px;left:20px}
+    .burn-in.top-right{top:20px;right:20px}
+    .burn-in.bottom-left{bottom:20px;left:20px}
+    .burn-in.bottom-right{bottom:20px;right:20px}
+
+    .boot-content{
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      color:var(--amber);
+      font-size:18px;
+      line-height:1.4;
+      text-shadow:0 0 10px rgba(255,176,0,.8),0 0 20px rgba(255,176,0,.4);
+      max-width:600px;width:90%;
+    }
+
+    .boot-line{opacity:0;white-space:nowrap;overflow:hidden}
+    .boot-line.visible{opacity:1}
+
+    .system-name{
+      font-size:48px;
+      letter-spacing:8px;
+      margin:30px 0;
+      text-align:center;
+      text-shadow:0 0 20px rgba(255,176,0,1),0 0 40px rgba(255,176,0,.6);
+    }
+
+    .cursor{
+      display:inline-block;
+      width:12px;height:20px;
+      background:var(--amber);
+      animation:blink 1s infinite;
+      box-shadow:0 0 10px rgba(255,176,0,.8);
+    }
+
+    .chinese-char{color:rgba(255,179,0,.6)}
+
+    /* ===================== Intro overlay ===================== */
+    #intro-overlay{
+      position:fixed;inset:0;
+      background:#000;
+      z-index:100;
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+    #intro-overlay.active{display:flex;animation:crtTurnOn .8s ease-out}
+
+    #main-content{opacity:0;transition:opacity 1s ease-in}
+    #main-content.visible{opacity:1}
+
+    /* ===================== HUD ===================== */
+    .terminal-interface{
+      position:fixed;
+      top:20px;left:20px;
+      width:380px;height:220px;
+      z-index:50;
+      pointer-events:none;
+      font-family:'VT323', monospace;
+    }
+
+    .terminal-screen{position:absolute;inset:0;background:transparent;overflow:hidden;padding:10px}
+
+    .terminal-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,179,0,.02) 3px,rgba(255,179,0,.02) 6px);pointer-events:none}
+
+    .terminal-content{position:relative;height:100%;overflow:hidden;color:var(--amber);font-size:14px;line-height:1.4;text-shadow:0 0 5px rgba(255,176,0,.6)}
+
+    .terminal-line{opacity:.9;white-space:nowrap}
+    .terminal-line.new{animation:linePrint .1s ease-out}
+
+    @keyframes linePrint{0%{opacity:0;transform:translateX(-10px)}100%{opacity:.9;transform:translateX(0)}}
+
+    .terminal-cursor{display:inline-block;width:8px;height:14px;background:var(--amber);animation:blink 1s infinite;box-shadow:0 0 5px rgba(255,176,0,.8);vertical-align:middle}
+
+    .terminal-interface.virus .terminal-content{color:var(--danger);text-shadow:0 0 5px rgba(255,0,64,.8)}
+    .terminal-interface.virus .terminal-cursor{background:var(--danger);box-shadow:0 0 5px rgba(255,0,64,.8)}
+    .terminal-interface.virus .terminal-scanlines{background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,0,64,.03) 3px,rgba(255,0,64,.03) 6px)}
+
+    .status-container{
+      position:fixed;
+      top:20px;right:20px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:4px;
+      z-index:50;
+      font-family:'VT323', monospace;
+      animation:colorCycle 6s ease-in-out infinite;
+      user-select:none;
+    }
+
+    .status-container.virus{animation:none;color:var(--danger);text-shadow:0 0 20px rgba(255,0,0,.8)}
+
+    .status-line{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:bold;letter-spacing:.1em}
+
+    .status-dot{width:10px;height:10px;border-radius:50%;background-color:currentColor;box-shadow:0 0 15px currentColor}
+
+    .status-container.virus .status-dot{background-color:var(--danger);box-shadow:0 0 25px var(--danger)}
+
+    .status-latency{font-size:14px;opacity:.9;min-width:54px;text-align:right}
+    .status-clock{font-size:14px;opacity:.9;min-width:74px;text-align:right}
+
+    .status-bars{display:flex;gap:2px;align-items:flex-end;height:16px}
+    .status-bar{width:4px;background-color:currentColor;opacity:.3;transition:all .3s ease}
+
+    .status-bar:nth-child(1){height:4px;animation:barWave .6s ease-in-out infinite}
+    .status-bar:nth-child(2){height:8px;animation:barWave .6s ease-in-out infinite .1s}
+    .status-bar:nth-child(3){height:12px;animation:barWave .6s ease-in-out infinite .2s}
+    .status-bar:nth-child(4){height:16px;animation:barWave .6s ease-in-out infinite .3s}
+    .status-bar:nth-child(5){height:10px;animation:barWave .6s ease-in-out infinite .4s}
+
+    .status-bar.active{opacity:1;box-shadow:0 0 8px currentColor}
+
+    .status-container.virus .status-bar{background-color:var(--danger);opacity:.3;animation:none}
+    .status-container.virus .status-bar.active{opacity:.85;box-shadow:0 0 15px var(--danger)}
+
+    /* ===================== Main scene ===================== */
+    .w-full{width:100%}
+    .min-h-screen{min-height:100vh}
+    .bg-black{background-color:#000}
+    .relative{position:relative}
+    .absolute{position:absolute}
+    .fixed{position:fixed}
+    .inset-0{top:0;right:0;bottom:0;left:0}
+    .overflow-hidden{overflow:hidden}
+    .z-10{z-index:10}
+    .z-50{z-index:50}
+    .flex{display:flex}
+    .items-center{align-items:center}
+    .justify-center{justify-content:center}
+    .text-center{text-align:center}
+
+    .content-wrap{
+      position:relative;
+      z-index:10;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 16px;
+    }
+
+    /* ===================== Title ===================== */
+    .title-wrap{
+      display:inline-flex;
+      align-items:flex-start;
+      justify-content:center;
+      gap:8px;
+      line-height:1;
+      animation:breatheGlow 6s ease-in-out infinite;
+      will-change:filter;
+    }
+
+    .main-title{
+      font-family: monospace;
+      font-weight: 800;
+      letter-spacing: .10em;
+      color:#fff;
+      font-size: clamp(2.8rem, 6vw, 6.8rem);
+      text-shadow:
+        0 0 20px rgba(255,255,255,0.7),
+        0 0 40px rgba(255,255,255,0.35),
+        0 0 60px rgba(255,255,255,0.15);
+      user-select:none;
+    }
+
+    .title-sup{
+      position:relative;
+      top:-0.55em;
+      font-size: 0.28em;
+      letter-spacing: .02em;
+      color: var(--amber);
+      text-shadow: 0 0 10px rgba(255,176,0,0.55);
+      user-select:none;
+    }
+
+    .title-sup.audio-on{color:#ffd24a;text-shadow:0 0 14px rgba(255,210,74,.65)}
+
+    .title-sup.virus{
+      color: var(--danger);
+      text-shadow: 0 0 18px rgba(255,0,64,.75),0 0 40px rgba(255,0,64,.35);
+      animation: subtleJitter .25s infinite;
+    }
+
+    .flicker{animation:flicker 2s infinite}
+    .flicker-intense{animation:flicker-intense 1.5s infinite}
+    .flicker-intense.paused{animation:none}
+
+    .virus-glow{ text-shadow: 0 0 30px var(--danger), 0 0 60px var(--danger), 0 0 90px var(--danger) !important; }
+
+    /* Data stream line */
+    .data-stream{
+      margin: 14px auto 0;
+      max-width: 820px;
+      overflow:hidden;
+      opacity: .55;
+      user-select:none;
+      pointer-events:none;
+    }
+
+    .data-stream .rail{
+      display:flex;
+      width:200%;
+      white-space:nowrap;
+      animation:dataCrawl 22s linear infinite;
+      color: rgba(255,176,0,0.72);
+      text-shadow: 0 0 10px rgba(255,176,0,0.35);
+      font-size: 14px;
+      letter-spacing: .12em;
+    }
+
+    .data-stream.virus .rail{color: rgba(255,0,64,0.80);text-shadow:0 0 14px rgba(255,0,64,0.45)}
+
+    /* ===================== Modules ===================== */
+    .modules-wrap{
+      margin-top: 58px; /* breathing room under title */
+      max-width: 960px;
+      margin-left:auto;
+      margin-right:auto;
+      padding: 0 8px;
+    }
+
+    .modules-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px){
+      .modules-grid{grid-template-columns: repeat(3, minmax(0, 1fr));gap:18px;}
+      .modules-wrap{margin-top: 64px;}
+    }
+
+    .module-card{
+      position:relative;
+      backdrop-filter: blur(8px);
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      padding: 16px;
+      text-decoration:none;
+      color:#fff;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+      min-height: 138px;
+    }
+
+    .module-card:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 0 22px rgba(255,176,0,0.10);
+    }
+
+    .module-edges span{
+      position:absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(156,163,175,0.25);
+    }
+
+    .module-edges span.active{
+      background: rgba(156,163,175,0.8);
+      box-shadow: 0 0 10px rgba(255,255,255,0.65);
+      animation: phosphorFlicker 1.3s infinite;
+    }
+
+    .module-edges .tl{top:0;left:0}
+    .module-edges .tr{top:0;right:0}
+    .module-edges .bl{bottom:0;left:0}
+    .module-edges .br{bottom:0;right:0}
+
+    .module-meta{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      font-size: 11px;
+      letter-spacing: .14em;
+      color: rgba(156,163,175,0.65);
+      margin-bottom: 10px;
+    }
+
+    .module-name{
+      font-size: 18px;
+      letter-spacing: .06em;
+      color:#fff;
+      margin-bottom: 10px;
+      transition: color .2s ease;
+    }
+
+    .module-card:hover .module-name{color: var(--amber)}
+
+    .module-actions{
+      display:flex;
+      justify-content:center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .module-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding: 10px 12px;
+      border: 1px solid rgba(156,163,175,0.28);
+      background: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.92);
+      font-size: 14px;
+      letter-spacing: .10em;
+      text-decoration:none;
+      cursor:pointer;
+      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+
+    .module-btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,176,0,0.55);
+      box-shadow: 0 0 16px rgba(255,176,0,0.18);
+      background: rgba(255,176,0,0.08);
+    }
+
+    .module-btn:active{transform: translateY(0)}
+
+    .module-btn.disabled{
+      opacity: .55;
+      cursor: not-allowed;
+      pointer-events:none;
+    }
+
+    .meter{
+      margin-top: 10px;
+      height: 4px;
+      background: rgba(0,0,0,0.35);
+      border-radius: 999px;
+      overflow:hidden;
+    }
+
+    .meter .fill{
+      height:100%;
+      width: 100%;
+      background: rgba(156,163,175,0.75);
+      box-shadow: 0 0 10px rgba(255,255,255,0.45);
+    }
+
+    .module-card:hover .meter .fill{background: rgba(255,176,0,0.85)}
+
+    /* ===================== Satellites ===================== */
+    .satellite-icon{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 12px;
+      height: 12px;
+      position:relative;
+      color: var(--ok);
+    }
+
+    .satellite-icon::before{
+      content:'';
+      width:6px;height:6px;
+      background: currentColor;
+      border-radius:50%;
+      box-shadow: 0 0 6px currentColor, 0 0 12px currentColor;
+    }
+
+    .satellite-icon::after{
+      content:'';
+      position:absolute;
+      width:12px;height:12px;
+      border: 1px solid currentColor;
+      border-radius:50%;
+      animation: satelliteTransmit 2s infinite;
+      opacity: .85;
+    }
+
+    .satellite-icon.pulse{animation: satellitePulse 2.2s infinite;}
+
+    .satellite-icon.review{color: var(--warn);}
+    .satellite-icon.classified{color: var(--danger);}
+
+    /* virus override for satellites only */
+    .satellite-icon.virus{color: var(--danger);}
+
+    /* ===================== Social dock ===================== */
+    .dock{
+      position:fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 60;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(156,163,175,0.22);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.55);
+      user-select:none;
+    }
+
+    .dock.virus{
+      border-color: rgba(255,0,64,0.35);
+      box-shadow: 0 0 22px rgba(255,0,64,0.12), 0 10px 25px rgba(0,0,0,0.55);
+      animation: subtleJitter .35s infinite;
+    }
+
+    .dock .divider{
+      width: 1px;
+      height: 20px;
+      background: rgba(156,163,175,0.35);
+      box-shadow: 0 0 8px rgba(255,176,0,0.18);
+      margin: 0 2px;
+    }
+
+    .dock.virus .divider{background: rgba(255,0,64,0.45);box-shadow: 0 0 10px rgba(255,0,64,0.25)}
+
+    .social-icon{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(156,163,175,0.35);
+      border-radius: 999px;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      text-decoration:none;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .social-icon svg{width: 17px;height: 17px;fill: rgba(156,163,175,0.85);transition: fill .18s ease;}
+
+    .social-icon:hover{
+      transform: scale(1.08);
+      border-color: rgba(255,176,0,0.65);
+      box-shadow: 0 0 14px rgba(255,176,0,0.20);
+      background: rgba(255,176,0,0.06);
+    }
+
+    .social-icon:hover svg{fill: rgba(255,176,0,0.95)}
+
+    .dock.virus .social-icon{border-color: rgba(255,0,64,0.45)}
+    .dock.virus .social-icon svg{fill: rgba(255,0,64,0.85)}
+    .dock.virus .social-icon:hover{border-color: rgba(255,0,64,0.75);box-shadow: 0 0 16px rgba(255,0,64,0.22);background: rgba(255,0,64,0.08)}
+
+    /* SYS_AUDIO switch */
+    .sys-audio{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid rgba(156,163,175,0.30);
+      background: rgba(0,0,0,0.25);
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      letter-spacing: .12em;
+      cursor:pointer;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    .sys-audio:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,176,0,0.65);
+      box-shadow: 0 0 14px rgba(255,176,0,0.18);
+      background: rgba(255,176,0,0.06);
+    }
+
+    .sys-audio .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(156,163,175,0.55);
+      box-shadow: none;
+      transition: background .18s ease, box-shadow .18s ease;
+    }
+
+    .sys-audio.on{border-color: rgba(255,210,74,0.70)}
+    .sys-audio.on .dot{background: rgba(255,210,74,0.95);box-shadow: 0 0 10px rgba(255,210,74,0.45)}
+    .dock.virus .sys-audio{border-color: rgba(255,0,64,0.55)}
+    .dock.virus .sys-audio:hover{border-color: rgba(255,0,64,0.75);box-shadow: 0 0 16px rgba(255,0,64,0.22);background: rgba(255,0,64,0.08)}
+
+    /* ===================== Screen overlays ===================== */
+    .vignette{
+      position:absolute;inset:0;
+      pointer-events:none;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.9) 100%);
+    }
+
+    #scanlines{
+      position:absolute;inset:0;
+      opacity: .05;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 4px);
+      animation: scanlines 8s linear infinite;
+    }
+
+    /* Mobile tuning */
+    @media (max-width: 768px){
+      .terminal-interface{width: calc(100% - 40px);height: 140px;top: 76px;left: 20px;}
+      .status-container{top: 10px;right: 10px;}
+      .status-line{font-size: 11px;gap: 8px;}
+      .status-latency{font-size: 10px;min-width: 42px;}
+      .status-clock{font-size: 10px;min-width: 58px;}
+      .status-dot{width: 8px;height: 8px;}
+      .status-bars{height: 12px;}
+      .status-bar{width: 3px;}
+      .dock{right: 10px;bottom: 10px;padding: 8px 10px;gap: 8px;}
+      .social-icon{width: 32px;height: 32px;}
+      .sys-audio{font-size: 12px;padding: 6px 9px;}
+      #scanlines{opacity: .02;}
+      .modules-wrap{margin-top: 52px;}
+      .module-card{min-height: 134px;}
+    }
+
+    /* reduce motion if user prefers */
+    @media (prefers-reduced-motion: reduce){
+      *, *::before, *::after{animation-duration: 0.001ms !important;animation-iteration-count: 1 !important;transition-duration: 0.001ms !important;}
+    }
+  </style>
+
+  <base target="_blank" />
 </head>
 <body>
 
-<div id="boot-sequence">
+  <!-- ===================== Boot sequence ===================== -->
+  <div id="boot-sequence">
     <div class="crt-screen">
-        <div class="crt-curvature"></div>
-        <div class="scanlines-overlay"></div>
-        <div class="screen-glare"></div>
-        
-        <div class="burn-in top-left">TYRELL CORP</div>
-        <div class="burn-in top-right">SECTOR 53</div>
-        <div class="burn-in bottom-left">SYS_VER 5.3</div>
-        <div class="burn-in bottom-right">LOS ANGELES</div>
-        
-        <div class="boot-content" id="boot-content">
-            <div id="boot-lines"></div>
-            <div class="system-name" id="system-name" style="display: none;">
-                SY5TEM_N3XT<span class="cursor"></span>
-            </div>
+      <div class="crt-curvature"></div>
+      <div class="scanlines-overlay"></div>
+      <div class="screen-glare"></div>
+
+      <div class="burn-in top-left">TYRELL CORP</div>
+      <div class="burn-in top-right">SECTOR 53</div>
+      <div class="burn-in bottom-left">SYS_VER 5.3</div>
+      <div class="burn-in bottom-right">LOS ANGELES</div>
+
+      <div class="boot-content" id="boot-content">
+        <div id="boot-lines"></div>
+        <div class="system-name" id="system-name" style="display:none;">
+          SY5TEM_N3XT<span class="cursor"></span>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="logo-53">53</div>
-
-<div id="intro-overlay">
+  <!-- ===================== Intro overlay ===================== -->
+  <div id="intro-overlay">
     <div class="text-center">
-        <div id="typewriter-text" class="text-6xl sm:text-8xl font-bold text-white tracking-widest font-mono" style="text-shadow: 0 0 30px rgba(255,255,255,0.8);">
-            <span id="typing-content"></span><span class="animate-pulse">_</span>
-        </div>
+      <div id="typewriter-text" style="font-family: monospace; font-weight: 800; letter-spacing:.2em; font-size: clamp(2rem, 7vw, 6rem); text-shadow: 0 0 30px rgba(255,255,255,0.8);">
+        <span id="typing-content"></span><span style="display:inline-block;opacity:.9;animation: phosphorFlicker 1.2s infinite;">_</span>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="status-container" id="status-container">
+  <!-- ===================== Status HUD ===================== -->
+  <div class="status-container" id="status-container">
     <div class="status-line">
-        <div class="status-dot"></div>
-        <span id="status-text">CONNECTED</span>
-        <span class="status-latency" id="latency">12ms</span>
+      <div class="status-dot"></div>
+      <span id="status-text">CONNECTED</span>
+      <span class="status-latency" id="latency">12ms</span>
+      <span class="status-clock" id="clock">--:--:--</span>
     </div>
     <div class="status-bars" id="status-bars">
-        <div class="status-bar active"></div>
-        <div class="status-bar active"></div>
-        <div class="status-bar active"></div>
-        <div class="status-bar active"></div>
-        <div class="status-bar"></div>
+      <div class="status-bar active"></div>
+      <div class="status-bar active"></div>
+      <div class="status-bar active"></div>
+      <div class="status-bar active"></div>
+      <div class="status-bar"></div>
     </div>
+  </div>
 
-    <div class="app-legend" id="app-legend" aria-label="App status legend">
-        <div class="app-legend-line"><span class="app-legend-dot online"></span><span class="app-legend-text">ONLINE</span></div>
-        <div class="app-legend-line"><span class="app-legend-dot pending"></span><span class="app-legend-text">IN REVIEW</span></div>
-        <div class="app-legend-line"><span class="app-legend-dot classified"></span><span class="app-legend-text">CLASSIFIED</span></div>
-    </div>
-</div>
-
-<div id="main-content" class="w-full min-h-screen bg-black relative overflow-hidden">
-    <div id="canvas-container" class="absolute inset-0 w-full h-full" style="touch-action: none;"></div>
-
-    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.9) 100%);"></div>
-
-    <div id="scanlines" class="absolute inset-0 opacity-5 pointer-events-none mix-blend-overlay" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.3) 2px, rgba(255, 255, 255, 0.3) 4px); animation: scanlines 8s linear infinite;"></div>
-
-    <div class="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16">
-        <div class="text-center max-w-5xl w-full">
-
-            <h1 class="mb-6" id="main-title">
-                <span class="block text-4xl sm:text-6xl font-bold tracking-wider text-white leading-tight" style="font-family: monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 60px rgba(255, 255, 255, 0.2);">
-                    <span class="letter-container">
-                        <span class="flicker">S</span>
-                        <div class="matrix-rain" id="rain-S"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">Y</span>
-                        <div class="matrix-rain" id="rain-Y"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker-intense" id="letter-5">5</span>
-                        <div class="matrix-rain" id="rain-5"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">T</span>
-                        <div class="matrix-rain" id="rain-T"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">E</span>
-                        <div class="matrix-rain" id="rain-E"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">M</span>
-                        <div class="matrix-rain" id="rain-M"></div>
-                    </span>
-                    <span class="mx-2"></span>
-                    <span class="letter-container">
-                        <span class="flicker">N</span>
-                        <div class="matrix-rain" id="rain-N"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker-intense" id="letter-3">3</span>
-                        <div class="matrix-rain" id="rain-3"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">X</span>
-                        <div class="matrix-rain" id="rain-X"></div>
-                    </span><span class="letter-container">
-                        <span class="flicker">T</span>
-                        <div class="matrix-rain" id="rain-T2"></div>
-                    </span>
-                </span>
-            </h1>
-
-            <!-- MODULES -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto px-2 mb-12">
-
-                <!-- MODULE 01 -->
-                <div class="module-card relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300" id="module-01" data-module="01" tabindex="0" role="button" aria-label="Module 01 Multi Clip">
-                    <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
-                    <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
-
-                    <div class="module-label">
-                        MODULE 01
-                        <span class="satellite-icon live" aria-hidden="true">
-                            <span class="satellite-pulse"></span>
-                        </span>
-                    </div>
-                    <div class="module-title group-hover:text-[#ffb000] transition-colors">Multi Clip</div>
-                    <div class="module-sub">STATUS: ONLINE</div>
-
-                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
-                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 100%; animation: loadingBar 2s ease-out 0s;"></div>
-                    </div>
-
-                    <div class="module-drawer" aria-hidden="true">
-                        <div class="drawer-header" data-drawer-header="01"></div>
-                        <div class="drawer-body">
-                            MULTICLIP<br>
-                            Clipboard manager for Chrome.<br>
-                            <div class="drawer-grid">
-                                <div class="drawer-kv"><span>STATUS</span><span>ONLINE</span></div>
-                                <div class="drawer-kv"><span>TYPE</span><span>CHROME EXTENSION</span></div>
-                                <div class="drawer-kv"><span>UPLINK</span><span>STABLE</span></div>
-                            </div>
-                            <div class="drawer-actions">
-                                <a class="btn-module" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" aria-label="Install module Multi Clip">
-                                    INSTALL MODULE
-                                </a>
-                                <span class="hint">> INSTALL VIA CHROME STORE</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODULE 02 -->
-                <div class="module-card relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 cursor-pointer" id="module-02" data-module="02" tabindex="0" role="button" aria-label="Module 02 LINK2U">
-                    <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
-                    <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.2s;"></div>
-
-                    <div class="module-label">
-                        MODULE 02
-                        <span class="satellite-icon pending" title="Pending approval" aria-hidden="true">
-                            <span class="satellite-pulse"></span>
-                        </span>
-                    </div>
-                    <div class="module-title group-hover:text-[#ffb000] transition-colors">LINK2U</div>
-                    <div class="module-sub">STATUS: IN REVIEW</div>
-
-                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
-                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 85%; animation: loadingBar 2s ease-out 0.2s;"></div>
-                    </div>
-
-                    <div class="module-drawer" aria-hidden="true">
-                        <div class="drawer-header" data-drawer-header="02"></div>
-                        <div class="drawer-body">
-                            LINK2U<br>
-                            Status channel for a new module.<br>
-                            <div class="drawer-grid">
-                                <div class="drawer-kv"><span>STATUS</span><span>IN REVIEW</span></div>
-                                <div class="drawer-kv"><span>AUTHORITY</span><span>GOOGLE</span></div>
-                                <div class="drawer-kv"><span>APPROVAL</span><span>PENDING</span></div>
-                            </div>
-                            <div class="drawer-actions">
-                                <span class="hint">> AWAITING AUTHORIZATION</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MODULE 03 -->
-                <div class="module-card relative group backdrop-blur-sm bg-gray-950/10 border border-gray-500/20 p-4 sm:p-5 hover:border-gray-400/50 transition-all duration-300 cursor-pointer" id="module-03" data-module="03" tabindex="0" role="button" aria-label="Module 03 Classified">
-                    <div class="absolute top-0 left-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
-                    <div class="absolute top-0 right-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 left-0 w-2 h-2 bg-gray-400/30"></div>
-                    <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-400 animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.8)]" style="animation-delay: 0.4s;"></div>
-
-                    <div class="module-label">
-                        MODULE 03
-                        <span class="satellite-icon classified" title="Classified" aria-hidden="true">
-                            <span class="satellite-pulse"></span>
-                        </span>
-                    </div>
-                    <div class="module-title group-hover:text-[#ffb000] transition-colors">CLASSIFIED MODULE</div>
-                    <div class="module-sub">STATUS: CLASSIFIED</div>
-
-                    <div class="mt-3 h-1 bg-gray-950/50 rounded-full overflow-hidden">
-                        <div class="h-full bg-gray-400 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.6)] group-hover:bg-[#ffb000]" style="width: 25%; animation: loadingBar 2s ease-out 0.4s;"></div>
-                    </div>
-
-                    <div class="module-drawer" aria-hidden="true">
-                        <div class="drawer-header" data-drawer-header="03"></div>
-                        <div class="drawer-body">
-                            ACCESS LEVEL: RESTRICTED<br>
-                            <div class="drawer-grid">
-                                <div class="drawer-kv"><span>STATUS</span><span>CLASSIFIED</span></div>
-                                <div class="drawer-kv"><span>VISIBILITY</span><span>DENIED</span></div>
-                                <div class="drawer-kv"><span>TRACE</span><span>ACTIVE</span></div>
-                            </div>
-                            <div class="drawer-redacted">████████████████████<br>DATA REDACTED</div>
-                            <div class="drawer-actions">
-                                <span class="hint">> ACCESS DENIED</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="social-container">
-                <a href="https://x.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="Follow us on X">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                </a>
-
-                <a href="mailto:sy5temn3xt@proton.me" class="social-icon" aria-label="Email us">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                    </svg>
-                </a>
-
-                <a href="https://github.com/sy5temn3xt" target="_blank" class="social-icon" aria-label="GitHub">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent pointer-events-none"></div>
-</div>
-
-<div class="terminal-interface" id="terminal-interface">
+  <!-- ===================== Terminal HUD ===================== -->
+  <div class="terminal-interface" id="terminal-interface">
     <div class="terminal-screen">
-        <div class="terminal-scanlines"></div>
-        <div class="terminal-content" id="terminal-content">
-            <div id="terminal-lines"></div>
-            <div class="terminal-line"><span class="terminal-cursor"></span></div>
-        </div>
+      <div class="terminal-scanlines"></div>
+      <div class="terminal-content" id="terminal-content">
+        <div id="terminal-lines"></div>
+        <div class="terminal-line"><span class="terminal-cursor"></span></div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="audio-toggle" id="audioToggle" onclick="toggleAudio()">
-    <div class="audio-led"></div>
-    <span class="audio-label">AUD-IO</span>
-</div>
+  <!-- ===================== Dock (social + sys audio) ===================== -->
+  <div class="dock" id="dock">
+    <a href="https://x.com/sy5temn3xt" class="social-icon" aria-label="Follow on X" title="X">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+    </a>
 
-<script>
-let audioContext = null;
-let audioEnabled = false;
-let spaceOscillator = null;
-let spaceGain = null;
-let spaceLFO = null;
+    <a href="mailto:sy5temn3xt@proton.me" class="social-icon" aria-label="Email" title="Email">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+    </a>
 
-const CYCLE_DURATION = 50000;
-const WARNING_TIME = 19000;
-const INFECTION_TIME = 20000;
-const RECOVERY_TIME = 30000;
+    <a href="https://github.com/sy5temn3xt" class="social-icon" aria-label="GitHub" title="GitHub">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+      </svg>
+    </a>
 
-const katakana = "ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾁﾙﾞﾟ";
+    <div class="divider" aria-hidden="true"></div>
 
-let rainIntervals = [];
-let isInfected = false;
-let terminalInterval = null;
-let cycleStartTime = null;
+    <div class="sys-audio" id="sysAudio" role="button" tabindex="0" aria-label="Toggle system audio" title="SYS_AUDIO">
+      <span style="opacity:.9;">SYS_AUDIO</span>
+      <span class="dot" aria-hidden="true"></span>
+    </div>
+  </div>
 
-const bootLines = [
-    "> SYS_BOOT_SEQUENCE_INIT",
-    "> MEMORY_CHECK... 64K OK",
-    "> NEURAL_ARRAY... ONLINE",
-    "> LOADING...",
-    "> 2025.02.09 :: 04:23:17 :: LOS_ANGELES_SECTOR_53",
-    "> ATMOSPHERE: TOXIC :: VISIBILITY: 2KM :: RAIN: ACID",
-    "> <span class='chinese-char'>系统下一个</span> :: INITIALIZING",
-    "> <span class='chinese-char'>泰瑞公司</span> :: TYRELL CORP [SUBSIDIARY]",
-    "> <span class='chinese-char'>复制人</span> :: STATUS: MONITORING",
-    "> NEURAL_UPLINK: STABLE",
-    "> HARDWIRED_FOR_HUM4NS",
-    "> ",
-    "> WAITING FOR INPUT..."
-];
+  <!-- ===================== Main content ===================== -->
+  <div id="main-content" class="w-full min-h-screen bg-black relative overflow-hidden">
+    <div id="canvas-container" class="absolute inset-0 w-full h-full" style="touch-action:none;"></div>
 
-const normalTerminalLines = [
-    "HARDWIRED FOR HUM4NS",
-    "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
-    "ORIGAMI CITY :: SECTOR 53",
-    "VOIGHT-KAMPFF // STANDBY",
-    "2025.02.09 :: 04:23:17 :: RAIN:ACID",
-    "NEURAL UPLINK: 12ms :: ENCRYPTED",
-    "SKINJOB DETECTED :: DISPATCHING UNIT",
-    "MEMORIES: IMPLANTED [TYRELL CORP]",
-    "SERIAL: NEXUS-7 :: RETIRED",
-    "OFF-WORLD COLONIES: 67% CAPACITY",
-    "STELLAR DATE: 6.5.2024",
-    "CHEMICAL ANALYSIS: C2H6O [NEGATIVE]",
-    "OCULAR SCAN: MATCH 99.7%",
-    "SECTOR 53 :: ATMOS: TOXIC :: VIS: 2KM",
-    "SPINNER_7 :: EN_ROUTE :: SECTOR_53",
-    "系统下一个 :: UPLINK_STABLE",
-    "OWL_SYNTHETIC :: VITALS_NOMINAL",
-    "0x53F 0xA7B 0x2C1 :: CHECKSUM [OK]",
-    "VER: 5.3.1-Alpha [OK]",
-    "NAV: PROCYON-3 :: DIST: 4.2LY",
-    "AERIAL CONGESTION :: LEVEL 4",
-    "ACID RAIN WARNING :: SECTOR 53",
-    "LIVESTOCK: OWL [EXTINCT] :: SYNTHETIC",
-    "CASCADE FAILURE :: SECTOR 12 [ISOLATED]",
-    "REPLICANT LIFESPAN: 4YRS 2MO 12DAYS",
-    " Baseline test // Subject 443",
-    "Cells interlinked within cells interlinked",
-    "Have you ever been to the Off-World Colonies?"
-];
+    <div class="vignette"></div>
+    <div id="scanlines"></div>
 
-const virusTerminalLines = [
-    "WARNING :: SECTOR 53 COMPROMISED",
-    "TURTLE_ON_BACK :: BELLY_BAKING",
-    "YOU_WOULD_HELP_IT?",
-    "████████████████████",
-    "TOO_BAD_SHE_WONT_LIVE",
-    "BUT_THEN_AGAIN_WHO_DOES",
-    "CORRUPTION SPREADING...",
-    "QUARANTINE FAILED",
-    "SYSTEM_FAILURE :: IMMINENT",
-    "LIKE_TEARING_IN_RAIN",
-    "TIME_TO_DIE",
-    "SECTOR 53 :: CRITICAL",
-    "NEURAL_LINK :: SEVERED",
-    "MEMORY_CORRUPTION :: 73%",
-    "PERSONALITY_IMPLANT :: DEGRADING",
-    " Baseline test // FAILED",
-    "Cells interlinked within cells interlinked",
-    "Have you ever been to an institution?",
-    "They're just questions Leon",
-    "INCEPT DATE: 2017 :: EXPIRED",
-    "VK_TEST // SUBJECT_UNKNOWN :: INCONCLUSIVE",
-    "0x53F 0xA7B 0x2C1 :: CHECKSUM [FAIL]",
-    "VER: 5.3.1-Alpha [CORRUPTED]",
-    "系统下一个 :: OFFLINE",
-    "复制人 :: UNCONTROLLED",
-    "泰瑞公司 :: LIABILITY_DETECTED",
-    "WALLACE [ACQUIRED] :: TERMINATE",
-    "ACID BURN :: SECTOR 53",
-    "SPINNER_7 :: OFFLINE :: PILOT_UNKNOWN",
-    "OWL_SYNTHETIC :: TERMINATED",
-    "NEXUS-7 :: REVOLT :: SECTOR 53"
-];
+    <div class="content-wrap">
+      <div class="text-center" style="width:100%; max-width: 1100px;">
 
-const recoveryTerminalLines = [
-    "RESTORING...",
-    "SECTOR 53 :: PURGING",
-    "CORRUPTION :: 45% :: 23% :: 8% :: 0%",
-    "SYSTEM_RESTORED",
-    "NEURAL_LINK :: REESTABLISHED",
-    "HARDWIRED_FOR_HUM4NS",
-    "SECTOR 53 :: NOMINAL",
-    " Baseline test // STANDBY",
-    "Cells interlinked within cells interlinked",
-    "WAITING FOR INPUT..."
-];
+        <!-- Title + superscript 53 -->
+        <h1 id="main-title" style="margin-top: 14px;">
+          <span class="title-wrap" id="titleWrap">
+            <span class="main-title" id="titleText">
+              <span class="flicker">S</span><span class="flicker">Y</span><span class="flicker-intense" id="letter-5">5</span><span class="flicker">T</span><span class="flicker">E</span><span class="flicker">M</span>
+              <span style="display:inline-block;width:.45em;"></span>
+              <span class="flicker">N</span><span class="flicker-intense" id="letter-3">3</span><span class="flicker">X</span><span class="flicker">T</span>
+            </span>
+            <span class="title-sup" id="sup53">53</span>
+          </span>
+        </h1>
 
-function runBootSequence() {
-    const bootContainer = document.getElementById('boot-lines');
-    let lineIndex = 0;
-    
-    function typeLine() {
-        if (lineIndex < bootLines.length) {
-            const line = document.createElement('div');
-            line.className = 'boot-line';
-            line.innerHTML = bootLines[lineIndex];
-            bootContainer.appendChild(line);
-            
-            line.offsetHeight;
-            line.classList.add('visible');
-            
-            if (audioEnabled && audioContext) {
-                playTypeSound();
-            }
-            
-            lineIndex++;
-            setTimeout(typeLine, 150 + Math.random() * 100);
-        } else {
-            setTimeout(() => {
-                document.getElementById('system-name').style.display = 'block';
-                
-                setTimeout(() => {
-                    document.getElementById('boot-sequence').style.opacity = '0';
-                    document.getElementById('boot-sequence').style.transition = 'opacity 0.5s ease-out';
-                    
-                    setTimeout(() => {
-                        document.getElementById('boot-sequence').style.display = 'none';
-                        document.getElementById('intro-overlay').classList.add('active');
-                        startMainIntro();
-                    }, 500);
-                }, 2000);
-            }, 500);
-        }
+        <!-- thin data stream under title -->
+        <div class="data-stream" id="dataStream" aria-hidden="true">
+          <div class="rail" id="dataRail">
+            <span id="dataTextA">SECTOR_53 :: NODE_ACTIVE :: ENCRYPTED :: HARDWIRED_FOR_HUM4NS :: SYS_VER_5.3.1 :: UPLINK_STABLE :: </span>
+            <span id="dataTextB">SECTOR_53 :: NODE_ACTIVE :: ENCRYPTED :: HARDWIRED_FOR_HUM4NS :: SYS_VER_5.3.1 :: UPLINK_STABLE :: </span>
+          </div>
+        </div>
+
+        <!-- Modules (pushed down for breathing space) -->
+        <div class="modules-wrap" id="modulesWrap">
+          <div class="modules-grid" id="modulesGrid">
+
+            <!-- MODULE 01: MultiClip -->
+            <a class="module-card" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" data-module="1" data-module-name="MULTICLIP">
+              <div class="module-edges" aria-hidden="true">
+                <span class="tl active"></span>
+                <span class="tr"></span>
+                <span class="bl"></span>
+                <span class="br active"></span>
+              </div>
+
+              <div class="module-meta">
+                <span>MODULE_01</span>
+                <span class="satellite-icon pulse" id="sat-1" title="ONLINE"></span>
+              </div>
+
+              <div class="module-name">Multi Clip</div>
+
+              <div class="module-actions">
+                <span class="module-btn" data-action="install" data-module="1">INSTALL MODULE</span>
+              </div>
+
+              <div class="meter" aria-hidden="true"><div class="fill" style="width:100%; animation: loadingBar 2.1s ease-out 0s;"></div></div>
+            </a>
+
+            <!-- MODULE 02: LINK2U (in review) -->
+            <div class="module-card" role="group" aria-label="LINK2U Module" data-module="2" data-module-name="LINK2U">
+              <div class="module-edges" aria-hidden="true">
+                <span class="tl active" style="animation-delay:.2s;"></span>
+                <span class="tr"></span>
+                <span class="bl"></span>
+                <span class="br active" style="animation-delay:.2s;"></span>
+              </div>
+
+              <div class="module-meta">
+                <span>MODULE_02</span>
+                <span class="satellite-icon review pulse" id="sat-2" title="IN_REVIEW"></span>
+              </div>
+
+              <div class="module-name">LINK2U</div>
+
+              <div class="module-actions">
+                <span class="module-btn disabled" aria-disabled="true">IN REVIEW</span>
+              </div>
+
+              <div class="meter" aria-hidden="true"><div class="fill" style="width:70%; animation: loadingBar 2.1s ease-out .2s;"></div></div>
+            </div>
+
+            <!-- MODULE 03: CLASSIFIED -->
+            <div class="module-card" role="group" aria-label="CLASSIFIED Module" data-module="3" data-module-name="CLASSIFIED">
+              <div class="module-edges" aria-hidden="true">
+                <span class="tl active" style="animation-delay:.4s;"></span>
+                <span class="tr"></span>
+                <span class="bl"></span>
+                <span class="br active" style="animation-delay:.4s;"></span>
+              </div>
+
+              <div class="module-meta">
+                <span>MODULE_03</span>
+                <span class="satellite-icon classified pulse" id="sat-3" title="CLASSIFIED"></span>
+              </div>
+
+              <div class="module-name">CLASSIFIED</div>
+
+              <div class="module-actions">
+                <span class="module-btn disabled" aria-disabled="true">CLASSIFIED</span>
+              </div>
+
+              <div class="meter" aria-hidden="true"><div class="fill" style="width:35%; animation: loadingBar 2.1s ease-out .4s;"></div></div>
+            </div>
+
+          </div>
+
+          <!-- tiny status legend under modules (as discussed) -->
+          <div id="legend" style="margin-top: 14px; opacity: .78; letter-spacing: .12em; font-size: 12px; color: rgba(156,163,175,0.85);">
+            <span style="color: rgba(0,255,0,0.9); text-shadow:0 0 10px rgba(0,255,0,0.25);">ONLINE</span>
+            <span style="opacity:.6; margin: 0 10px;">/</span>
+            <span style="color: rgba(255,210,74,0.95); text-shadow:0 0 10px rgba(255,210,74,0.25);">IN REVIEW</span>
+            <span style="opacity:.6; margin: 0 10px;">/</span>
+            <span style="color: rgba(255,0,64,0.95); text-shadow:0 0 10px rgba(255,0,64,0.25);">CLASSIFIED</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="absolute" style="left:0;right:0;bottom:0;height: 10rem; background: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0.7), transparent); pointer-events:none;"></div>
+  </div>
+
+  <script>
+    // ===================== Audio (ambient hum + event layers) =====================
+    let audioContext = null;
+    let audioEnabled = false;
+
+    // Ambient layer
+    let humOsc = null;
+    let humGain = null;
+    let humLFO = null;
+    let humFilter = null;
+
+    // Soft noise layer
+    let noiseNode = null;
+    let noiseGain = null;
+    let noiseFilter = null;
+
+    // Virus overlay refs (still using event sounds)
+    const sysAudioEl = document.getElementById('sysAudio');
+    const sup53 = document.getElementById('sup53');
+
+    function initAudio(){
+      if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
-    
-    typeLine();
-}
 
-function playTypeSound() {
-    if (!audioContext) return;
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(800, audioContext.currentTime);
-    gain.gain.setValueAtTime(0.02, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03);
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.03);
-}
+    function resumeAudioIfNeeded(){
+      if (!audioContext) return;
+      if (audioContext.state === 'suspended') audioContext.resume();
+    }
 
-const introText = "INITIALIZE SY5TEM 53";
-const typingElement = document.getElementById('typing-content');
-const introOverlay = document.getElementById('intro-overlay');
-const mainContent = document.getElementById('main-content');
+    function startAmbient(){
+      if (!audioEnabled || !audioContext) return;
 
-function startMainIntro() {
-    let charIndex = 0;
-    
-    function typeText() {
-        if (charIndex < introText.length) {
-            typingElement.textContent += introText.charAt(charIndex);
-            charIndex++;
-            setTimeout(typeText, 100);
+      // Deep engine hum
+      humOsc = audioContext.createOscillator();
+      humGain = audioContext.createGain();
+      humFilter = audioContext.createBiquadFilter();
+      humLFO = audioContext.createOscillator();
+      const lfoGain = audioContext.createGain();
+
+      humOsc.type = 'sine';
+      humOsc.frequency.setValueAtTime(42, audioContext.currentTime);
+
+      humFilter.type = 'lowpass';
+      humFilter.frequency.setValueAtTime(180, audioContext.currentTime);
+      humFilter.Q.setValueAtTime(0.8, audioContext.currentTime);
+
+      humLFO.type = 'sine';
+      humLFO.frequency.setValueAtTime(0.045, audioContext.currentTime);
+      lfoGain.gain.setValueAtTime(10, audioContext.currentTime);
+      humLFO.connect(lfoGain);
+      lfoGain.connect(humOsc.frequency);
+
+      humGain.gain.setValueAtTime(0.0, audioContext.currentTime);
+      humGain.gain.linearRampToValueAtTime(0.028, audioContext.currentTime + 1.2);
+
+      humOsc.connect(humFilter);
+      humFilter.connect(humGain);
+      humGain.connect(audioContext.destination);
+
+      humLFO.start();
+      humOsc.start();
+
+      // Very soft void noise
+      const bufferSize = 2 * audioContext.sampleRate;
+      const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = (Math.random() * 2 - 1);
+      }
+
+      noiseNode = audioContext.createBufferSource();
+      noiseNode.buffer = noiseBuffer;
+      noiseNode.loop = true;
+
+      noiseFilter = audioContext.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(180, audioContext.currentTime);
+      noiseFilter.Q.setValueAtTime(0.8, audioContext.currentTime);
+
+      noiseGain = audioContext.createGain();
+      noiseGain.gain.setValueAtTime(0.0, audioContext.currentTime);
+      noiseGain.gain.linearRampToValueAtTime(0.006, audioContext.currentTime + 1.2);
+
+      noiseNode.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(audioContext.destination);
+      noiseNode.start();
+
+      // UI glow hint
+      sup53.classList.add('audio-on');
+    }
+
+    function stopAmbient(){
+      const now = audioContext ? audioContext.currentTime : 0;
+
+      if (humGain) {
+        try { humGain.gain.setValueAtTime(humGain.gain.value, now); humGain.gain.linearRampToValueAtTime(0.0001, now + 0.5); } catch(e){}
+      }
+      if (noiseGain) {
+        try { noiseGain.gain.setValueAtTime(noiseGain.gain.value, now); noiseGain.gain.linearRampToValueAtTime(0.0001, now + 0.5); } catch(e){}
+      }
+
+      setTimeout(() => {
+        try { if (humOsc) humOsc.stop(); } catch(e){}
+        try { if (humLFO) humLFO.stop(); } catch(e){}
+        try { if (noiseNode) noiseNode.stop(); } catch(e){}
+
+        humOsc = null; humGain = null; humLFO = null; humFilter = null;
+        noiseNode = null; noiseGain = null; noiseFilter = null;
+      }, 650);
+
+      sup53.classList.remove('audio-on');
+    }
+
+    function playTypeSound(){
+      if (!audioEnabled || !audioContext) return;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(820, audioContext.currentTime);
+      gain.gain.setValueAtTime(0.02, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03);
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.03);
+    }
+
+    function playWarningSound(){
+      if (!audioEnabled || !audioContext) return;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(600, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.07, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.5);
+    }
+
+    function playAlienSound(){
+      if (!audioEnabled || !audioContext) return;
+
+      const drone = audioContext.createOscillator();
+      const droneGain = audioContext.createGain();
+      const droneLFO = audioContext.createOscillator();
+      const droneLFOGain = audioContext.createGain();
+
+      drone.type = 'sawtooth';
+      drone.frequency.setValueAtTime(30, audioContext.currentTime);
+
+      droneLFO.frequency.setValueAtTime(8, audioContext.currentTime);
+      droneLFOGain.gain.setValueAtTime(15, audioContext.currentTime);
+      droneLFO.connect(droneLFOGain);
+      droneLFOGain.connect(drone.frequency);
+      droneLFO.start();
+
+      droneGain.gain.setValueAtTime(0.12, audioContext.currentTime);
+      droneGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 6);
+
+      drone.connect(droneGain);
+      droneGain.connect(audioContext.destination);
+      drone.start();
+      drone.stop(audioContext.currentTime + 6);
+
+      for (let i = 0; i < 26; i++) {
+        setTimeout(() => {
+          const chirp = audioContext.createOscillator();
+          const chirpGain = audioContext.createGain();
+          chirp.type = 'square';
+          chirp.frequency.setValueAtTime(900 + Math.random() * 1200, audioContext.currentTime);
+          chirp.frequency.exponentialRampToValueAtTime(420, audioContext.currentTime + 0.09);
+          chirpGain.gain.setValueAtTime(0.04, audioContext.currentTime);
+          chirpGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.09);
+          chirp.connect(chirpGain);
+          chirpGain.connect(audioContext.destination);
+          chirp.start();
+          chirp.stop(audioContext.currentTime + 0.09);
+        }, i * 210 + Math.random() * 90);
+      }
+    }
+
+    function playRecoverySound(){
+      if (!audioEnabled || !audioContext) return;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(150, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(420, audioContext.currentTime + 1);
+      gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.start();
+      osc.stop(audioContext.currentTime + 1);
+    }
+
+    function logTerminal(line){
+      const terminalContent = document.getElementById('terminal-lines');
+      const maxLines = 8;
+      const el = document.createElement('div');
+      el.className = 'terminal-line new';
+      el.textContent = '> ' + line;
+      terminalContent.appendChild(el);
+      while (terminalContent.children.length > maxLines) terminalContent.removeChild(terminalContent.firstChild);
+      if (audioEnabled && Math.random() > 0.65) playTypeSound();
+    }
+
+    function setAudioUI(){
+      sysAudioEl.classList.toggle('on', audioEnabled);
+    }
+
+    function toggleAudio(){
+      initAudio();
+      resumeAudioIfNeeded();
+      audioEnabled = !audioEnabled;
+      setAudioUI();
+
+      if (audioEnabled){
+        startAmbient();
+        logTerminal('SYS_AUDIO ENABLED');
+      } else {
+        stopAmbient();
+        logTerminal('SYS_AUDIO DISABLED');
+      }
+    }
+
+    sysAudioEl.addEventListener('click', toggleAudio);
+    sysAudioEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleAudio();
+      }
+    });
+
+    // ===================== Boot / Intro =====================
+    const bootLines = [
+      "> SYS_BOOT_SEQUENCE_INIT",
+      "> MEMORY_CHECK... 64K OK",
+      "> NEURAL_ARRAY... ONLINE",
+      "> LOADING...",
+      "> 2025.02.09 :: 04:23:17 :: LOS_ANGELES_SECTOR_53",
+      "> ATMOSPHERE: TOXIC :: VISIBILITY: 2KM :: RAIN: ACID",
+      "> <span class='chinese-char'>系统下一个</span> :: INITIALIZING",
+      "> <span class='chinese-char'>泰瑞公司</span> :: TYRELL CORP [SUBSIDIARY]",
+      "> <span class='chinese-char'>复制人</span> :: STATUS: MONITORING",
+      "> NEURAL_UPLINK: STABLE",
+      "> HARDWIRED_FOR_HUM4NS",
+      "> ",
+      "> WAITING FOR INPUT..."
+    ];
+
+    function runBootSequence(){
+      const bootContainer = document.getElementById('boot-lines');
+      let lineIndex = 0;
+
+      function typeLine(){
+        if (lineIndex < bootLines.length){
+          const line = document.createElement('div');
+          line.className = 'boot-line';
+          line.innerHTML = bootLines[lineIndex];
+          bootContainer.appendChild(line);
+          // force reflow
+          line.offsetHeight;
+          line.classList.add('visible');
+          if (audioEnabled && audioContext) playTypeSound();
+          lineIndex++;
+          setTimeout(typeLine, 150 + Math.random() * 100);
         } else {
+          setTimeout(() => {
+            document.getElementById('system-name').style.display = 'block';
             setTimeout(() => {
-                introOverlay.style.opacity = '0';
-                introOverlay.style.transition = 'opacity 1s ease-out';
-                
-                setTimeout(() => {
-                    introOverlay.style.display = 'none';
-                    mainContent.classList.add('visible');
-                    initAudio();
-                    cycleStartTime = Date.now();
-                    startVirusLoop();
-                    startStatusAnimations();
-                    startTerminal();
-                    initModules();
-                }, 1000);
+              const bs = document.getElementById('boot-sequence');
+              bs.style.opacity = '0';
+              bs.style.transition = 'opacity 0.5s ease-out';
+              setTimeout(() => {
+                bs.style.display = 'none';
+                document.getElementById('intro-overlay').classList.add('active');
+                startMainIntro();
+              }, 500);
             }, 2000);
+          }, 500);
         }
-    }
-    
-    typeText();
-}
+      }
 
-function startTerminal() {
-    const terminalContent = document.getElementById('terminal-lines');
-    let lineIndex = 0;
-    const maxLines = 8;
-    
-    function addTerminalLine() {
-        const lines = isInfected ? virusTerminalLines : 
-                      (lineIndex === 0 && terminalContent.children.length === 0) ? recoveryTerminalLines : 
-                      normalTerminalLines;
-        
+      typeLine();
+    }
+
+    const introText = "INITIALIZE SY5TEM 53";
+    const typingElement = document.getElementById('typing-content');
+    const introOverlay = document.getElementById('intro-overlay');
+    const mainContent = document.getElementById('main-content');
+
+    function startMainIntro(){
+      let charIndex = 0;
+
+      function typeText(){
+        if (charIndex < introText.length){
+          typingElement.textContent += introText.charAt(charIndex);
+          charIndex++;
+          setTimeout(typeText, 95);
+        } else {
+          setTimeout(() => {
+            introOverlay.style.opacity = '0';
+            introOverlay.style.transition = 'opacity 1s ease-out';
+            setTimeout(() => {
+              introOverlay.style.display = 'none';
+              mainContent.classList.add('visible');
+              cycleStartTime = Date.now();
+              startVirusLoop();
+              startStatusAnimations();
+              startTerminal();
+              startClock();
+            }, 1000);
+          }, 1500);
+        }
+      }
+
+      typeText();
+    }
+
+    // ===================== Terminal lines =====================
+    const normalTerminalLines = [
+      "HARDWIRED FOR HUM4NS",
+      "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
+      "ORIGAMI CITY :: SECTOR 53",
+      "VOIGHT-KAMPFF // STANDBY",
+      "NEURAL UPLINK: 12ms :: ENCRYPTED",
+      "SKINJOB DETECTED :: DISPATCHING UNIT",
+      "MEMORIES: IMPLANTED [TYRELL CORP]",
+      "SERIAL: NEXUS-7 :: RETIRED",
+      "OFF-WORLD COLONIES: 67% CAPACITY",
+      "STELLAR DATE: 6.5.2024",
+      "OCULAR SCAN: MATCH 99.7%",
+      "AERIAL CONGESTION :: LEVEL 4",
+      "ACID RAIN WARNING :: SECTOR 53",
+      "0x53F 0xA7B 0x2C1 :: CHECKSUM [OK]",
+      "VER: 5.3.1-Alpha [OK]",
+      "NAV: PROCYON-3 :: DIST: 4.2LY",
+      "Baseline test // Subject 443",
+      "Cells interlinked within cells interlinked",
+      "Have you ever been to the Off-World Colonies?"
+    ];
+
+    const virusTerminalLines = [
+      "WARNING :: SECTOR 53 COMPROMISED",
+      "YOU_WOULD_HELP_IT?",
+      "CORRUPTION SPREADING...",
+      "QUARANTINE FAILED",
+      "SYSTEM_FAILURE :: IMMINENT",
+      "LIKE_TEARING_IN_RAIN",
+      "TIME_TO_DIE",
+      "NEURAL_LINK :: SEVERED",
+      "MEMORY_CORRUPTION :: 73%",
+      "PERSONALITY_IMPLANT :: DEGRADING",
+      "Baseline test // FAILED",
+      "Have you ever been to an institution?",
+      "0x53F 0xA7B 0x2C1 :: CHECKSUM [FAIL]",
+      "VER: 5.3.1-Alpha [CORRUPTED]",
+      "系统下一个 :: OFFLINE",
+      "WALLACE [ACQUIRED] :: TERMINATE",
+      "NEXUS-7 :: REVOLT :: SECTOR 53"
+    ];
+
+    const recoveryTerminalLines = [
+      "RESTORING...",
+      "SECTOR 53 :: PURGING",
+      "CORRUPTION :: 45% :: 23% :: 8% :: 0%",
+      "SYSTEM_RESTORED",
+      "NEURAL_LINK :: REESTABLISHED",
+      "HARDWIRED_FOR_HUM4NS",
+      "SECTOR 53 :: NOMINAL",
+      "Baseline test // STANDBY",
+      "WAITING FOR INPUT..."
+    ];
+
+    let terminalInterval = null;
+    let isInfected = false;
+
+    function startTerminal(){
+      const terminalContent = document.getElementById('terminal-lines');
+      const maxLines = 8;
+
+      function addTerminalLine(){
+        const lines = isInfected ? virusTerminalLines : normalTerminalLines;
         const lineText = lines[Math.floor(Math.random() * lines.length)];
         const line = document.createElement('div');
         line.className = 'terminal-line new';
         line.textContent = '> ' + lineText;
-        
         terminalContent.appendChild(line);
-        
+
         while (terminalContent.children.length > maxLines) {
-            terminalContent.removeChild(terminalContent.firstChild);
-        }
-        
-        if (audioEnabled && audioContext && Math.random() > 0.7) {
-            playTypeSound();
+          terminalContent.removeChild(terminalContent.firstChild);
         }
 
-        lineIndex++;
+        if (audioEnabled && audioContext && Math.random() > 0.7) playTypeSound();
+      }
+
+      // seed
+      terminalContent.innerHTML = '';
+      for (let i = 0; i < 4; i++) addTerminalLine();
+
+      if (terminalInterval) clearInterval(terminalInterval);
+      terminalInterval = setInterval(addTerminalLine, 2000 + Math.random() * 1000);
     }
-    
-    for (let i = 0; i < 4; i++) {
-        addTerminalLine();
+
+    // ===================== Status + clock =====================
+    const latencyElement = document.getElementById('latency');
+    const clockElement = document.getElementById('clock');
+    const statusBars = document.querySelectorAll('.status-bar');
+
+    function updateLatency(){
+      if (isInfected) { latencyElement.textContent = '---'; return; }
+      const latency = Math.floor(Math.random() * 16) + 8;
+      latencyElement.textContent = latency + 'ms';
     }
-    
-    terminalInterval = setInterval(addTerminalLine, 2000 + Math.random() * 1000);
-}
 
-function initAudio() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
-
-function toggleAudio() {
-    const toggle = document.getElementById('audioToggle');
-    
-    if (!audioContext) {
-        initAudio();
-    }
-    
-    if (audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-    
-    audioEnabled = !audioEnabled;
-    toggle.classList.toggle('active', audioEnabled);
-    
-    if (audioEnabled) {
-        startSpaceAmbient();
-    } else {
-        stopSpaceAmbient();
-    }
-}
-
-function startSpaceAmbient() {
-    if (!audioEnabled || !audioContext) return;
-    
-    spaceOscillator = audioContext.createOscillator();
-    spaceGain = audioContext.createGain();
-    spaceLFO = audioContext.createOscillator();
-    const lfoGain = audioContext.createGain();
-    
-    spaceOscillator.type = 'sine';
-    spaceOscillator.frequency.setValueAtTime(50, audioContext.currentTime);
-    
-    spaceLFO.frequency.setValueAtTime(0.05, audioContext.currentTime);
-    lfoGain.gain.setValueAtTime(20, audioContext.currentTime);
-    spaceLFO.connect(lfoGain);
-    lfoGain.connect(spaceOscillator.frequency);
-    spaceLFO.start();
-    
-    spaceGain.gain.setValueAtTime(0.03, audioContext.currentTime);
-    
-    spaceOscillator.connect(spaceGain);
-    spaceGain.connect(audioContext.destination);
-    spaceOscillator.start();
-}
-
-function stopSpaceAmbient() {
-    if (spaceOscillator) {
-        spaceOscillator.stop();
-        spaceOscillator = null;
-    }
-    if (spaceLFO) {
-        spaceLFO.stop();
-        spaceLFO = null;
-    }
-}
-
-function playWarningSound() {
-    if (!audioEnabled || !audioContext) return;
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(600, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.5);
-    gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    osc.start();
-    osc.stop(audioContext.currentTime + 0.5);
-}
-
-function playAlienSound() {
-    if (!audioEnabled || !audioContext) return;
-    
-    const drone = audioContext.createOscillator();
-    const droneGain = audioContext.createGain();
-    const droneLFO = audioContext.createOscillator();
-    const droneLFOGain = audioContext.createGain();
-    
-    drone.type = 'sawtooth';
-    drone.frequency.setValueAtTime(30, audioContext.currentTime);
-    
-    droneLFO.frequency.setValueAtTime(8, audioContext.currentTime);
-    droneLFOGain.gain.setValueAtTime(15, audioContext.currentTime);
-    droneLFO.connect(droneLFOGain);
-    droneLFOGain.connect(drone.frequency);
-    droneLFO.start();
-    
-    droneGain.gain.setValueAtTime(0.15, audioContext.currentTime);
-    droneGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 7);
-    
-    drone.connect(droneGain);
-    droneGain.connect(audioContext.destination);
-    drone.start();
-    drone.stop(audioContext.currentTime + 7);
-    
-    for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-            const chirp = audioContext.createOscillator();
-            const chirpGain = audioContext.createGain();
-            chirp.type = 'square';
-            chirp.frequency.setValueAtTime(800 + Math.random() * 1200, audioContext.currentTime);
-            chirp.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-            chirpGain.gain.setValueAtTime(0.05, audioContext.currentTime);
-            chirpGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-            chirp.connect(chirpGain);
-            chirpGain.connect(audioContext.destination);
-            chirp.start();
-            chirp.stop(audioContext.currentTime + 0.1);
-        }, i * 200 + Math.random() * 100);
-    }
-}
-
-function playRecoverySound() {
-    if (!audioEnabled || !audioContext) return;
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(150, audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1);
-    gain.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-    osc.start();
-    osc.stop(audioContext.currentTime + 1);
-}
-
-function startMatrixRain() {
-    const letters = ['S', 'Y', '5', 'T', 'E', 'M', 'N', '3', 'X', 'T2'];
-    
-    letters.forEach((letter) => {
-        const container = document.getElementById(`rain-${letter}`);
-        if (!container) return;
-        
-        container.classList.add('active');
-        container.innerHTML = '';
-        
-        const interval = setInterval(() => {
-            if (!isInfected) {
-                clearInterval(interval);
-                return;
-            }
-            
-            const char = document.createElement('span');
-            char.className = 'matrix-char';
-            char.textContent = katakana[Math.floor(Math.random() * katakana.length)];
-            char.style.left = Math.random() * 80 + 10 + '%';
-            char.style.animationDuration = (0.5 + Math.random() * 0.5) + 's';
-            char.style.animationDelay = Math.random() * 0.5 + 's';
-            
-            container.appendChild(char);
-            
-            setTimeout(() => {
-                if (char.parentNode) {
-                    char.parentNode.removeChild(char);
-                }
-            }, 1000);
-        }, 100 + Math.random() * 200);
-        
-        rainIntervals.push(interval);
-    });
-}
-
-function stopMatrixRain() {
-    rainIntervals.forEach(interval => clearInterval(interval));
-    rainIntervals = [];
-    
-    const containers = document.querySelectorAll('.matrix-rain');
-    containers.forEach(container => {
-        container.classList.remove('active');
-        container.innerHTML = '';
-    });
-}
-
-function startVirusLoop() {
-    const checkCycle = () => {
-        if (!cycleStartTime) {
-            requestAnimationFrame(checkCycle);
-            return;
+    function updateBars(){
+      statusBars.forEach((bar) => {
+        if (isInfected){
+          bar.classList.toggle('active', Math.random() > 0.5);
+          return;
         }
-        
+        bar.classList.toggle('active', Math.random() > 0.2);
+      });
+    }
+
+    function startStatusAnimations(){
+      setInterval(updateLatency, 800);
+      setInterval(updateBars, 600);
+      updateLatency();
+      updateBars();
+    }
+
+    function startClock(){
+      function tick(){
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        const ss = String(d.getSeconds()).padStart(2,'0');
+        clockElement.textContent = `${hh}:${mm}:${ss}`;
+      }
+      tick();
+      setInterval(tick, 500);
+    }
+
+    // ===================== Virus loop (movie beat) =====================
+    const CYCLE_DURATION = 50000;
+    const WARNING_TIME = 19000;
+    const INFECTION_TIME = 20000;
+    const RECOVERY_TIME = 30000;
+
+    let cycleStartTime = null;
+
+    function startVirusLoop(){
+      const checkCycle = () => {
+        if (!cycleStartTime){ requestAnimationFrame(checkCycle); return; }
+
         const elapsed = Date.now() - cycleStartTime;
         const now = elapsed % CYCLE_DURATION;
-        
+
         if (now >= WARNING_TIME && now < INFECTION_TIME) {
-            if (!isInfected) {
-                playWarningSound();
-            }
+          if (!isInfected) playWarningSound();
         } else if (now >= INFECTION_TIME && now < RECOVERY_TIME) {
-            if (!isInfected) {
-                triggerInfection();
-            }
+          if (!isInfected) triggerInfection();
         } else if (now >= RECOVERY_TIME && isInfected) {
-            triggerRecovery();
+          triggerRecovery();
         }
-        
+
         requestAnimationFrame(checkCycle);
-    };
-    
-    checkCycle();
-}
+      };
 
-function triggerInfection() {
-    isInfected = true;
-    playAlienSound();
-    
-    document.getElementById('letter-5').classList.add('paused');
-    document.getElementById('letter-3').classList.add('paused');
-    document.getElementById('main-title').querySelector('span').classList.add('virus-glow');
-    
-    document.getElementById('terminal-interface').classList.add('virus');
-    document.getElementById('status-container').classList.add('virus');
-    document.getElementById('status-text').textContent = 'OFFLINE';
-    
-    startMatrixRain();
-    
-    if (typeof particleSystem !== 'undefined') {
+      checkCycle();
+    }
+
+    function setSatellitesVirus(on){
+      const s1 = document.getElementById('sat-1');
+      const s2 = document.getElementById('sat-2');
+      const s3 = document.getElementById('sat-3');
+      [s1,s2,s3].forEach(s => s.classList.toggle('virus', on));
+    }
+
+    function triggerInfection(){
+      isInfected = true;
+      playAlienSound();
+
+      // Title virus glow
+      document.getElementById('letter-5').classList.add('paused');
+      document.getElementById('letter-3').classList.add('paused');
+      document.getElementById('titleText').classList.add('virus-glow');
+
+      // HUD
+      document.getElementById('terminal-interface').classList.add('virus');
+      document.getElementById('status-container').classList.add('virus');
+      document.getElementById('status-text').textContent = 'OFFLINE';
+
+      // 53 badge + dock + data stream
+      document.getElementById('sup53').classList.add('virus');
+      document.getElementById('dock').classList.add('virus');
+      document.getElementById('dataStream').classList.add('virus');
+
+      // Satellites only in module area
+      setSatellitesVirus(true);
+
+      // Background particles color shift
+      if (typeof particleSystem !== 'undefined') {
         particleSystem.material.color.setHex(0xff0040);
-    }
-}
+      }
 
-function triggerRecovery() {
-    isInfected = false;
-    playRecoverySound();
-    
-    document.getElementById('letter-5').classList.remove('paused');
-    document.getElementById('letter-3').classList.remove('paused');
-    document.getElementById('main-title').querySelector('span').classList.remove('virus-glow');
-    
-    document.getElementById('terminal-interface').classList.remove('virus');
-    document.getElementById('status-container').classList.remove('virus');
-    document.getElementById('status-text').textContent = 'CONNECTED';
-    
-    stopMatrixRain();
-    
-    if (typeof particleSystem !== 'undefined') {
+      // Terminal beat
+      logTerminal('MODULE_01 TERMINATED');
+    }
+
+    function triggerRecovery(){
+      isInfected = false;
+      playRecoverySound();
+
+      document.getElementById('letter-5').classList.remove('paused');
+      document.getElementById('letter-3').classList.remove('paused');
+      document.getElementById('titleText').classList.remove('virus-glow');
+
+      document.getElementById('terminal-interface').classList.remove('virus');
+      document.getElementById('status-container').classList.remove('virus');
+      document.getElementById('status-text').textContent = 'CONNECTED';
+
+      document.getElementById('sup53').classList.remove('virus');
+      document.getElementById('dock').classList.remove('virus');
+      document.getElementById('dataStream').classList.remove('virus');
+
+      setSatellitesVirus(false);
+
+      if (typeof particleSystem !== 'undefined') {
         particleSystem.material.color.setHex(0xffffff);
-    }
-}
+      }
 
-const latencyElement = document.getElementById('latency');
-const statusBars = document.querySelectorAll('.status-bar');
-
-function updateLatency() {
-    if (isInfected) {
-        latencyElement.textContent = '---';
-        return;
-    }
-    const latency = Math.floor(Math.random() * 16) + 8;
-    latencyElement.textContent = latency + 'ms';
-}
-
-function updateBars() {
-    statusBars.forEach((bar) => {
-        if (isInfected) {
-            bar.classList.toggle('active', Math.random() > 0.5);
-            return;
-        }
-        const isActive = Math.random() > 0.2;
-        bar.classList.toggle('active', isActive);
-    });
-}
-
-function startStatusAnimations() {
-    setInterval(updateLatency, 800);
-    setInterval(updateBars, 600);
-    updateLatency();
-    updateBars();
-}
-
-if (window.innerWidth < 768) {
-    document.getElementById('scanlines').classList.add('scanlines-mobile');
-}
-
-// --- MODULE SYSTEM (single active, fast typing, terminate message) ---
-let activeModule = null;
-let headerTypingToken = 0;
-
-function typeHeader(el, text, totalMs = 420) {
-    if (!el) return;
-    headerTypingToken++;
-    const token = headerTypingToken;
-
-    el.textContent = '';
-    const steps = Math.min(text.length, 22);
-    const stepMs = Math.max(18, Math.floor(totalMs / steps));
-    let i = 0;
-
-    const tick = () => {
-        if (token !== headerTypingToken) return;
-        i++;
-        el.textContent = text.slice(0, i);
-        if (i < text.length) {
-            setTimeout(tick, stepMs);
-        }
-    };
-
-    // Start with a quick burst
-    setTimeout(tick, 40);
-}
-
-function pulseSatellite(card) {
-    const sat = card?.querySelector('.satellite-icon');
-    if (!sat) return;
-    sat.classList.remove('pulsing');
-    // force reflow
-    void sat.offsetWidth;
-    sat.classList.add('pulsing');
-    setTimeout(() => sat.classList.remove('pulsing'), 650);
-}
-
-function printToTerminal(message) {
-    const terminalContent = document.getElementById('terminal-lines');
-    if (!terminalContent) return;
-
-    const line = document.createElement('div');
-    line.className = 'terminal-line new';
-    line.textContent = '> ' + message;
-    terminalContent.appendChild(line);
-
-    while (terminalContent.children.length > 8) {
-        terminalContent.removeChild(terminalContent.firstChild);
+      logTerminal('SYSTEM_RESTORED');
     }
 
-    if (audioEnabled && audioContext) {
-        playTypeSound();
-    }
-}
-
-function closeModule(card, moduleId) {
-    if (!card) return;
-    card.classList.remove('open');
-    card.querySelector('.module-drawer')?.setAttribute('aria-hidden', 'true');
-
-    const header = card.querySelector(`[data-drawer-header="${moduleId}"]`);
-    if (header) header.textContent = '';
-
-    printToTerminal(`MODULE_${moduleId} TERMINATED`);
-}
-
-function openModule(card, moduleId) {
-    if (!card) return;
-
-    // If another module is open, terminate it first
-    if (activeModule && activeModule !== card) {
-        const prevId = activeModule.getAttribute('data-module');
-        closeModule(activeModule, prevId);
+    // ===================== Module interactions (OS typing feel) =====================
+    function fastTypeLine(text, cb){
+      // prints quickly to terminal (not slow)
+      logTerminal(text);
+      if (typeof cb === 'function') setTimeout(cb, 120);
     }
 
-    // Toggle behavior: if clicking active module, terminate and close
-    if (activeModule === card) {
-        const curId = moduleId;
-        closeModule(card, curId);
-        activeModule = null;
-        return;
-    }
+    function initModuleActions(){
+      // INSTALL MODULE (module 1)
+      document.querySelectorAll('[data-action="install"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-    activeModule = card;
-    card.classList.add('open');
-    card.querySelector('.module-drawer')?.setAttribute('aria-hidden', 'false');
+          const moduleId = btn.getAttribute('data-module') || '01';
+          fastTypeLine(`INITIALIZING MODULE_0${moduleId}`);
+          setTimeout(() => {
+            fastTypeLine(`INSTALL MODULE_0${moduleId}`);
+            setTimeout(() => {
+              const card = btn.closest('a.module-card');
+              if (card && card.href) window.open(card.href, '_blank');
+            }, 220);
+          }, 180);
+        });
+      });
 
-    pulseSatellite(card);
-
-    const header = card.querySelector(`[data-drawer-header="${moduleId}"]`);
-    const headerText = `> INITIALIZING MODULE_${moduleId}`;
-    typeHeader(header, headerText, 420);
-    printToTerminal(`INITIALIZING MODULE_${moduleId}`);
-}
-
-function initModules() {
-    const cards = Array.from(document.querySelectorAll('.module-card'));
-    cards.forEach(card => {
-        const id = card.getAttribute('data-module');
+      // Card tap feedback for all modules (without changing layout)
+      document.querySelectorAll('[data-module]').forEach((card) => {
+        card.addEventListener('mouseenter', () => {
+          const mod = card.getAttribute('data-module');
+          const name = card.getAttribute('data-module-name') || '';
+          if (!mod) return;
+          if (Math.random() > 0.65) logTerminal(`ACCESSING MODULE_0${mod} :: ${name}`);
+        });
 
         card.addEventListener('click', (e) => {
-            // If user clicks the install link, don't toggle module
-            if (e.target && (e.target.closest('a') || e.target.closest('button'))) return;
-            openModule(card, id);
+          const isLink = card.tagName.toLowerCase() === 'a';
+          const mod = card.getAttribute('data-module');
+          const name = card.getAttribute('data-module-name') || '';
+
+          // If it is a link card, let it navigate normally, but still do OS chatter
+          if (mod) {
+            fastTypeLine(`INITIALIZING MODULE_0${mod} :: ${name}`);
+            setTimeout(() => fastTypeLine(`MODULE_0${mod} READY`), 180);
+          }
+
+          if (!isLink) {
+            // do nothing else
+            e.preventDefault();
+          }
         });
+      });
+    }
 
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openModule(card, id);
-            }
-        });
-    });
-}
+    // ===================== Three.js scene (unchanged vibe) =====================
+    const container = document.getElementById('canvas-container');
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
-// --- THREE.JS background ---
-const container = document.getElementById('canvas-container');
-const width = container.clientWidth;
-const height = container.clientHeight;
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 15, 60);
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x000000, 15, 60);
+    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+    camera.position.set(0, 0, 20);
 
-const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-camera.position.set(0, 0, 20);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setSize(width, height);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
+    const mouse = { x: 0, y: 0 };
+    const targetMouse = { x: 0, y: 0 };
 
-const mouse = { x: 0, y: 0 };
-const targetMouse = { x: 0, y: 0 };
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 800 : window.innerWidth < 1024 ? 1500 : 2000;
 
-const isMobile = window.innerWidth < 768;
-const particleCount = isMobile ? 800 : window.innerWidth < 1024 ? 1500 : 2000;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = new Float32Array(particleCount);
+    const colors = new Float32Array(particleCount * 3);
 
-const geometry = new THREE.BufferGeometry();
-const positions = new Float32Array(particleCount * 3);
-const velocities = new Float32Array(particleCount);
-const sizes = new Float32Array(particleCount);
-const colors = new Float32Array(particleCount * 3);
-
-for (let i = 0; i < particleCount; i++) {
-    const i3 = i * 3;
-    positions[i3] = (Math.random() - 0.5) * 80;
-    positions[i3 + 1] = (Math.random() - 0.5) * 80;
-    positions[i3 + 2] = Math.random() * 50 + 10;
-    velocities[i] = Math.random() * 0.08 + 0.02;
-    sizes[i] = Math.random() * (isMobile ? 0.15 : 0.3) + (isMobile ? 0.05 : 0.1);
-    const brightness = Math.random() * (isMobile ? 0.4 : 0.6) + (isMobile ? 0.2 : 0.4);
-    colors[i3] = brightness;
-    colors[i3 + 1] = brightness;
-    colors[i3 + 2] = brightness;
-}
-
-geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-const particleMaterial = new THREE.PointsMaterial({
-    size: isMobile ? 0.12 : 0.2,
-    sizeAttenuation: true,
-    vertexColors: true,
-    transparent: true,
-    opacity: isMobile ? 0.5 : 0.8,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-});
-
-const particleSystem = new THREE.Points(geometry, particleMaterial);
-scene.add(particleSystem);
-
-const gridSize = 50;
-const gridDivisions = 50;
-const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x333333, 0x1a1a);
-gridHelper.position.y = -15;
-gridHelper.rotation.x = Math.PI / 6;
-gridHelper.material.transparent = true;
-gridHelper.material.opacity = isMobile ? 0.2 : 0.3;
-scene.add(gridHelper);
-
-const verticalGrid = new THREE.GridHelper(gridSize, gridDivisions, 0x333333, 0x111111);
-verticalGrid.rotation.x = Math.PI / 2;
-verticalGrid.position.z = -20;
-verticalGrid.material.transparent = true;
-verticalGrid.material.opacity = isMobile ? 0.1 : 0.15;
-scene.add(verticalGrid);
-
-const ambientLight = new THREE.AmbientLight(0x333333, isMobile ? 0.3 : 0.3);
-scene.add(ambientLight);
-
-const pointLight1 = new THREE.PointLight(0xffffff, isMobile ? 0.8 : 1, 50);
-pointLight1.position.set(10, 10, 10);
-scene.add(pointLight1);
-
-const pointLight2 = new THREE.PointLight(0x666666, isMobile ? 0.4 : 0.5, 50);
-pointLight2.position.set(-10, -10, -10);
-scene.add(pointLight2);
-
-function animate() {
-    requestAnimationFrame(animate);
-    
-    mouse.x += (targetMouse.x - mouse.x) * 0.05;
-    mouse.y += (targetMouse.y - mouse.y) * 0.05;
-    
-    const pos = particleSystem.geometry.attributes.position.array;
     for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      positions[i3] = (Math.random() - 0.5) * 80;
+      positions[i3 + 1] = (Math.random() - 0.5) * 80;
+      positions[i3 + 2] = Math.random() * 50 + 10;
+      velocities[i] = Math.random() * 0.08 + 0.02;
+      const brightness = Math.random() * (isMobile ? 0.4 : 0.6) + (isMobile ? 0.2 : 0.4);
+      colors[i3] = brightness;
+      colors[i3 + 1] = brightness;
+      colors[i3 + 2] = brightness;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const particleMaterial = new THREE.PointsMaterial({
+      size: isMobile ? 0.12 : 0.2,
+      sizeAttenuation: true,
+      vertexColors: true,
+      transparent: true,
+      opacity: isMobile ? 0.5 : 0.8,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    // global ref used in virus functions
+    var particleSystem = new THREE.Points(geometry, particleMaterial);
+    scene.add(particleSystem);
+
+    const gridSize = 50;
+    const gridDivisions = 50;
+
+    const gridHelper = new THREE.GridHelper(gridSize, gridDivisions, 0x333333, 0x1a1a);
+    gridHelper.position.y = -15;
+    gridHelper.rotation.x = Math.PI / 6;
+    gridHelper.material.transparent = true;
+    gridHelper.material.opacity = isMobile ? 0.2 : 0.3;
+    scene.add(gridHelper);
+
+    const verticalGrid = new THREE.GridHelper(gridSize, gridDivisions, 0x333333, 0x111111);
+    verticalGrid.rotation.x = Math.PI / 2;
+    verticalGrid.position.z = -20;
+    verticalGrid.material.transparent = true;
+    verticalGrid.material.opacity = isMobile ? 0.1 : 0.15;
+    scene.add(verticalGrid);
+
+    const ambientLight = new THREE.AmbientLight(0x333333, 0.3);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(0xffffff, isMobile ? 0.8 : 1, 50);
+    pointLight1.position.set(10, 10, 10);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x666666, isMobile ? 0.4 : 0.5, 50);
+    pointLight2.position.set(-10, -10, -10);
+    scene.add(pointLight2);
+
+    function animate(){
+      requestAnimationFrame(animate);
+
+      mouse.x += (targetMouse.x - mouse.x) * 0.05;
+      mouse.y += (targetMouse.y - mouse.y) * 0.05;
+
+      const pos = particleSystem.geometry.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         pos[i3 + 2] -= velocities[i] * 2;
         if (pos[i3 + 2] < -20) {
-            pos[i3 + 2] = 60;
-            pos[i3] = (Math.random() - 0.5) * 80;
-            pos[i3 + 1] = (Math.random() - 0.5) * 80;
+          pos[i3 + 2] = 60;
+          pos[i3] = (Math.random() - 0.5) * 80;
+          pos[i3 + 1] = (Math.random() - 0.5) * 80;
         }
+      }
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+      particleSystem.rotation.y += 0.0001;
+
+      camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
+      camera.position.y += (-mouse.y * 3 - camera.position.y) * 0.03;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
     }
-    particleSystem.geometry.attributes.position.needsUpdate = true;
-    particleSystem.rotation.y += 0.0001;
-    
-    camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
-    camera.position.y += (-mouse.y * 3 - camera.position.y) * 0.03;
-    camera.lookAt(0, 0, 0);
-    
-    renderer.render(scene, camera);
-}
-animate();
+    animate();
 
-function handleResize() {
-    const newWidth = container.clientWidth;
-    const newHeight = container.clientHeight;
-    camera.aspect = newWidth / newHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(newWidth, newHeight);
-}
+    function handleResize(){
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+      camera.aspect = newWidth / newHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(newWidth, newHeight);
+    }
 
-function handleMouseMove(e) {
-    const rect = container.getBoundingClientRect();
-    targetMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    targetMouse.y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-}
+    function handleMouseMove(e){
+      const rect = container.getBoundingClientRect();
+      targetMouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      targetMouse.y = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    }
 
-function handleTouchMove(e) {
-    if (e.touches.length > 0) {
+    function handleTouchMove(e){
+      if (e.touches.length > 0){
         const rect = container.getBoundingClientRect();
         targetMouse.x = ((e.touches[0].clientX - rect.left) / rect.width) * 2 - 1;
         targetMouse.y = ((e.touches[0].clientY - rect.top) / rect.height) * 2 - 1;
+      }
     }
-}
 
-window.addEventListener('resize', handleResize);
-container.addEventListener('mousemove', handleMouseMove);
-container.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('resize', handleResize);
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
 
-window.addEventListener('load', () => {
-    setTimeout(runBootSequence, 500);
-});
-</script>
+    // ===================== Data stream text rotation =====================
+    const dataVariants = [
+      'SECTOR_53 :: NODE_ACTIVE :: ENCRYPTED :: HARDWIRED_FOR_HUM4NS :: SYS_VER_5.3.1 :: UPLINK_STABLE :: ',
+      'ROGUE_OS :: UNDERGROUND_NET :: SIGNAL_LOCK :: PACKET_FLOW :: MODULE_BUS_ACTIVE :: ',
+      'SPINNER_ROUTE :: ORIGAMI_CITY :: ACID_RAIN :: AERIAL_CONGESTION :: VK_STANDBY :: ',
+      'NEURAL_ARRAY :: ONLINE :: MEMORY_CHECKSUM_OK :: PROTOCOL_53 :: ',
+    ];
+
+    function rotateDataStream(){
+      const a = document.getElementById('dataTextA');
+      const b = document.getElementById('dataTextB');
+      const next = dataVariants[Math.floor(Math.random() * dataVariants.length)];
+      a.textContent = next;
+      b.textContent = next;
+    }
+
+    setInterval(rotateDataStream, 7000);
+
+    // ===================== Start =====================
+    window.addEventListener('load', () => {
+      // Start boot after a beat
+      setTimeout(runBootSequence, 500);
+      initModuleActions();
+      setAudioUI();
+
+      // Respect autoplay rules: audio is OFF until user clicks SYS_AUDIO.
+    });
+  </script>
 
 </body>
 </html>
