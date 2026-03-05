@@ -198,6 +198,19 @@
       font-size: clamp(44px, 8vw, 108px);
       margin-bottom: 18px;
       user-select:none;
+
+      /* FIX: keep the logo on ONE LINE */
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
+
+    .letter-container{
+      position:relative;
+      display:inline-flex;
+      align-items:baseline;
     }
 
     .title-sup{
