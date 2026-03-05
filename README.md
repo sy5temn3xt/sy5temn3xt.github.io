@@ -8,14 +8,11 @@ We build tools that respect your attention. No bloat. No tracking. Just utilitie
 
 ## Products
 
-### Clip Locker
-Advanced clipboard handling for power users. Auto-captures everything you copy - text, images, links. Access your full copy history anywhere with a right-click. Currently in review.
+### MultiClip
+Available for donwloand at the Web Store for extensions in Chrome Browser
 
-### Snap Stash
-Smart content clipping and organization. Save, tag, and organize your most important clips into folders. Quick access via right-click menu with "Paste from History" feature. In development.
-
-### Link Dump
-Bookmark management reimagined. Save links with context, notes, and tags. Search and filter your collection instantly. Coming soon.
+### LINK2U
+Coming Soon to the Play Store.
 
 ---
 
