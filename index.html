@@ -325,8 +325,32 @@
 
     .title-sup{
       position:relative;
-      top:-0.55em;
-      font-size: 0.28em;
+      top:-0.52em;
+      font-size: 0.46em;
+      letter-spacing: .02em;
+      color: var(--amber);
+      text-shadow: 0 0 10px rgba(255,176,0,0.55);
+      user-select:none;
+    }
+
+    /* (rest of .title-sup block continues) */
+
+    .title-sup.audio-on{color:#ffd24a;text-shadow:0 0 14px rgba(255,210,74,.65)}
+
+    .title-sup.virus{
+      color: var(--danger);
+      text-shadow: 0 0 18px rgba(255,0,64,.75),0 0 40px rgba(255,0,64,.35);
+      animation: subtleJitter .25s infinite;
+    }
+
+    .flicker{animation:flicker 2s infinite}
+    .flicker-intense{animation:flicker-intense 1.5s infinite}
+    .flicker-intense.paused{animation:none}
+
+    .virus-glow{ text-shadow: 0 0 30px var(--danger), 0 0 60px var(--danger), 0 0 90px var(--danger) !important; }
+
+    /* Data stream line */
+    .data-stream{
       letter-spacing: .02em;
       color: var(--amber);
       text-shadow: 0 0 10px rgba(255,176,0,0.55);
@@ -396,10 +420,10 @@
       background: var(--panel);
       border: 1px solid var(--panel-border);
       padding: 16px;
-      text-decoration:none;
       color:#fff;
       transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
       min-height: 138px;
+      overflow: hidden;
     }
 
     .module-card:hover{
@@ -443,15 +467,16 @@
       color:#fff;
       margin-bottom: 10px;
       transition: color .2s ease;
+      text-align:center;
     }
-
-    .module-card:hover .module-name{color: var(--amber)}
 
     .module-actions{
       display:flex;
       justify-content:center;
       gap: 10px;
       margin-top: 10px;
+      position: relative;
+      z-index: 2;
     }
 
     .module-btn{
@@ -503,6 +528,130 @@
     }
 
     .module-card:hover .meter .fill{background: rgba(255,176,0,0.85)}
+
+    /* Drawer (OS module panel) */
+    .module-drawer{
+      position:absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(156,163,175,0.22);
+      padding: 14px;
+      z-index: 3;
+      display:flex;
+      align-items: stretch;
+    }
+
+    .module-drawer[hidden]{display:none;}
+
+    .drawer-inner{
+      width:100%;
+      border: 1px solid rgba(156,163,175,0.22);
+      background: rgba(0,0,0,0.55);
+      padding: 12px 12px 14px;
+      box-shadow: 0 0 18px rgba(0,0,0,0.6);
+    }
+
+    .drawer-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom: 10px;
+    }
+
+    .drawer-title{
+      letter-spacing: .14em;
+      font-size: 12px;
+      color: rgba(255,176,0,0.85);
+      text-shadow: 0 0 10px rgba(255,176,0,0.25);
+    }
+
+    .drawer-close{
+      border: 1px solid rgba(156,163,175,0.25);
+      background: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.85);
+      width: 28px;
+      height: 28px;
+      cursor:pointer;
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+      font-family: 'VT323', monospace;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .drawer-close:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,176,0,0.55);
+      box-shadow: 0 0 14px rgba(255,176,0,0.18);
+      background: rgba(255,176,0,0.06);
+    }
+
+    .drawer-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    .drawer-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      letter-spacing: .12em;
+      font-size: 12px;
+      padding: 6px 8px;
+      border: 1px solid rgba(156,163,175,0.14);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .drawer-row .k{opacity:.75;color: rgba(156,163,175,0.85);}
+    .drawer-row .v{opacity:.95;color: rgba(255,255,255,0.88);}
+
+    .drawer-actions{display:flex;justify-content:center;gap:10px;}
+
+    .drawer-btn{
+      padding: 10px 12px;
+      border: 1px solid rgba(156,163,175,0.28);
+      background: rgba(0,0,0,0.35);
+      color: rgba(255,255,255,0.92);
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      letter-spacing: .12em;
+      cursor:pointer;
+      transition: transform .15s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .drawer-btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,176,0,0.55);
+      box-shadow: 0 0 16px rgba(255,176,0,0.18);
+      background: rgba(255,176,0,0.08);
+    }
+
+    .drawer-btn.disabled{
+      opacity: .55;
+      cursor:not-allowed;
+      pointer-events:none;
+    }
+
+    .drawer-btn.danger{
+      border-color: rgba(255,0,64,0.45);
+      color: rgba(255,0,64,0.95);
+      text-shadow: 0 0 10px rgba(255,0,64,0.25);
+    }
+
+    .drawer-note{
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: .10em;
+      color: rgba(156,163,175,0.78);
+      text-align:center;
+      opacity: .9;
+    }
 
     /* ===================== Satellites ===================== */
     .satellite-icon{
@@ -785,8 +934,8 @@
           <span class="title-wrap" id="titleWrap">
             <span class="main-title" id="titleText">
               <span class="flicker">S</span><span class="flicker">Y</span><span class="flicker-intense" id="letter-5">5</span><span class="flicker">T</span><span class="flicker">E</span><span class="flicker">M</span>
-              <span style="display:inline-block;width:.45em;"></span>
-              <span class="flicker">N</span><span class="flicker-intense" id="letter-3">3</span><span class="flicker">X</span><span class="flicker">T</span>
+              <span style="display:inline-block;width:.18em;"></span>
+            <span class="flicker">N</span><span class="flicker-intense" id="letter-3">3</span><span class="flicker">X</span><span class="flicker">T</span>
             </span>
             <span class="title-sup" id="sup53">53</span>
           </span>
@@ -805,7 +954,7 @@
           <div class="modules-grid" id="modulesGrid">
 
             <!-- MODULE 01: MultiClip -->
-            <a class="module-card" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu" data-module="1" data-module-name="MULTICLIP">
+            <div class="module-card" role="group" aria-label="MultiClip Module" data-module="1" data-module-name="MULTICLIP" data-install-url="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu">
               <div class="module-edges" aria-hidden="true">
                 <span class="tl active"></span>
                 <span class="tr"></span>
@@ -821,11 +970,32 @@
               <div class="module-name">Multi Clip</div>
 
               <div class="module-actions">
-                <span class="module-btn" data-action="install" data-module="1">INSTALL MODULE</span>
+                <span class="module-btn" data-action="open" data-module="1">OPEN MODULE</span>
               </div>
 
               <div class="meter" aria-hidden="true"><div class="fill" style="width:100%; animation: loadingBar 2.1s ease-out 0s;"></div></div>
-            </a>
+
+              <!-- Drawer -->
+              <div class="module-drawer" id="drawer-1" hidden>
+                <div class="drawer-inner">
+                  <div class="drawer-head">
+                    <div class="drawer-title">MODULE_01 :: MULTICLIP</div>
+                    <button class="drawer-close" type="button" aria-label="Close module" data-action="close" data-module="1">✕</button>
+                  </div>
+
+                  <div class="drawer-grid">
+                    <div class="drawer-row"><span class="k">STATUS</span><span class="v">ONLINE</span></div>
+                    <div class="drawer-row"><span class="k">TYPE</span><span class="v">CHROME_EXTENSION</span></div>
+                    <div class="drawer-row"><span class="k">CHANNEL</span><span class="v">WEB_STORE</span></div>
+                    <div class="drawer-row"><span class="k">PROTOCOL</span><span class="v">MODULE_BUS</span></div>
+                  </div>
+
+                  <div class="drawer-actions">
+                    <button class="drawer-btn" type="button" data-action="install" data-module="1">INSTALL MODULE</button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- MODULE 02: LINK2U (in review) -->
             <div class="module-card" role="group" aria-label="LINK2U Module" data-module="2" data-module-name="LINK2U">
@@ -844,10 +1014,33 @@
               <div class="module-name">LINK2U</div>
 
               <div class="module-actions">
-                <span class="module-btn disabled" aria-disabled="true">IN REVIEW</span>
+                <span class="module-btn" data-action="open" data-module="2">OPEN MODULE</span>
               </div>
 
               <div class="meter" aria-hidden="true"><div class="fill" style="width:70%; animation: loadingBar 2.1s ease-out .2s;"></div></div>
+
+              <!-- Drawer -->
+              <div class="module-drawer" id="drawer-2" hidden>
+                <div class="drawer-inner">
+                  <div class="drawer-head">
+                    <div class="drawer-title">MODULE_02 :: LINK2U</div>
+                    <button class="drawer-close" type="button" aria-label="Close module" data-action="close" data-module="2">✕</button>
+                  </div>
+
+                  <div class="drawer-grid">
+                    <div class="drawer-row"><span class="k">STATUS</span><span class="v" style="color: rgba(255,210,74,0.95);">IN_REVIEW</span></div>
+                    <div class="drawer-row"><span class="k">TYPE</span><span class="v">NETWORK_MODULE</span></div>
+                    <div class="drawer-row"><span class="k">CHANNEL</span><span class="v">CHROME_WEB_STORE</span></div>
+                    <div class="drawer-row"><span class="k">QUEUE</span><span class="v">GOOGLE_APPROVAL</span></div>
+                  </div>
+
+                  <div class="drawer-actions">
+                    <button class="drawer-btn disabled" type="button" aria-disabled="true">IN REVIEW</button>
+                  </div>
+
+                  <div class="drawer-note">Awaiting store approval. Module locked until deployment.</div>
+                </div>
+              </div>
             </div>
 
             <!-- MODULE 03: CLASSIFIED -->
@@ -867,15 +1060,38 @@
               <div class="module-name">CLASSIFIED</div>
 
               <div class="module-actions">
-                <span class="module-btn disabled" aria-disabled="true">CLASSIFIED</span>
+                <span class="module-btn" data-action="open" data-module="3">OPEN MODULE</span>
               </div>
 
               <div class="meter" aria-hidden="true"><div class="fill" style="width:35%; animation: loadingBar 2.1s ease-out .4s;"></div></div>
+
+              <!-- Drawer -->
+              <div class="module-drawer" id="drawer-3" hidden>
+                <div class="drawer-inner">
+                  <div class="drawer-head">
+                    <div class="drawer-title">MODULE_03 :: CLASSIFIED</div>
+                    <button class="drawer-close" type="button" aria-label="Close module" data-action="close" data-module="3">✕</button>
+                  </div>
+
+                  <div class="drawer-grid">
+                    <div class="drawer-row"><span class="k">STATUS</span><span class="v" style="color: rgba(255,0,64,0.95);">RESTRICTED</span></div>
+                    <div class="drawer-row"><span class="k">TYPE</span><span class="v">BLACK_OPS</span></div>
+                    <div class="drawer-row"><span class="k">ACCESS</span><span class="v">DENIED</span></div>
+                    <div class="drawer-row"><span class="k">CLEARANCE</span><span class="v">LEVEL_53</span></div>
+                  </div>
+
+                  <div class="drawer-actions">
+                    <button class="drawer-btn danger disabled" type="button" aria-disabled="true">CLASSIFIED</button>
+                  </div>
+
+                  <div class="drawer-note">This module does not exist. If you saw it, you didn’t.</div>
+                </div>
+              </div>
             </div>
 
           </div>
 
-          <!-- tiny status legend under modules (as discussed) -->
+          <!-- tiny status legend under modules -->
           <div id="legend" style="margin-top: 14px; opacity: .78; letter-spacing: .12em; font-size: 12px; color: rgba(156,163,175,0.85);">
             <span style="color: rgba(0,255,0,0.9); text-shadow:0 0 10px rgba(0,255,0,0.25);">ONLINE</span>
             <span style="opacity:.6; margin: 0 10px;">/</span>
@@ -1440,49 +1656,73 @@
     }
 
     function initModuleActions(){
-      // INSTALL MODULE (module 1)
+      // OPEN/CLOSE drawers
+      function closeAllDrawers(){
+        document.querySelectorAll('.module-drawer').forEach(d => { d.hidden = true; });
+      }
+
+      function openDrawer(moduleId){
+        closeAllDrawers();
+        const drawer = document.getElementById(`drawer-${moduleId}`);
+        if (drawer){
+          drawer.hidden = false;
+          fastTypeLine(`INITIALIZING MODULE_0${moduleId}`);
+          setTimeout(() => fastTypeLine(`MODULE_0${moduleId} READY`), 160);
+        }
+      }
+
+      // OPEN MODULE button
+      document.querySelectorAll('[data-action="open"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const moduleId = btn.getAttribute('data-module') || '1';
+          openDrawer(moduleId);
+        });
+      });
+
+      // Close buttons
+      document.querySelectorAll('[data-action="close"]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const moduleId = btn.getAttribute('data-module') || '1';
+          const drawer = document.getElementById(`drawer-${moduleId}`);
+          if (drawer) drawer.hidden = true;
+          fastTypeLine(`MODULE_0${moduleId} CLOSED`);
+        });
+      });
+
+      // INSTALL MODULE (drawer button)
       document.querySelectorAll('[data-action="install"]').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
+          const moduleId = btn.getAttribute('data-module') || '1';
+          const card = btn.closest('.module-card');
+          const url = card ? card.getAttribute('data-install-url') : null;
 
-          const moduleId = btn.getAttribute('data-module') || '01';
-          fastTypeLine(`INITIALIZING MODULE_0${moduleId}`);
+          fastTypeLine(`INSTALL MODULE_0${moduleId}`);
           setTimeout(() => {
-            fastTypeLine(`INSTALL MODULE_0${moduleId}`);
-            setTimeout(() => {
-              const card = btn.closest('a.module-card');
-              if (card && card.href) window.open(card.href, '_blank');
-            }, 220);
-          }, 180);
+            if (url) window.open(url, '_blank');
+          }, 220);
         });
       });
 
-      // Card tap feedback for all modules (without changing layout)
-      document.querySelectorAll('[data-module]').forEach((card) => {
-        card.addEventListener('mouseenter', () => {
-          const mod = card.getAttribute('data-module');
-          const name = card.getAttribute('data-module-name') || '';
-          if (!mod) return;
-          if (Math.random() > 0.65) logTerminal(`ACCESSING MODULE_0${mod} :: ${name}`);
-        });
-
+      // Clicking outside drawer (on card background) opens module
+      document.querySelectorAll('.module-card').forEach((card) => {
         card.addEventListener('click', (e) => {
-          const isLink = card.tagName.toLowerCase() === 'a';
-          const mod = card.getAttribute('data-module');
-          const name = card.getAttribute('data-module-name') || '';
-
-          // If it is a link card, let it navigate normally, but still do OS chatter
-          if (mod) {
-            fastTypeLine(`INITIALIZING MODULE_0${mod} :: ${name}`);
-            setTimeout(() => fastTypeLine(`MODULE_0${mod} READY`), 180);
-          }
-
-          if (!isLink) {
-            // do nothing else
-            e.preventDefault();
-          }
+          const drawer = card.querySelector('.module-drawer');
+          if (drawer && !drawer.hidden) return; // already open
+          const moduleId = card.getAttribute('data-module');
+          if (!moduleId) return;
+          openDrawer(moduleId);
         });
+      });
+
+      // ESC to close
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAllDrawers();
       });
     }
 
