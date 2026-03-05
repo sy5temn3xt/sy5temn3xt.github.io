@@ -9,7 +9,7 @@ We build tools that respect your attention. No bloat. No tracking. Just utilitie
 ## Products
 
 ### MultiClip
-Available for donwloand at the Web Store for extensions in Chrome Browser
+Available for download at the Web Store for extensions in Chrome browser
 
 ### LINK2U
 Coming Soon to the Play Store.
