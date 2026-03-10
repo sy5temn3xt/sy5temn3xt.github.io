@@ -497,7 +497,12 @@
     /* Modules (desktop grid) */
     .modules-wrap { margin-top: 28px; padding: 0 10px; }
 
+    .module-card.module-row-2-start {
+      grid-column: 1;
+    }
+
     .modules-grid {
+      /* desktop row control */
       display: grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
       gap: 14px;
@@ -507,6 +512,7 @@
 
     @media (min-width: 640px) {
       .modules-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+      .module-card.module-row-2-start { grid-column: 1; }
     }
 
     .module-card {
@@ -809,6 +815,8 @@
 
     .launch-row:hover { border-color: rgba(0,255,0,0.28); box-shadow: 0 0 18px rgba(0,255,0,0.08); }
 
+    .launch-row-4 { margin-top: 18px; }
+
     .launch-row::before {
       content:'';
       position:absolute;
@@ -1104,7 +1112,7 @@
             </div>
 
             <!-- Module 04: Classified -->
-            <div class="module-card" data-module="4">
+            <div class="module-card module-row-2-start" data-module="4">
               <div class="module-edges">
                 <div class="edge tl pulse" style="animation-delay:.6s"></div>
                 <div class="edge tr"></div>
@@ -1196,7 +1204,7 @@
 
               <div class="launch-row" data-launch="3">$1<div class="launch-dot review"></div>$2MODULE_03$3THUMB TYPE$4onclick="launchToggle(3)">OPEN</button>$5STATUS: IN DEVELOPMENT$6CHANNEL: INTERNAL$7NOTE: IN ACTIVE DEVELOPMENT$8COMING SOON$9</div>
 
-              <div class="launch-row" data-launch="4">
+              <div class="launch-row launch-row-4" data-launch="4">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
