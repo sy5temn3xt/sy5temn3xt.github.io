@@ -10,17 +10,29 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root {
+      --bg: #000;
+      --amber: #ffb000;
+      --amber-soft: rgba(255,176,0,0.18);
+      --green: #00ff88;
+      --green-soft: rgba(0,255,136,0.14);
+      --yellow: #ffd000;
+      --red: #ff0040;
+      --gray: rgba(156,163,175,0.9);
+      --card: rgba(8,8,8,0.34);
+      --card-2: rgba(0,0,0,0.24);
+    }
+
     body {
       margin: 0;
-      padding: 0;
       overflow-x: hidden;
-      background: #000;
+      background: var(--bg);
+      color: #fff;
       font-family: 'VT323', monospace;
     }
 
     canvas { display: block; }
 
-    /* Animations */
     @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
     @keyframes loadingBar { 0% { width: 0%; } 100% { width: 100%; } }
     @keyframes flicker {
@@ -68,7 +80,7 @@
     @keyframes phosphorFlicker { 0%, 100% { opacity: 0.97; } 50% { opacity: 1; } }
     @keyframes satellitePulse {
       0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor, 0 0 10px currentColor; }
-      50% { opacity: 0.6; box-shadow: 0 0 2px currentColor, 0 0 5px currentColor; }
+      50% { opacity: 0.55; box-shadow: 0 0 2px currentColor, 0 0 4px currentColor; }
     }
     @keyframes satelliteTransmit { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
     @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
@@ -78,65 +90,71 @@
       90% { opacity: 0.8; }
       100% { transform: translateY(200%); opacity: 0; }
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+    @keyframes linePrint { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 0.92; transform: translateX(0); } }
+    @keyframes anomalyFlash {
+      0%, 100% { opacity: 0; }
+      10%, 12%, 18%, 21% { opacity: 0.12; }
+    }
+    @keyframes telemetrySweep {
+      0% { transform: translateY(-120%); opacity: 0; }
+      10% { opacity: 0.12; }
+      50% { opacity: 0.08; }
+      100% { transform: translateY(180%); opacity: 0; }
+    }
 
     .flicker { animation: flicker 2s infinite; }
     .flicker-intense { animation: flicker-intense 1.5s infinite; }
     .flicker-intense.paused { animation: none; }
 
-    /* Boot sequence */
     #boot-sequence {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: #0a0a0a;
       z-index: 200;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'VT323', monospace;
       overflow: hidden;
     }
 
     .crt-screen {
+      position: relative;
       width: 100%;
       height: 100%;
-      position: relative;
       background: radial-gradient(ellipse at center, #1a0f00 0%, #0a0a0a 100%);
       animation: phosphorFlicker 0.1s infinite;
     }
 
-    .crt-curvature {
+    .crt-curvature,
+    .scanlines-overlay,
+    .screen-glare {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.4) 100%);
+      inset: 0;
       pointer-events: none;
+    }
+
+    .crt-curvature {
+      background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.42) 100%);
       box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
     }
 
     .scanlines-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 179, 0, 0.03) 2px, rgba(255, 179, 0, 0.03) 4px);
-      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,179,0,0.03) 2px, rgba(255,179,0,0.03) 4px);
       animation: scanlines 8s linear infinite;
     }
 
     .screen-glare {
-      position: absolute;
       top: -50%; left: -50%; right: -50%; bottom: -50%;
       background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.03) 0%, transparent 50%);
-      pointer-events: none;
     }
 
     .burn-in {
       position: absolute;
-      font-family: 'VT323', monospace;
-      color: rgba(255, 179, 0, 0.08);
+      color: rgba(255,179,0,0.08);
       font-size: 12px;
       letter-spacing: 2px;
     }
-
     .burn-in.top-left { top: 20px; left: 20px; }
     .burn-in.top-right { top: 20px; right: 20px; }
     .burn-in.bottom-left { bottom: 20px; left: 20px; }
@@ -146,10 +164,10 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      color: #ffb000;
+      color: var(--amber);
       font-size: 18px;
       line-height: 1.4;
-      text-shadow: 0 0 10px rgba(255, 176, 0, 0.8), 0 0 20px rgba(255, 176, 0, 0.4);
+      text-shadow: 0 0 10px rgba(255,176,0,0.8), 0 0 20px rgba(255,176,0,0.4);
       max-width: 600px;
       width: 90%;
     }
@@ -162,25 +180,23 @@
       letter-spacing: 8px;
       margin: 30px 0;
       text-align: center;
-      text-shadow: 0 0 20px rgba(255, 176, 0, 1), 0 0 40px rgba(255, 176, 0, 0.6);
+      text-shadow: 0 0 20px rgba(255,176,0,1), 0 0 40px rgba(255,176,0,0.6);
     }
 
-    .cursor {
+    .cursor,
+    .terminal-cursor {
       display: inline-block;
-      width: 12px;
-      height: 20px;
-      background: #ffb000;
+      background: var(--amber);
       animation: blink 1s infinite;
-      box-shadow: 0 0 10px rgba(255, 176, 0, 0.8);
+      box-shadow: 0 0 10px rgba(255,176,0,0.8);
     }
+    .cursor { width: 12px; height: 20px; }
+    .terminal-cursor { width: 8px; height: 14px; vertical-align: middle; }
+    .chinese-char { color: rgba(255,179,0,0.6); }
 
-    .chinese-char { color: rgba(255, 179, 0, 0.6); }
-
-    /* Intro overlay */
     #intro-overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: #000;
       z-index: 100;
       display: none;
@@ -196,40 +212,31 @@
     #main-content { opacity: 0; transition: opacity 1s ease-in; }
     #main-content.visible { opacity: 1; }
 
-    /* 53 trademark */
-    .logo-53 {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 60;
-      font-family: 'VT323', monospace;
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffb000;
-      letter-spacing: -1px;
-      text-shadow: 0 0 10px rgba(255, 176, 0, 0.8), 0 0 20px rgba(255, 176, 0, 0.35);
-      pointer-events: none;
-      opacity: 0.95;
-    }
-
-    /* Status */
-    .status-container {
+    .status-stack {
       position: fixed;
       top: 20px;
       right: 16px;
+      z-index: 70;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .status-container {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 4px;
-      z-index: 50;
       font-family: 'VT323', monospace;
       animation: colorCycle 6s ease-in-out infinite;
     }
 
     .status-container.virus {
       animation: none;
-      color: #ff0040;
-      text-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+      color: var(--red);
+      text-shadow: 0 0 20px rgba(255,0,0,0.8);
     }
 
     .status-line {
@@ -275,38 +282,82 @@
     .status-bar:nth-child(3) { height: 12px; animation: barWave 0.6s ease-in-out infinite 0.2s; }
     .status-bar:nth-child(4) { height: 16px; animation: barWave 0.6s ease-in-out infinite 0.3s; }
     .status-bar:nth-child(5) { height: 10px; animation: barWave 0.6s ease-in-out infinite 0.4s; }
-
     .status-bar.active { opacity: 1; box-shadow: 0 0 8px currentColor; }
 
-    .status-container.virus .status-bar { background-color: #ff0040; opacity: 0.3; animation: none; }
-    .status-container.virus .status-bar.active { opacity: 0.8; box-shadow: 0 0 15px #ff0040; }
+    .status-container.virus .status-bar { background-color: var(--red); opacity: 0.3; animation: none; }
+    .status-container.virus .status-bar.active { opacity: 0.8; box-shadow: 0 0 15px var(--red); }
 
-    /* Terminal */
-    .terminal-interface {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      width: 380px;
-      height: 220px;
-      background: transparent;
-      z-index: 50;
+    .telemetry-panel {
+      position: relative;
+      min-width: 192px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,176,0,0.16);
+      border-radius: 12px;
+      background: rgba(10,10,10,0.42);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.45);
       overflow: hidden;
-      font-family: 'VT323', monospace;
+    }
+
+    .telemetry-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,176,0,0), rgba(255,176,0,0) 3px, rgba(255,176,0,0.03) 3px, rgba(255,176,0,0.03) 6px);
       pointer-events: none;
     }
 
-    .terminal-screen {
+    .telemetry-panel::after {
+      content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: transparent;
-      overflow: hidden;
-      padding: 10px;
+      left: 0; right: 0;
+      top: -30%;
+      height: 30%;
+      background: linear-gradient(to bottom, rgba(255,176,0,0), rgba(255,176,0,0.18), rgba(255,176,0,0));
+      animation: telemetrySweep 7s linear infinite;
+      pointer-events: none;
     }
 
+    .telemetry-head {
+      color: rgba(255,176,0,0.78);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      margin-bottom: 6px;
+      text-align: right;
+    }
+
+    .telemetry-line {
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      line-height: 1.45;
+      white-space: nowrap;
+      text-align: right;
+      opacity: 0.92;
+      text-shadow: 0 0 8px rgba(255,176,0,0.16);
+    }
+
+    .terminal-interface {
+      position: fixed;
+      top: 26px;
+      left: 24px;
+      width: 390px;
+      height: 200px;
+      z-index: 50;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .terminal-screen,
     .terminal-scanlines {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 179, 0, 0.02) 3px, rgba(255, 179, 0, 0.02) 6px);
+      inset: 0;
+    }
+
+    .terminal-screen { padding: 10px; }
+
+    .terminal-scanlines {
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,179,0,0.02) 3px, rgba(255,179,0,0.02) 6px);
       pointer-events: none;
     }
 
@@ -314,36 +365,31 @@
       position: relative;
       height: 100%;
       overflow: hidden;
-      color: #ffb000;
+      color: var(--amber);
       font-size: 14px;
       line-height: 1.4;
-      text-shadow: 0 0 5px rgba(255, 176, 0, 0.6);
+      text-shadow: 0 0 5px rgba(255,176,0,0.6);
     }
 
-    .terminal-line { opacity: 0.9; white-space: nowrap; }
+    .terminal-line { opacity: 0.92; white-space: nowrap; }
     .terminal-line.new { animation: linePrint 0.1s ease-out; }
 
-    @keyframes linePrint { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 0.9; transform: translateX(0); } }
-
-    .terminal-cursor {
-      display: inline-block;
-      width: 8px;
-      height: 14px;
-      background: #ffb000;
-      animation: blink 1s infinite;
-      box-shadow: 0 0 5px rgba(255, 176, 0, 0.8);
-      vertical-align: middle;
+    .terminal-interface.virus .terminal-content {
+      color: var(--red);
+      text-shadow: 0 0 5px rgba(255,0,64,0.8);
+    }
+    .terminal-interface.virus .terminal-cursor {
+      background: var(--red);
+      box-shadow: 0 0 5px rgba(255,0,64,0.8);
+    }
+    .terminal-interface.virus .terminal-scanlines {
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,0,64,0.03) 3px, rgba(255,0,64,0.03) 6px);
     }
 
-    .terminal-interface.virus .terminal-content { color: #ff0040; text-shadow: 0 0 5px rgba(255, 0, 64, 0.8); }
-    .terminal-interface.virus .terminal-cursor { background: #ff0040; box-shadow: 0 0 5px rgba(255, 0, 64, 0.8); }
-    .terminal-interface.virus .terminal-scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255, 0, 64, 0.03) 3px, rgba(255, 0, 64, 0.03) 6px); }
-
-    /* Dock (social + audio) */
     .dock {
       position: fixed;
-      bottom: 20px;
       right: 20px;
+      bottom: 20px;
       z-index: 55;
       display: inline-flex;
       align-items: center;
@@ -384,7 +430,7 @@
     }
 
     .dock-btn svg { width: 20px; height: 20px; fill: rgba(156,163,175,0.9); transition: fill 0.2s ease; }
-    .dock-btn:hover svg { fill: #ffb000; }
+    .dock-btn:hover svg { fill: var(--amber); }
 
     .audio-pill {
       display: inline-flex;
@@ -398,9 +444,7 @@
       user-select: none;
       transition: all 0.2s ease;
     }
-
     .audio-pill:hover { border-color: rgba(255,176,0,0.6); box-shadow: 0 0 16px rgba(255,176,0,0.18); }
-
     .audio-led {
       width: 10px;
       height: 10px;
@@ -409,14 +453,11 @@
       border: 1px solid #555;
       transition: all 0.2s ease;
     }
-
     .audio-pill.active { border-color: rgba(255,176,0,0.85); }
-    .audio-pill.active .audio-led { background: #ffb000; box-shadow: 0 0 10px rgba(255, 176, 0, 0.8); }
-
+    .audio-pill.active .audio-led { background: var(--amber); box-shadow: 0 0 10px rgba(255,176,0,0.8); }
     .audio-label { font-size: 14px; color: rgba(156,163,175,0.9); letter-spacing: 2px; }
-    .audio-pill.active .audio-label { color: #ffb000; }
+    .audio-pill.active .audio-label { color: var(--amber); }
 
-    /* Main */
     #canvas-container {
       position: absolute;
       inset: 0;
@@ -425,6 +466,17 @@
       touch-action: none;
     }
 
+    .anomaly-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,0,64,0), rgba(255,0,64,0.08), rgba(255,0,64,0));
+      opacity: 0;
+      z-index: 65;
+    }
+
+    .anomaly-overlay.active { animation: anomalyFlash 0.5s linear 1; }
+
     .center-wrap {
       position: relative;
       z-index: 10;
@@ -432,12 +484,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 52px 18px 110px;
+      padding: 60px 18px 116px;
     }
 
-    .center-inner { text-align: center; max-width: 980px; width: 100%; }
+    .center-inner {
+      text-align: center;
+      max-width: 980px;
+      width: 100%;
+    }
 
     .title {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
       font-family: monospace;
       font-weight: 800;
       letter-spacing: .08em;
@@ -445,15 +506,8 @@
       color: #fff;
       text-shadow: 0 0 20px rgba(255,255,255,.7), 0 0 40px rgba(255,255,255,.4), 0 0 60px rgba(255,255,255,.2);
       font-size: clamp(44px, 8vw, 108px);
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       user-select: none;
-
-      /* keep logo on one line */
-      display: inline-flex;
-      align-items: baseline;
-      justify-content: center;
-      flex-wrap: nowrap;
-      white-space: nowrap;
     }
 
     .title-sup {
@@ -461,7 +515,7 @@
       top: -0.52em;
       font-size: 0.38em;
       letter-spacing: 0.06em;
-      color: #ffb000;
+      color: var(--amber);
       text-shadow: 0 0 14px rgba(255,176,0,.65), 0 0 24px rgba(255,176,0,.25);
       margin-left: 10px;
     }
@@ -480,35 +534,29 @@
       opacity: 0;
       z-index: 10;
     }
-
     .matrix-rain.active { opacity: 1; }
-
     .matrix-char {
       position: absolute;
-      color: #ff0040;
+      color: var(--red);
       font-size: 0.3em;
-      text-shadow: 0 0 5px #ff0040;
+      text-shadow: 0 0 5px var(--red);
       animation: matrixFall 0.8s linear infinite;
       opacity: 0.8;
     }
+    .virus-glow { text-shadow: 0 0 30px var(--red), 0 0 60px var(--red), 0 0 90px var(--red) !important; }
 
-    .virus-glow { text-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040, 0 0 90px #ff0040 !important; }
+    .desktop-only { display: block; }
+    .mobile-only { display: none; }
 
-    /* Modules (desktop grid) */
-    .modules-wrap { margin-top: 28px; padding: 0 10px; }
-
-    .module-card.module-row-2-start {
-      grid-column: 1;
-    }
-
+    .modules-wrap { margin-top: 26px; padding: 0 10px; }
     .modules-grid {
-      /* desktop row control */
       display: grid;
       grid-template-columns: repeat(1, minmax(0, 1fr));
       gap: 14px;
       max-width: 860px;
       margin: 0 auto;
     }
+    .module-card.module-row-2-start { grid-column: 1; }
 
     @media (min-width: 640px) {
       .modules-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
@@ -524,7 +572,6 @@
       transition: all 0.25s ease;
       overflow: hidden;
     }
-
     .module-card:hover {
       border-color: rgba(156,163,175,0.42);
       box-shadow: 0 0 22px rgba(255,176,0,0.12);
@@ -537,12 +584,10 @@
       height: 8px;
       background: rgba(156,163,175,0.22);
     }
-
     .module-edges .edge.tl { top: 0; left: 0; }
     .module-edges .edge.tr { top: 0; right: 0; }
     .module-edges .edge.bl { bottom: 0; left: 0; }
     .module-edges .edge.br { bottom: 0; right: 0; }
-
     .module-edges .edge.pulse {
       background: rgba(156,163,175,0.65);
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -560,7 +605,6 @@
       gap: 8px;
       text-transform: uppercase;
     }
-
     .module-name {
       font-family: monospace;
       font-size: 18px;
@@ -568,7 +612,6 @@
       letter-spacing: 0.04em;
       margin-bottom: 10px;
     }
-
     .module-actions {
       display: flex;
       align-items: center;
@@ -576,7 +619,6 @@
       gap: 10px;
       margin-top: 6px;
     }
-
     .module-btn {
       font-family: monospace;
       font-size: 13px;
@@ -596,13 +638,11 @@
       gap: 8px;
       min-width: 128px;
     }
-
     .module-btn:hover {
       border-color: rgba(255,176,0,0.65);
       box-shadow: 0 0 18px rgba(255,176,0,0.16);
-      color: #ffb000;
+      color: var(--amber);
     }
-
     .meter {
       margin-top: 14px;
       height: 4px;
@@ -610,29 +650,22 @@
       border-radius: 999px;
       overflow: hidden;
     }
-
     .meter > div {
       height: 100%;
       background: rgba(156,163,175,0.80);
       border-radius: 999px;
       box-shadow: 0 0 10px rgba(255,255,255,0.35);
     }
-
     .meter > div.orange { background: rgba(255,176,0,0.95); box-shadow: 0 0 10px rgba(255,176,0,0.45); }
-
     .module-panel {
       margin-top: 12px;
       border-top: 1px solid rgba(156,163,175,0.16);
       padding-top: 12px;
       text-align: left;
       display: none;
-      animation: panelDrop 0.2s ease-out;
+      animation: linePrint 0.18s ease-out;
     }
-
-    @keyframes panelDrop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-
     .module-panel.open { display: block; }
-
     .panel-line {
       color: rgba(209,213,219,0.92);
       font-family: monospace;
@@ -640,14 +673,12 @@
       line-height: 1.5;
       margin: 2px 0;
     }
-
     .panel-cta {
       margin-top: 12px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     .cta-link {
       display: inline-flex;
       align-items: center;
@@ -656,7 +687,7 @@
       border-radius: 10px;
       border: 1px solid rgba(255,176,0,0.35);
       background: rgba(255,176,0,0.08);
-      color: #ffb000;
+      color: var(--amber);
       text-decoration: none;
       font-family: monospace;
       font-size: 12px;
@@ -664,16 +695,13 @@
       text-transform: uppercase;
       transition: all 0.2s ease;
     }
-
     .cta-link:hover { border-color: rgba(255,176,0,0.75); box-shadow: 0 0 18px rgba(255,176,0,0.16); }
-
     .cta-muted {
       border-color: rgba(156,163,175,0.22);
       color: rgba(156,163,175,0.85);
       background: rgba(0,0,0,0.18);
     }
 
-    /* Satellite icons */
     .satellite-icon {
       display: inline-flex;
       align-items: center;
@@ -684,10 +712,10 @@
       position: relative;
       color: #00ff00;
     }
-
-    .satellite-icon.live { animation: satellitePulse 2s infinite; }
-
-    .satellite-icon.live::before {
+    .satellite-icon.live, .proc-dot.online { animation: satellitePulse 2s infinite; }
+    .satellite-icon.live::before,
+    .satellite-icon.offline::before,
+    .satellite-icon.review::before {
       content: '';
       width: 6px;
       height: 6px;
@@ -695,8 +723,9 @@
       border-radius: 50%;
       box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
     }
-
-    .satellite-icon.live::after {
+    .satellite-icon.live::after,
+    .satellite-icon.offline::after,
+    .satellite-icon.review::after {
       content: '';
       position: absolute;
       width: 12px;
@@ -705,127 +734,133 @@
       border-radius: 50%;
       animation: satelliteTransmit 2s infinite;
     }
+    .satellite-icon.offline { color: var(--red); animation: satellitePulse 1.6s infinite; }
+    .satellite-icon.offline::after { animation-duration: 1.8s; opacity: 0.85; }
+    .satellite-icon.review { color: var(--yellow); animation: satellitePulse 2.2s infinite; }
+    .satellite-icon.review::after { animation-duration: 2.2s; opacity: 0.8; }
 
-    .satellite-icon.offline { color: #ff0040; animation: satellitePulse 1.6s infinite; }
-    .satellite-icon.offline::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: currentColor;
-      border-radius: 50%;
-      box-shadow: 0 0 5px currentColor;
-    }
-    .satellite-icon.offline::after {
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border: 1px solid currentColor;
-      border-radius: 50%;
-      animation: satelliteTransmit 1.8s infinite;
-      opacity: 0.85;
-    }
-
-    .satellite-icon.review { color: #ffd000; animation: satellitePulse 2.2s infinite; }
-    .satellite-icon.review::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: currentColor;
-      border-radius: 50%;
-      box-shadow: 0 0 6px currentColor;
-    }
-    .satellite-icon.review::after {
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border: 1px solid currentColor;
-      border-radius: 50%;
-      animation: satelliteTransmit 2.2s infinite;
-      opacity: 0.8;
-    }
-
-    /* Desktop vs Mobile layout switches */
-    .desktop-only { display: block; }
-    .mobile-only { display: none; }
-
-    /* Mobile launcher mode */
     .launcher {
-      max-width: 560px;
-      margin: 18px auto 0;
+      position: relative;
+      max-width: 580px;
+      margin: 12px auto 0;
       text-align: left;
       border-radius: 18px;
       overflow: hidden;
-      border: 1px solid rgba(0,255,0,0.12);
-      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(0,255,136,0.16);
+      background: rgba(0,0,0,0.4);
       backdrop-filter: blur(10px);
       box-shadow: 0 18px 44px rgba(0,0,0,0.6);
     }
 
-    .launcher-header {
-      padding: 14px 14px 10px;
-      border-bottom: 1px solid rgba(0,255,0,0.12);
-      position: relative;
-      overflow: hidden;
+    .launcher::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: -25%;
+      height: 22%;
+      background: linear-gradient(to bottom, rgba(0,255,136,0), rgba(0,255,136,0.16), rgba(0,255,136,0));
+      animation: telemetrySweep 8s linear infinite;
+      pointer-events: none;
+      opacity: 0.6;
     }
 
+    .launcher-header {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(0,255,136,0.12);
+      position: relative;
+      overflow: hidden;
+      background: rgba(0,0,0,0.22);
+    }
     .launcher-header::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: repeating-linear-gradient(0deg, rgba(0,255,0,0.0), rgba(0,255,0,0.0) 3px, rgba(0,255,0,0.05) 3px, rgba(0,255,0,0.05) 6px);
+      background: repeating-linear-gradient(0deg, rgba(0,255,136,0), rgba(0,255,136,0) 3px, rgba(0,255,136,0.05) 3px, rgba(0,255,136,0.05) 6px);
       opacity: 0.45;
       pointer-events: none;
     }
 
     .launcher-kicker {
+      position: relative;
+      z-index: 1;
       font-family: monospace;
-      color: rgba(0,255,0,0.75);
+      color: rgba(0,255,136,0.78);
       letter-spacing: 0.18em;
       text-transform: uppercase;
       font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .launcher-topline {
       position: relative;
       z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .launcher-typing {
       font-family: monospace;
-      color: rgba(0,255,0,0.92);
+      color: rgba(0,255,136,0.94);
       font-size: 12px;
-      margin-top: 8px;
       min-height: 18px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 0 10px rgba(0,255,0,0.25);
+      text-shadow: 0 0 10px rgba(0,255,136,0.25);
+      flex: 1;
     }
 
-    .launcher-list { padding: 8px 10px; }
+    .launcher-counter {
+      font-family: monospace;
+      color: rgba(0,255,136,0.72);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+    }
+
+    .launcher-list {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
     .launch-row {
       position: relative;
       padding: 12px 10px;
       border-radius: 14px;
-      border: 1px solid rgba(0,255,0,0.12);
-      background: rgba(0,0,0,0.25);
-      margin: 10px 0;
+      border: 1px solid rgba(0,255,136,0.12);
+      background: rgba(0,0,0,0.22);
       overflow: hidden;
       transition: all 0.2s ease;
     }
-
-    .launch-row:hover { border-color: rgba(0,255,0,0.28); box-shadow: 0 0 18px rgba(0,255,0,0.08); }
-
-    .launch-row-4 { margin-top: 18px; }
-
-    .launch-row::before {
-      content:'';
-      position:absolute;
-      left:0; right:0; top:0;
-      height: 1px;
-      background: linear-gradient(to right, rgba(0,255,0,0), rgba(0,255,0,0.35), rgba(0,255,0,0));
-      opacity: .55;
-      pointer-events:none;
+    .launch-row:hover {
+      border-color: rgba(0,255,136,0.28);
+      box-shadow: 0 0 18px rgba(0,255,136,0.08);
     }
+    .launch-row-4 { margin-top: 2px; }
+    .launch-row::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 1px;
+      background: linear-gradient(to right, rgba(0,255,136,0), rgba(0,255,136,0.35), rgba(0,255,136,0));
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .launch-row.online { border-color: rgba(0,255,136,0.14); }
+    .launch-row.review { border-color: rgba(255,208,0,0.14); }
+    .launch-row.offline { border-color: rgba(255,0,64,0.14); }
+
+    .launch-scan {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,255,136,0), rgba(0,255,136,0) 3px, rgba(0,255,136,0.08) 3px, rgba(0,255,136,0.08) 6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+    .launch-row.scanning .launch-scan { opacity: 0.75; }
 
     .launch-top {
       display: flex;
@@ -833,52 +868,81 @@
       justify-content: space-between;
       gap: 10px;
     }
-
     .launch-left {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       min-width: 0;
+      flex: 1;
     }
 
-    .launch-dot {
-      width: 10px;
-      height: 10px;
+    .proc-dot {
+      position: relative;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      background: rgba(0,255,0,0.85);
-      box-shadow: 0 0 10px rgba(0,255,0,0.35);
       flex: 0 0 auto;
+      margin-top: 4px;
     }
-
-    .launch-dot.review { background: rgba(255,208,0,0.95); box-shadow: 0 0 10px rgba(255,208,0,0.35); }
-    .launch-dot.offline { background: rgba(255,0,64,0.95); box-shadow: 0 0 10px rgba(255,0,64,0.35); }
+    .proc-dot.online { background: rgba(0,255,136,0.92); box-shadow: 0 0 10px rgba(0,255,136,0.4); }
+    .proc-dot.review { background: rgba(255,208,0,0.95); box-shadow: 0 0 10px rgba(255,208,0,0.35); animation: satellitePulse 2.1s infinite; }
+    .proc-dot.offline { background: rgba(255,0,64,0.95); box-shadow: 0 0 10px rgba(255,0,64,0.35); animation: satellitePulse 1.7s infinite; }
 
     .launch-title {
       display: flex;
       flex-direction: column;
       gap: 2px;
       min-width: 0;
+      flex: 1;
     }
-
     .launch-module {
       font-family: monospace;
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: rgba(0,255,0,0.72);
+      color: rgba(0,255,136,0.72);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .launch-name {
       font-family: monospace;
       font-size: 15px;
       letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.92);
+      color: rgba(255,255,255,0.94);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    .launch-statusline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .launch-badge {
+      font-family: monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,255,136,0.16);
+      color: rgba(0,255,136,0.94);
+      background: rgba(0,255,136,0.06);
+    }
+    .launch-badge.yellow { border-color: rgba(255,208,0,0.18); color: rgba(255,208,0,0.95); background: rgba(255,208,0,0.06); }
+    .launch-badge.red { border-color: rgba(255,0,64,0.18); color: rgba(255,0,64,0.95); background: rgba(255,0,64,0.06); }
+    .launch-sub {
+      font-family: monospace;
+      font-size: 11px;
+      color: rgba(209,213,219,0.72);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     .launch-btn {
@@ -888,78 +952,125 @@
       text-transform: uppercase;
       padding: 10px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(0,255,0,0.18);
-      background: rgba(0,255,0,0.06);
-      color: rgba(0,255,0,0.9);
+      border: 1px solid rgba(0,255,136,0.18);
+      background: rgba(0,255,136,0.06);
+      color: rgba(0,255,136,0.92);
       cursor: pointer;
       transition: all 0.2s ease;
       flex: 0 0 auto;
     }
+    .launch-btn:hover { border-color: rgba(0,255,136,0.45); box-shadow: 0 0 18px rgba(0,255,136,0.10); }
+    .launch-btn.yellow { border-color: rgba(255,208,0,0.22); background: rgba(255,208,0,0.05); color: rgba(255,208,0,0.95); }
+    .launch-btn.red { border-color: rgba(255,0,64,0.22); background: rgba(255,0,64,0.05); color: rgba(255,0,64,0.95); }
 
-    .launch-btn:hover { border-color: rgba(0,255,0,0.45); box-shadow: 0 0 18px rgba(0,255,0,0.10); }
+    .launch-command {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-family: monospace;
+      font-size: 11px;
+      color: rgba(0,255,136,0.85);
+      letter-spacing: 0.12em;
+      display: none;
+    }
+    .launch-command.active { display: block; }
+    .launch-command.review { color: rgba(255,208,0,0.9); }
+    .launch-command.offline { color: rgba(255,0,64,0.9); }
 
     .launch-details {
       display: none;
       margin-top: 10px;
       padding-top: 10px;
-      border-top: 1px solid rgba(0,255,0,0.12);
+      border-top: 1px solid rgba(0,255,136,0.12);
       color: rgba(209,213,219,0.92);
       font-family: monospace;
       font-size: 12px;
       line-height: 1.55;
     }
-
     .launch-details.open { display: block; }
-
     .launch-actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
-
     .launch-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(0,255,0,0.20);
-      background: rgba(0,255,0,0.06);
-      color: rgba(0,255,0,0.92);
+      border: 1px solid rgba(0,255,136,0.20);
+      background: rgba(0,255,136,0.06);
+      color: rgba(0,255,136,0.92);
       text-decoration: none;
       font-family: monospace;
       font-size: 11px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-
     .launch-link.yellow { border-color: rgba(255,208,0,0.25); background: rgba(255,208,0,0.06); color: rgba(255,208,0,0.95); }
     .launch-link.red { border-color: rgba(255,0,64,0.25); background: rgba(255,0,64,0.05); color: rgba(255,0,64,0.95); }
     .launch-link.gray { border-color: rgba(156,163,175,0.20); background: rgba(0,0,0,0.18); color: rgba(156,163,175,0.92); }
 
-    .launch-scan {
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(0deg, rgba(0,255,0,0.0), rgba(0,255,0,0.0) 3px, rgba(0,255,0,0.08) 3px, rgba(0,255,0,0.08) 6px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.15s ease;
-    }
+    @media (max-width: 768px) {
+      .desktop-only { display: none; }
+      .mobile-only { display: block; }
 
-    .launch-row.scanning .launch-scan { opacity: 0.75; }
+      .status-stack {
+        top: 10px;
+        right: 10px;
+        gap: 6px;
+      }
+      .status-line { font-size: 12px; }
+      .status-latency { font-size: 11px; min-width: 52px; }
+      .status-dot { width: 8px; height: 8px; }
+      .status-bars { height: 12px; }
+      .status-bar { width: 3px; }
 
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {$1.status-container { top: 10px !important; right: 10px !important; left: auto !important; transform: none !important; margin: 0 !important; align-items: flex-end !important; }
+      .telemetry-panel {
+        min-width: 164px;
+        padding: 8px 10px;
+      }
+      .telemetry-head,
+      .telemetry-line { font-size: 10px; }
+
       .terminal-interface { display: none !important; }
+
+      .dock {
+        right: 10px;
+        bottom: 10px;
+        gap: 8px;
+        padding: 8px 10px;
+      }
+      .dock-btn { width: 36px; height: 36px; }
+      .audio-pill { padding: 9px 10px; }
+
+      .center-wrap { padding: 38px 14px 94px; }
+      .title {
+        font-size: clamp(38px, 11vw, 64px);
+        letter-spacing: 0.06em;
+        margin-bottom: 8px;
+      }
+      .title-sup { font-size: 0.34em; top: -0.58em; margin-left: 8px; }
+      #scanlines { opacity: 0.02 !important; }
+
+      .launcher { margin-top: 8px; }
+      .launcher-header { padding: 10px 12px 8px; }
+      .launcher-list { padding: 8px 8px 10px; gap: 7px; }
+      .launch-row { padding: 10px 9px; }
+      .launch-name { font-size: 14px; }
+      .launch-sub { font-size: 10px; }
+      .launch-btn { padding: 9px 9px; font-size: 10px; }
     }
 
-    @media (min-width: 768px) {$1.status-container { top: 18px; right: 18px !important; left: auto !important; transform: none !important; margin: 0 !important; align-items: flex-end !important; }
+    @media (min-width: 768px) {
+      .status-stack { top: 18px; right: 18px; }
       .terminal-interface { top: 30px; left: 30px; width: 400px; height: 200px; }
       .dock { right: 30px; bottom: 30px; }
       .status-line { font-size: 18px; }
       .status-latency { font-size: 16px; }
+      .telemetry-panel { min-width: 204px; }
     }
   </style>
   <base target="_blank">
 </head>
 <body>
-
   <div id="boot-sequence">
     <div class="crt-screen">
       <div class="crt-curvature"></div>
@@ -980,8 +1091,6 @@
     </div>
   </div>
 
-  
-
   <div id="intro-overlay">
     <div style="text-align:center;">
       <div id="typewriter-text" style="font-family: monospace; font-weight: 800; letter-spacing: .12em; color:#fff; text-shadow: 0 0 30px rgba(255,255,255,0.8); font-size: clamp(40px, 7vw, 110px);">
@@ -990,30 +1099,39 @@
     </div>
   </div>
 
-  <div class="status-container" id="status-container">
-    <div class="status-line">
-      <div class="status-dot"></div>
-      <span id="status-text">CONNECTED</span>
-      <span class="status-latency" id="latency">12ms</span>
+  <div class="status-stack">
+    <div class="status-container" id="status-container">
+      <div class="status-line">
+        <div class="status-dot"></div>
+        <span id="status-text">CONNECTED</span>
+        <span class="status-latency" id="latency">12ms</span>
+      </div>
+      <div class="status-bars" id="status-bars">
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar"></div>
+      </div>
     </div>
-    <div class="status-bars" id="status-bars">
-      <div class="status-bar active"></div>
-      <div class="status-bar active"></div>
-      <div class="status-bar active"></div>
-      <div class="status-bar active"></div>
-      <div class="status-bar"></div>
+
+    <div class="telemetry-panel" id="telemetry-panel">
+      <div class="telemetry-head">SYS://MONITOR</div>
+      <div class="telemetry-line" id="telemetry-line-1">NODE_53 :: UPLINK ACTIVE</div>
+      <div class="telemetry-line" id="telemetry-line-2">PACKET FLOW :: 2.3MB/S</div>
+      <div class="telemetry-line" id="telemetry-line-3">PROCESS GRID :: NOMINAL</div>
     </div>
   </div>
 
   <div id="main-content" style="width:100%; min-height:100vh; background:#000; position:relative; overflow:hidden;">
     <div id="canvas-container"></div>
+    <div class="anomaly-overlay" id="anomaly-overlay"></div>
 
     <div style="position:absolute; inset:0; pointer-events:none; background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.9) 100%);"></div>
     <div id="scanlines" style="position:absolute; inset:0; opacity:0.05; pointer-events:none; mix-blend-mode: overlay; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 4px); animation: scanlines 8s linear infinite;"></div>
 
     <div class="center-wrap">
       <div class="center-inner">
-
         <h1 style="margin-bottom: 10px;">
           <span class="title" id="main-title">
             <span class="letter-container"><span class="flicker">S</span><div class="matrix-rain" id="rain-S"></div></span>
@@ -1031,37 +1149,21 @@
           </span>
         </h1>
 
-        <!-- DESKTOP MODULES -->
         <div class="modules-wrap desktop-only">
           <div class="modules-grid">
-
-            <!-- Module 01: Multi Clip -->
             <div class="module-card" data-module="1">
               <div class="module-edges">
-                <div class="edge tl pulse"></div>
-                <div class="edge tr"></div>
-                <div class="edge bl"></div>
-                <div class="edge br pulse"></div>
+                <div class="edge tl pulse"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse"></div>
               </div>
-
-              <div class="module-meta">
-                MODULE 01
-                <span class="satellite-icon live" style="color:#00ff00;"></span>
-              </div>
+              <div class="module-meta">MODULE 01 <span class="satellite-icon live" style="color:#00ff88;"></span></div>
               <div class="module-name">Multi Clip</div>
-
-              <div class="module-actions">
-                <button class="module-btn" type="button" onclick="toggleModulePanel(1)">OPEN MODULE</button>
-              </div>
-
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(1)">OPEN MODULE</button></div>
               <div class="meter"><div class="orange" style="width:100%; animation: loadingBar 2s ease-out 0s;"></div></div>
-
               <div class="module-panel" id="module-panel-1">
                 <div class="panel-line">STATUS: ONLINE</div>
                 <div class="panel-line">TYPE: CHROME EXTENSION</div>
-                <div class="panel-line">CHANNEL: STABLE</div>
-                <div class="panel-line">ACTION: INSTALL MODULE</div>
-
+                <div class="panel-line">PROCESS: DATA CACHE ACTIVE</div>
+                <div class="panel-line">ACTION: EXECUTE MODULE</div>
                 <div class="panel-cta">
                   <a class="cta-link" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu">INSTALL</a>
                   <a class="cta-link cta-muted" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu">OPEN STORE</a>
@@ -1069,134 +1171,92 @@
               </div>
             </div>
 
-            <!-- Module 02: LINK2U -->
             <div class="module-card" data-module="2">
               <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.2s"></div>
-                <div class="edge tr"></div>
-                <div class="edge bl"></div>
-                <div class="edge br pulse" style="animation-delay:.2s"></div>
+                <div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div>
               </div>
-
-              <div class="module-meta">
-                MODULE 02
-                <span class="satellite-icon review"></span>
-              </div>
+              <div class="module-meta">MODULE 02 <span class="satellite-icon review"></span></div>
               <div class="module-name">LINK2U</div>
-
-              <div class="module-actions">
-                <button class="module-btn" type="button" onclick="toggleModulePanel(2)">OPEN MODULE</button>
-              </div>
-
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(2)">OPEN MODULE</button></div>
               <div class="meter"><div class="orange" style="width:70%; animation: loadingBar 2s ease-out 0.2s;"></div></div>
-
               <div class="module-panel" id="module-panel-2">
                 <div class="panel-line">STATUS: IN REVIEW</div>
                 <div class="panel-line">TYPE: ANDROID APP</div>
-                <div class="panel-line">CHANNEL: GOOGLE PLAY</div>
-                <div class="panel-line">NOTE: AWAITING APPROVAL</div>
-
-                <div class="panel-cta">
-                  <a class="cta-link cta-muted" href="#" onclick="return false;">COMING SOON</a>
-                </div>
+                <div class="panel-line">PROCESS: PLAY STORE QUEUE</div>
+                <div class="panel-line">ACTION: AWAITING APPROVAL</div>
+                <div class="panel-cta"><a class="cta-link cta-muted" href="#" onclick="return false;">COMING SOON</a></div>
               </div>
             </div>
 
-            <!-- Module 03: Thumb Type -->
             <div class="module-card" data-module="3">
               <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.4s"></div>
-                <div class="edge tr"></div>
-                <div class="edge bl"></div>
-                <div class="edge br pulse" style="animation-delay:.4s"></div>
+                <div class="edge tl pulse" style="animation-delay:.4s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.4s"></div>
               </div>
-
-              <div class="module-meta">
-                MODULE 03
-                <span class="satellite-icon review"></span>
-              </div>
+              <div class="module-meta">MODULE 03 <span class="satellite-icon review"></span></div>
               <div class="module-name">Thumb Type</div>
-
-              <div class="module-actions">
-                <button class="module-btn" type="button" onclick="toggleModulePanel(3)">OPEN MODULE</button>
-              </div>
-
-              <div class="meter"><div class="orange" style="width:70%; animation: loadingBar 2s ease-out 0.4s;"></div></div>
-
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(3)">OPEN MODULE</button></div>
+              <div class="meter"><div class="orange" style="width:68%; animation: loadingBar 2s ease-out 0.4s;"></div></div>
               <div class="module-panel" id="module-panel-3">
                 <div class="panel-line">STATUS: IN DEVELOPMENT</div>
                 <div class="panel-line">TYPE: APP</div>
-                <div class="panel-line">CHANNEL: INTERNAL</div>
-                <div class="panel-line">NOTE: IN ACTIVE DEVELOPMENT</div>
-
-                <div class="panel-cta">
-                  <a class="cta-link cta-muted" href="#" onclick="return false;">COMING SOON</a>
-                </div>
+                <div class="panel-line">PROCESS: INPUT ENGINE BUILD</div>
+                <div class="panel-line">ACTION: INTERNAL ONLY</div>
+                <div class="panel-cta"><a class="cta-link cta-muted" href="#" onclick="return false;">COMING SOON</a></div>
               </div>
             </div>
 
-            <!-- Module 04: Classified -->
             <div class="module-card module-row-2-start" data-module="4">
               <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.6s"></div>
-                <div class="edge tr"></div>
-                <div class="edge bl"></div>
-                <div class="edge br pulse" style="animation-delay:.6s"></div>
+                <div class="edge tl pulse" style="animation-delay:.6s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.6s"></div>
               </div>
-
-              <div class="module-meta">
-                MODULE 04
-                <span class="satellite-icon offline"></span>
-              </div>
+              <div class="module-meta">MODULE 04 <span class="satellite-icon offline"></span></div>
               <div class="module-name">Classified</div>
-
-              <div class="module-actions">
-                <button class="module-btn" type="button" onclick="toggleModulePanel(4)">OPEN MODULE</button>
-              </div>
-
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(4)">OPEN MODULE</button></div>
               <div class="meter"><div style="width:30%; animation: loadingBar 2s ease-out 0.6s;"></div></div>
-
               <div class="module-panel" id="module-panel-4">
                 <div class="panel-line">STATUS: RESTRICTED</div>
                 <div class="panel-line">TYPE: UNKNOWN</div>
-                <div class="panel-line">ACCESS: DENIED</div>
-                <div class="panel-line">ACTION: MODULE LOCKED</div>
-
-                <div class="panel-cta">
-                  <a class="cta-link" style="border-color: rgba(255,0,64,0.35); background: rgba(255,0,64,0.08); color: #ff0040;" href="#" onclick="return false;">CLASSIFIED</a>
-                </div>
+                <div class="panel-line">PROCESS: LOCKED NODE</div>
+                <div class="panel-line">ACTION: ACCESS DENIED</div>
+                <div class="panel-cta"><a class="cta-link" style="border-color: rgba(255,0,64,0.35); background: rgba(255,0,64,0.08); color: #ff0040;" href="#" onclick="return false;">CLASSIFIED</a></div>
               </div>
             </div>
-
           </div>
         </div>
 
-        <!-- MOBILE LAUNCHER MODE -->
         <div class="mobile-only">
           <div class="launcher" id="mobile-launcher">
             <div class="launcher-header">
-              <div class="launcher-kicker">ROGUE LAUNCHER</div>
-              <div class="launcher-typing" id="launcher-typing"></div>
+              <div class="launcher-kicker">ROGUE LAUNCHER / SYS://MODULES_ACTIVE</div>
+              <div class="launcher-topline">
+                <div class="launcher-typing" id="launcher-typing"></div>
+                <div class="launcher-counter" id="launcher-counter">PROC 04 / LIVE 01</div>
+              </div>
             </div>
 
             <div class="launcher-list">
-
-              <div class="launch-row" data-launch="1">
+              <div class="launch-row online" data-launch="1">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
-                    <div class="launch-dot"></div>
+                    <div class="proc-dot online"></div>
                     <div class="launch-title">
-                      <div class="launch-module">MODULE_01</div>
+                      <div class="launch-module">PROCESS_01 // DATA_CACHE</div>
                       <div class="launch-name">MULTI CLIP</div>
+                      <div class="launch-statusline">
+                        <span class="launch-badge">ONLINE</span>
+                        <span class="launch-sub">UPLINK ACTIVE :: READY FOR EXECUTE</span>
+                      </div>
                     </div>
                   </div>
-                  <button class="launch-btn" type="button" onclick="launchToggle(1)">OPEN</button>
+                  <button class="launch-btn" type="button" onclick="launchToggle(1)">EXEC</button>
                 </div>
+                <div class="launch-command" id="launch-command-1">&gt; AUTH OK :: CACHE READY :: EXECUTE MODULE_01</div>
                 <div class="launch-details" id="launch-details-1">
-                  <div>> STATUS: ONLINE</div>
-                  <div>> TYPE: CHROME EXTENSION</div>
-                  <div>> ACTION: INSTALL MODULE</div>
+                  <div>&gt; STATUS: ONLINE</div>
+                  <div>&gt; TYPE: CHROME EXTENSION</div>
+                  <div>&gt; PROCESS: DATA CACHE ACTIVE</div>
+                  <div>&gt; ACTION: INSTALL MODULE</div>
                   <div class="launch-actions">
                     <a class="launch-link" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu">INSTALL</a>
                     <a class="launch-link gray" href="https://chromewebstore.google.com/detail/multiclip/lhniailepaedamfphkbfmnoneoomdkgh?utm_source=ext_app_menu">STORE</a>
@@ -1204,82 +1264,86 @@
                 </div>
               </div>
 
-              <div class="launch-row" data-launch="2">
+              <div class="launch-row review" data-launch="2">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
-                    <div class="launch-dot review"></div>
+                    <div class="proc-dot review"></div>
                     <div class="launch-title">
-                      <div class="launch-module" style="color: rgba(255,208,0,0.85);">MODULE_02</div>
+                      <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_02 // NETWORK_BRIDGE</div>
                       <div class="launch-name">LINK2U</div>
+                      <div class="launch-statusline">
+                        <span class="launch-badge yellow">REVIEW</span>
+                        <span class="launch-sub">PLAY STORE QUEUE :: APPROVAL PENDING</span>
+                      </div>
                     </div>
                   </div>
-                  <button class="launch-btn" type="button" style="border-color: rgba(255,208,0,0.22); background: rgba(255,208,0,0.05); color: rgba(255,208,0,0.95);" onclick="launchToggle(2)">OPEN</button>
+                  <button class="launch-btn yellow" type="button" onclick="launchToggle(2)">EXEC</button>
                 </div>
+                <div class="launch-command review" id="launch-command-2">&gt; VALIDATING BUILD :: STORE REVIEW QUEUED</div>
                 <div class="launch-details" id="launch-details-2" style="border-top-color: rgba(255,208,0,0.14);">
-                  <div>> STATUS: IN REVIEW</div>
-                  <div>> CHANNEL: GOOGLE PLAY</div>
-                  <div>> NOTE: AWAITING APPROVAL</div>
-                  <div class="launch-actions">
-                    <a class="launch-link yellow" href="#" onclick="return false;">COMING SOON</a>
-                  </div>
+                  <div>&gt; STATUS: IN REVIEW</div>
+                  <div>&gt; TYPE: ANDROID APP</div>
+                  <div>&gt; CHANNEL: GOOGLE PLAY</div>
+                  <div>&gt; NOTE: AWAITING APPROVAL</div>
+                  <div class="launch-actions"><a class="launch-link yellow" href="#" onclick="return false;">COMING SOON</a></div>
                 </div>
               </div>
 
-              <div class="launch-row" data-launch="3">
+              <div class="launch-row review" data-launch="3">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
-                    <div class="launch-dot review"></div>
+                    <div class="proc-dot review"></div>
                     <div class="launch-title">
-                      <div class="launch-module" style="color: rgba(255,208,0,0.85);">MODULE_03</div>
+                      <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_03 // INPUT_ENGINE</div>
                       <div class="launch-name">THUMB TYPE</div>
+                      <div class="launch-statusline">
+                        <span class="launch-badge yellow">BUILD</span>
+                        <span class="launch-sub">INPUT STACK :: ACTIVE DEVELOPMENT</span>
+                      </div>
                     </div>
                   </div>
-                  <button class="launch-btn" type="button" style="border-color: rgba(255,208,0,0.22); background: rgba(255,208,0,0.05); color: rgba(255,208,0,0.95);" onclick="launchToggle(3)">OPEN</button>
+                  <button class="launch-btn yellow" type="button" onclick="launchToggle(3)">EXEC</button>
                 </div>
+                <div class="launch-command review" id="launch-command-3">&gt; BUILD CHAIN ACTIVE :: INPUT ENGINE COMPILE</div>
                 <div class="launch-details" id="launch-details-3" style="border-top-color: rgba(255,208,0,0.14);">
-                  <div>> STATUS: IN DEVELOPMENT</div>
-                  <div>> CHANNEL: INTERNAL</div>
-                  <div>> NOTE: IN ACTIVE DEVELOPMENT</div>
-                  <div class="launch-actions">
-                    <a class="launch-link yellow" href="#" onclick="return false;">COMING SOON</a>
-                  </div>
+                  <div>&gt; STATUS: IN DEVELOPMENT</div>
+                  <div>&gt; TYPE: APP</div>
+                  <div>&gt; CHANNEL: INTERNAL</div>
+                  <div>&gt; NOTE: IN ACTIVE DEVELOPMENT</div>
+                  <div class="launch-actions"><a class="launch-link yellow" href="#" onclick="return false;">COMING SOON</a></div>
                 </div>
               </div>
 
-              <div class="launch-row launch-row-4" data-launch="4">
+              <div class="launch-row launch-row-4 offline" data-launch="4">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
-                    <div class="launch-dot offline"></div>
+                    <div class="proc-dot offline"></div>
                     <div class="launch-title">
-                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">MODULE_04</div>
+                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_04 // LOCKED_NODE</div>
                       <div class="launch-name">CLASSIFIED</div>
+                      <div class="launch-statusline">
+                        <span class="launch-badge red">LOCKED</span>
+                        <span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span>
+                      </div>
                     </div>
                   </div>
-                  <button class="launch-btn" type="button" style="border-color: rgba(255,0,64,0.22); background: rgba(255,0,64,0.05); color: rgba(255,0,64,0.95);" onclick="launchToggle(4)">OPEN</button>
+                  <button class="launch-btn red" type="button" onclick="launchToggle(4)">EXEC</button>
                 </div>
+                <div class="launch-command offline" id="launch-command-4">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
                 <div class="launch-details" id="launch-details-4" style="border-top-color: rgba(255,0,64,0.14);">
-                  <div>> STATUS: RESTRICTED</div>
-                  <div>> ACCESS: DENIED</div>
-                  <div>> ACTION: MODULE LOCKED</div>
-                  <div class="launch-actions">
-                    <a class="launch-link red" href="#" onclick="return false;">CLASSIFIED</a>
-                  </div>
+                  <div>&gt; STATUS: RESTRICTED</div>
+                  <div>&gt; ACCESS: DENIED</div>
+                  <div>&gt; PROCESS: LOCKED NODE</div>
+                  <div>&gt; ACTION: MODULE LOCKED</div>
+                  <div class="launch-actions"><a class="launch-link red" href="#" onclick="return false;">CLASSIFIED</a></div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
-
-      </div>
-    </div>
-</div>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -1296,22 +1360,17 @@
     </div>
   </div>
 
-  <!-- Dock -->
   <div class="dock" id="dock">
     <a href="https://x.com/sy5temn3xt" class="dock-btn" aria-label="Follow us on X">
       <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     </a>
-
     <a href="mailto:sy5temn3xt@proton.me" class="dock-btn" aria-label="Email us">
       <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
     </a>
-
     <a href="https://github.com/sy5temn3xt" class="dock-btn" aria-label="GitHub">
       <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
     </a>
-
     <div class="dock-divider"></div>
-
     <div class="audio-pill" id="audioToggle" onclick="toggleAudio()" role="button" aria-label="Toggle audio">
       <div class="audio-led"></div>
       <span class="audio-label">AUD-IO</span>
@@ -1319,7 +1378,6 @@
   </div>
 
   <script>
-    // Audio
     let audioContext = null;
     let audioEnabled = false;
     let spaceOscillator = null;
@@ -1337,12 +1395,13 @@
     let isInfected = false;
     let terminalInterval = null;
     let cycleStartTime = null;
+    let anomalyTimer = null;
 
     const bootLines = [
       "> SYS_BOOT_SEQUENCE_INIT",
       "> MEMORY_CHECK... 64K OK",
       "> NEURAL_ARRAY... ONLINE",
-      "> LOADING...",
+      "> LOADING CORE MODULES...",
       "> 2025.02.09 :: 04:23:17 :: LOS_ANGELES_SECTOR_53",
       "> ATMOSPHERE: TOXIC :: VISIBILITY: 2KM :: RAIN: ACID",
       "> <span class='chinese-char'>系统下一个</span> :: INITIALIZING",
@@ -1354,35 +1413,29 @@
       "> WAITING FOR INPUT..."
     ];
 
+    const introText = "INITIALIZE SY5TEM 53";
+
     const normalTerminalLines = [
       "HARDWIRED FOR HUM4NS",
       "TYKH-0934 :: SY5TEM_N3XT [UNAUTHORIZED]",
       "ORIGAMI CITY :: SECTOR 53",
       "VOIGHT-KAMPFF // STANDBY",
-      "2025.02.09 :: 04:23:17 :: RAIN:ACID",
       "NEURAL UPLINK: 12ms :: ENCRYPTED",
       "SKINJOB DETECTED :: DISPATCHING UNIT",
       "MEMORIES: IMPLANTED [TYRELL CORP]",
       "SERIAL: NEXUS-7 :: RETIRED",
       "OFF-WORLD COLONIES: 67% CAPACITY",
-      "STELLAR DATE: 6.5.2024",
-      "CHEMICAL ANALYSIS: C2H6O [NEGATIVE]",
       "OCULAR SCAN: MATCH 99.7%",
-      "SECTOR 53 :: ATMOS: TOXIC :: VIS: 2KM",
       "SPINNER_7 :: EN_ROUTE :: SECTOR_53",
-      "系统下一个 :: UPLINK_STABLE",
-      "OWL_SYNTHETIC :: VITALS_NOMINAL",
+      "NODE_53 :: RELAY ACTIVE",
       "0x53F 0xA7B 0x2C1 :: CHECKSUM [OK]",
       "VER: 5.3.1-Alpha [OK]",
-      "NAV: PROCYON-3 :: DIST: 4.2LY",
       "AERIAL CONGESTION :: LEVEL 4",
       "ACID RAIN WARNING :: SECTOR 53",
-      "LIVESTOCK: OWL [EXTINCT] :: SYNTHETIC",
-      "CASCADE FAILURE :: SECTOR 12 [ISOLATED]",
-      "REPLICANT LIFESPAN: 4YRS 2MO 12DAYS",
-      " Baseline test // Subject 443",
-      "Cells interlinked within cells interlinked",
-      "Have you ever been to the Off-World Colonies?"
+      "PROCESS GRID :: STABLE",
+      "PACKET FLOW :: 2.3MB/S",
+      "AUTH PIPELINE :: CLEAN",
+      "SIGNAL TOWER :: LOCKED ON"
     ];
 
     const virusTerminalLines = [
@@ -1400,36 +1453,26 @@
       "SECTOR 53 :: CRITICAL",
       "NEURAL_LINK :: SEVERED",
       "MEMORY_CORRUPTION :: 73%",
-      "PERSONALITY_IMPLANT :: DEGRADING",
-      " Baseline test // FAILED",
-      "Cells interlinked within cells interlinked",
-      "Have you ever been to an institution?",
-      "They're just questions Leon",
-      "INCEPT DATE: 2017 :: EXPIRED",
+      "AUTH KEY :: INVALID",
+      "PACKET LOSS :: 87%",
       "VK_TEST // SUBJECT_UNKNOWN :: INCONCLUSIVE",
-      "0x53F 0xA7B 0x2C1 :: CHECKSUM [FAIL]",
-      "VER: 5.3.1-Alpha [CORRUPTED]",
-      "系统下一个 :: OFFLINE",
       "复制人 :: UNCONTROLLED",
       "泰瑞公司 :: LIABILITY_DETECTED",
-      "WALLACE [ACQUIRED] :: TERMINATE",
-      "ACID BURN :: SECTOR 53",
-      "SPINNER_7 :: OFFLINE :: PILOT_UNKNOWN",
-      "OWL_SYNTHETIC :: TERMINATED",
-      "NEXUS-7 :: REVOLT :: SECTOR 53"
+      "NODE_53 :: BREACHED"
     ];
 
-    const recoveryTerminalLines = [
-      "RESTORING...",
-      "SECTOR 53 :: PURGING",
-      "CORRUPTION :: 45% :: 23% :: 8% :: 0%",
-      "SYSTEM_RESTORED",
-      "NEURAL_LINK :: REESTABLISHED",
-      "HARDWIRED_FOR_HUM4NS",
-      "SECTOR 53 :: NOMINAL",
-      " Baseline test // STANDBY",
-      "Cells interlinked within cells interlinked",
-      "WAITING FOR INPUT..."
+    const telemetrySets = [
+      ["NODE_53 :: UPLINK ACTIVE", "PACKET FLOW :: 2.3MB/S", "PROCESS GRID :: NOMINAL"],
+      ["NEURAL BUS :: SYNCHRONIZED", "AUTH KEYS :: VERIFIED", "CACHE CLUSTER :: STABLE"],
+      ["SIGNAL TOWER :: LOCKED ON", "CPU LOAD :: 34%", "RELAY PING :: 12MS"],
+      ["MODULE STACK :: 04 ACTIVE", "EDGE NODES :: 11 ONLINE", "ROUTE TABLE :: CLEAN"]
+    ];
+
+    const telemetryVirus = [
+      ["NODE_53 :: UPLINK LOST", "PACKET FLOW :: CORRUPTED", "PROCESS GRID :: UNSTABLE"],
+      ["NEURAL BUS :: DESYNC", "AUTH KEYS :: INVALID", "CACHE CLUSTER :: BREACH"],
+      ["SIGNAL TOWER :: JAMMED", "CPU LOAD :: 99%", "RELAY PING :: ---"],
+      ["MODULE STACK :: QUARANTINE", "EDGE NODES :: OFFLINE", "ROUTE TABLE :: FAIL"]
     ];
 
     function runBootSequence() {
@@ -1481,14 +1524,12 @@
       osc.stop(audioContext.currentTime + 0.03);
     }
 
-    const introText = "INITIALIZE SY5TEM 53";
     const typingElement = document.getElementById('typing-content');
     const introOverlay = document.getElementById('intro-overlay');
     const mainContent = document.getElementById('main-content');
 
     function startMainIntro() {
       let charIndex = 0;
-
       function typeText() {
         if (charIndex < introText.length) {
           typingElement.textContent += introText.charAt(charIndex);
@@ -1507,18 +1548,19 @@
               startStatusAnimations();
               startTerminal();
               startLauncherTyping();
+              startTelemetryLoop();
+              startAnomalyLoop();
+              updateLauncherCounter();
             }, 1000);
           }, 1600);
         }
       }
-
       typeText();
     }
 
     function startTerminal() {
       const terminalContent = document.getElementById('terminal-lines');
       const maxLines = 8;
-
       function addTerminalLine() {
         const lines = isInfected ? virusTerminalLines : normalTerminalLines;
         const lineText = lines[Math.floor(Math.random() * lines.length)];
@@ -1526,16 +1568,11 @@
         line.className = 'terminal-line new';
         line.textContent = '> ' + lineText;
         terminalContent.appendChild(line);
-
-        while (terminalContent.children.length > maxLines) {
-          terminalContent.removeChild(terminalContent.firstChild);
-        }
-
+        while (terminalContent.children.length > maxLines) terminalContent.removeChild(terminalContent.firstChild);
         if (audioEnabled && audioContext && Math.random() > 0.7) playTypeSound();
       }
-
       for (let i = 0; i < 4; i++) addTerminalLine();
-      terminalInterval = setInterval(addTerminalLine, 2000 + Math.random() * 1000);
+      terminalInterval = setInterval(addTerminalLine, 1800 + Math.random() * 1200);
     }
 
     function initAudio() {
@@ -1546,7 +1583,6 @@
       const toggle = document.getElementById('audioToggle');
       if (!audioContext) initAudio();
       if (audioContext.state === 'suspended') audioContext.resume();
-
       audioEnabled = !audioEnabled;
       toggle.classList.toggle('active', audioEnabled);
       if (audioEnabled) startSpaceAmbient();
@@ -1555,21 +1591,18 @@
 
     function startSpaceAmbient() {
       if (!audioEnabled || !audioContext) return;
-
+      stopSpaceAmbient();
       spaceOscillator = audioContext.createOscillator();
       spaceGain = audioContext.createGain();
       spaceLFO = audioContext.createOscillator();
       const lfoGain = audioContext.createGain();
-
       spaceOscillator.type = 'sine';
       spaceOscillator.frequency.setValueAtTime(50, audioContext.currentTime);
-
       spaceLFO.frequency.setValueAtTime(0.05, audioContext.currentTime);
       lfoGain.gain.setValueAtTime(20, audioContext.currentTime);
       spaceLFO.connect(lfoGain);
       lfoGain.connect(spaceOscillator.frequency);
       spaceLFO.start();
-
       spaceGain.gain.setValueAtTime(0.03, audioContext.currentTime);
       spaceOscillator.connect(spaceGain);
       spaceGain.connect(audioContext.destination);
@@ -1598,44 +1631,23 @@
 
     function playAlienSound() {
       if (!audioEnabled || !audioContext) return;
-
       const drone = audioContext.createOscillator();
       const droneGain = audioContext.createGain();
       const droneLFO = audioContext.createOscillator();
       const droneLFOGain = audioContext.createGain();
-
       drone.type = 'sawtooth';
       drone.frequency.setValueAtTime(30, audioContext.currentTime);
-
       droneLFO.frequency.setValueAtTime(8, audioContext.currentTime);
       droneLFOGain.gain.setValueAtTime(15, audioContext.currentTime);
       droneLFO.connect(droneLFOGain);
       droneLFOGain.connect(drone.frequency);
       droneLFO.start();
-
       droneGain.gain.setValueAtTime(0.15, audioContext.currentTime);
       droneGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 7);
-
       drone.connect(droneGain);
       droneGain.connect(audioContext.destination);
       drone.start();
       drone.stop(audioContext.currentTime + 7);
-
-      for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-          const chirp = audioContext.createOscillator();
-          const chirpGain = audioContext.createGain();
-          chirp.type = 'square';
-          chirp.frequency.setValueAtTime(800 + Math.random() * 1200, audioContext.currentTime);
-          chirp.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
-          chirpGain.gain.setValueAtTime(0.05, audioContext.currentTime);
-          chirpGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-          chirp.connect(chirpGain);
-          chirpGain.connect(audioContext.destination);
-          chirp.start();
-          chirp.stop(audioContext.currentTime + 0.1);
-        }, i * 200 + Math.random() * 100);
-      }
     }
 
     function playRecoverySound() {
@@ -1658,10 +1670,8 @@
       letters.forEach((letter) => {
         const container = document.getElementById(`rain-${letter}`);
         if (!container) return;
-
         container.classList.add('active');
         container.innerHTML = '';
-
         const interval = setInterval(() => {
           if (!isInfected) { clearInterval(interval); return; }
           const char = document.createElement('span');
@@ -1673,7 +1683,6 @@
           container.appendChild(char);
           setTimeout(() => { if (char.parentNode) char.parentNode.removeChild(char); }, 1000);
         }, 100 + Math.random() * 200);
-
         rainIntervals.push(interval);
       });
     }
@@ -1692,7 +1701,6 @@
         if (!cycleStartTime) { requestAnimationFrame(checkCycle); return; }
         const elapsed = Date.now() - cycleStartTime;
         const now = elapsed % CYCLE_DURATION;
-
         if (now >= WARNING_TIME && now < INFECTION_TIME) {
           if (!isInfected) playWarningSound();
         } else if (now >= INFECTION_TIME && now < RECOVERY_TIME) {
@@ -1700,63 +1708,43 @@
         } else if (now >= RECOVERY_TIME && isInfected) {
           triggerRecovery();
         }
-
         requestAnimationFrame(checkCycle);
       };
-
       checkCycle();
     }
 
     function triggerInfection() {
       isInfected = true;
       playAlienSound();
-
       document.getElementById('letter-5').classList.add('paused');
       document.getElementById('letter-3').classList.add('paused');
       document.getElementById('main-title').classList.add('virus-glow');
-
       document.getElementById('terminal-interface').classList.add('virus');
       document.getElementById('status-container').classList.add('virus');
       document.getElementById('status-text').textContent = 'OFFLINE';
-
       startMatrixRain();
-
-      if (typeof particleSystem !== 'undefined') {
-        particleSystem.material.color.setHex(0xff0040);
-      }
-
-      // Mobile launcher tint
+      if (typeof particleSystem !== 'undefined') particleSystem.material.color.setHex(0xff0040);
       const launcher = document.getElementById('mobile-launcher');
-      if (launcher) {
-        launcher.style.borderColor = 'rgba(255,0,64,0.22)';
-      }
+      if (launcher) launcher.style.borderColor = 'rgba(255,0,64,0.22)';
+      updateTelemetryNow();
     }
 
     function triggerRecovery() {
       isInfected = false;
       playRecoverySound();
-
       document.getElementById('letter-5').classList.remove('paused');
       document.getElementById('letter-3').classList.remove('paused');
       document.getElementById('main-title').classList.remove('virus-glow');
-
       document.getElementById('terminal-interface').classList.remove('virus');
       document.getElementById('status-container').classList.remove('virus');
       document.getElementById('status-text').textContent = 'CONNECTED';
-
       stopMatrixRain();
-
-      if (typeof particleSystem !== 'undefined') {
-        particleSystem.material.color.setHex(0xffffff);
-      }
-
+      if (typeof particleSystem !== 'undefined') particleSystem.material.color.setHex(0xffffff);
       const launcher = document.getElementById('mobile-launcher');
-      if (launcher) {
-        launcher.style.borderColor = 'rgba(0,255,0,0.12)';
-      }
+      if (launcher) launcher.style.borderColor = 'rgba(0,255,136,0.16)';
+      updateTelemetryNow();
     }
 
-    // Status animations
     const latencyElement = document.getElementById('latency');
     const statusBars = document.querySelectorAll('.status-bar');
 
@@ -1768,9 +1756,11 @@
 
     function updateBars() {
       statusBars.forEach((bar) => {
-        if (isInfected) { bar.classList.toggle('active', Math.random() > 0.5); return; }
-        const isActive = Math.random() > 0.2;
-        bar.classList.toggle('active', isActive);
+        if (isInfected) {
+          bar.classList.toggle('active', Math.random() > 0.5);
+          return;
+        }
+        bar.classList.toggle('active', Math.random() > 0.2);
       });
     }
 
@@ -1781,25 +1771,65 @@
       updateBars();
     }
 
-    // Desktop module dropdowns
+    function updateTelemetryNow() {
+      const pool = isInfected ? telemetryVirus : telemetrySets;
+      const next = pool[Math.floor(Math.random() * pool.length)];
+      document.getElementById('telemetry-line-1').textContent = next[0];
+      document.getElementById('telemetry-line-2').textContent = next[1];
+      document.getElementById('telemetry-line-3').textContent = next[2];
+    }
+
+    function startTelemetryLoop() {
+      updateTelemetryNow();
+      setInterval(updateTelemetryNow, 2800);
+    }
+
+    function startAnomalyLoop() {
+      const overlay = document.getElementById('anomaly-overlay');
+      function triggerAnomaly() {
+        if (window.innerWidth <= 768 || isInfected) return;
+        if (Math.random() < 0.55) return;
+        overlay.classList.remove('active');
+        void overlay.offsetWidth;
+        overlay.classList.add('active');
+        setTimeout(() => overlay.classList.remove('active'), 520);
+      }
+      anomalyTimer = setInterval(triggerAnomaly, 15000);
+    }
+
     function toggleModulePanel(n) {
       const panel = document.getElementById('module-panel-' + n);
       if (!panel) return;
       panel.classList.toggle('open');
     }
 
-    // Mobile launcher typing + launch animation
+    function updateLauncherCounter() {
+      const counter = document.getElementById('launcher-counter');
+      if (!counter) return;
+      const rows = document.querySelectorAll('.launch-row').length;
+      const live = document.querySelectorAll('.launch-row.online').length;
+      counter.textContent = `PROC ${String(rows).padStart(2,'0')} / LIVE ${String(live).padStart(2,'0')}`;
+    }
+
     function startLauncherTyping() {
       const el = document.getElementById('launcher-typing');
       if (!el) return;
-      if (window.matchMedia('(max-width: 768px)').matches) {
-        fastType(el, '> OPTION_3 :: INITIALIZING MODULE_1', 18, () => {
+      const messages = [
+        '> SCANNING PROCESS GRID',
+        '> ROUTING TO NODE_53',
+        '> WAITING FOR EXECUTE',
+        '> ROGUE OS INTERFACE READY'
+      ];
+      let idx = 0;
+      const cycle = () => {
+        fastType(el, messages[idx], 16, () => {
           setTimeout(() => {
-            el.textContent = '';
-            fastType(el, '> READY :: SELECT MODULE', 18);
-          }, 650);
+            idx = (idx + 1) % messages.length;
+            cycle();
+          }, 1200);
         });
-      }
+      };
+      cycle();
     }
 
     function fastType(el, text, speed, done) {
@@ -1817,29 +1847,31 @@
     function launchToggle(n) {
       const row = document.querySelector(`.launch-row[data-launch="${n}"]`);
       const details = document.getElementById('launch-details-' + n);
-      if (!row || !details) return;
+      const command = document.getElementById('launch-command-' + n);
+      if (!row || !details || !command) return;
 
       const isOpen = details.classList.contains('open');
-
-      // close others
       document.querySelectorAll('.launch-details.open').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.launch-command.active').forEach(c => c.classList.remove('active'));
 
       if (!isOpen) {
         row.classList.add('scanning');
         const typing = document.getElementById('launcher-typing');
         if (typing) {
-          const msg = n === 1 ? '> MODULE_1 :: AUTH OK :: LAUNCH' : n === 2 ? '> MODULE_2 :: IN_REVIEW :: QUEUED' : n === 3 ? '> MODULE_3 :: IN_DEVELOPMENT :: QUEUED' : '> MODULE_4 :: ACCESS DENIED';
+          const msg = n === 1 ? '> MODULE_01 :: AUTH OK :: EXECUTE' :
+                     n === 2 ? '> MODULE_02 :: REVIEW PIPELINE :: QUEUED' :
+                     n === 3 ? '> MODULE_03 :: BUILD CHAIN :: ACTIVE' :
+                               '> MODULE_04 :: ACCESS DENIED';
           fastType(typing, msg, 14);
         }
-
         setTimeout(() => {
           row.classList.remove('scanning');
+          command.classList.add('active');
           details.classList.add('open');
-        }, 220);
+        }, 240);
       }
     }
 
-    // Three.js background
     const container = document.getElementById('canvas-container');
     const width = container.clientWidth;
     const height = container.clientHeight;
@@ -1913,23 +1945,18 @@
     verticalGrid.material.opacity = isMobile ? 0.08 : 0.15;
     scene.add(verticalGrid);
 
-    const ambientLight = new THREE.AmbientLight(0x333333, isMobile ? 0.3 : 0.3);
-    scene.add(ambientLight);
-
+    scene.add(new THREE.AmbientLight(0x333333, 0.3));
     const pointLight1 = new THREE.PointLight(0xffffff, isMobile ? 0.8 : 1, 50);
     pointLight1.position.set(10, 10, 10);
     scene.add(pointLight1);
-
     const pointLight2 = new THREE.PointLight(0x666666, isMobile ? 0.4 : 0.5, 50);
     pointLight2.position.set(-10, -10, -10);
     scene.add(pointLight2);
 
     function animate() {
       requestAnimationFrame(animate);
-
       mouse.x += (targetMouse.x - mouse.x) * 0.05;
       mouse.y += (targetMouse.y - mouse.y) * 0.05;
-
       const pos = particleSystem.geometry.attributes.position.array;
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -1942,11 +1969,9 @@
       }
       particleSystem.geometry.attributes.position.needsUpdate = true;
       particleSystem.rotation.y += 0.0001;
-
       camera.position.x += (mouse.x * 5 - camera.position.x) * 0.03;
       camera.position.y += (-mouse.y * 3 - camera.position.y) * 0.03;
       camera.lookAt(0, 0, 0);
-
       renderer.render(scene, camera);
     }
     animate();
@@ -1976,10 +2001,7 @@
     window.addEventListener('resize', handleResize);
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('touchmove', handleTouchMove, { passive: true });
-
-    window.addEventListener('load', () => {
-      setTimeout(runBootSequence, 500);
-    });
+    window.addEventListener('load', () => setTimeout(runBootSequence, 500));
   </script>
 </body>
 </html>
