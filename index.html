@@ -91,14 +91,6 @@
       0%, 100% { opacity: 0; }
       10%, 12%, 18%, 21% { opacity: 0.12; }
     }
-    @keyframes packetRun {
-      0% { transform: translateX(0); opacity: 0; }
-      12% { opacity: 0.85; }
-      88% { opacity: 0.7; }
-      100% { transform: translateX(460%); opacity: 0; }
-    }
-      10%, 12%, 18%, 21% { opacity: 0.12; }
-    }
     @keyframes telemetrySweep {
       0% { transform: translateY(-120%); opacity: 0; }
       10% { opacity: 0.12; }
@@ -715,7 +707,7 @@
       position: relative;
       color: #00ff88;
     }
-    .satellite-icon.live, .proc-dot.online { animation: satellitePulse 2s infinite; }
+    .satellite-icon.live { animation: satellitePulse 2s infinite; }
     .satellite-icon.live::before,
     .satellite-icon.offline::before,
     .satellite-icon.review::before {
@@ -765,29 +757,6 @@
       animation: telemetrySweep 8s linear infinite;
       pointer-events: none;
       opacity: 0.6;
-    }
-
-    .launcher-packets {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-
-    .launcher-packet {
-      position: absolute;
-      left: -30%;
-      width: 30%;
-      height: 1px;
-      background: linear-gradient(to right, rgba(0,255,136,0), rgba(0,255,136,0.85), rgba(0,255,136,0));
-      opacity: 0;
-      box-shadow: 0 0 10px rgba(0,255,136,0.35);
-    }
-
-    .launcher-packet.active {
-      opacity: 0.8;
-      animation: packetRun 1.4s linear 1;
     }
 
     .launcher-header {
@@ -910,7 +879,7 @@
       flex: 0 0 auto;
       margin-top: 4px;
     }
-    .proc-dot.online { background: rgba(0,255,136,0.92); box-shadow: 0 0 10px rgba(0,255,136,0.4); }
+    .proc-dot.online { background: rgba(0,255,136,0.92); box-shadow: 0 0 10px rgba(0,255,136,0.4); animation: satellitePulse 2s infinite; }
     .proc-dot.review { background: rgba(255,208,0,0.95); box-shadow: 0 0 10px rgba(255,208,0,0.35); animation: satellitePulse 2.1s infinite; }
     .proc-dot.offline { background: rgba(255,0,64,0.95); box-shadow: 0 0 10px rgba(255,0,64,0.35); animation: satellitePulse 1.7s infinite; }
 
@@ -1049,11 +1018,9 @@
       }
 
       .telemetry-panel {
-        min-width: 156px;
-        max-width: 46vw;
+        min-width: 164px;
         padding: 8px 10px;
       }
-
       .telemetry-head,
       .telemetry-line {
         text-align: left;
@@ -1081,7 +1048,7 @@
       .dock-btn { width: 36px; height: 36px; }
       .audio-pill { padding: 9px 10px; }
 
-      .center-wrap { padding: 54px 14px 94px; }
+      .center-wrap { padding: 38px 14px 94px; }
       .title {
         font-size: clamp(38px, 11vw, 64px);
         letter-spacing: 0.06em;
@@ -1140,10 +1107,26 @@
   </div>
 
   <div class="status-stack">
-    <div class="status-container" id="status-container">$2</div>
+    <div class="telemetry-panel" id="telemetry-panel">
+      <div class="telemetry-head">SYS://MONITOR</div>
+      <div class="telemetry-line" id="telemetry-line-1">NODE_53 :: UPLINK ACTIVE</div>
+      <div class="telemetry-line" id="telemetry-line-2">PACKET FLOW :: 2.3MB/S</div>
+      <div class="telemetry-line" id="telemetry-line-3">PROCESS GRID :: NOMINAL</div>
+    </div>
 
-    <div class="telemetry-panel" id="telemetry-panel">$1</div>
-  </div>
+    <div class="status-container" id="status-container">
+      <div class="status-line">
+        <div class="status-dot"></div>
+        <span id="status-text">CONNECTED</span>
+        <span class="status-latency" id="latency">12ms</span>
+      </div>
+      <div class="status-bars" id="status-bars">
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar active"></div>
+        <div class="status-bar"></div>
+      </div>
     </div>
   </div>
 
@@ -1176,7 +1159,9 @@
         <div class="modules-wrap desktop-only">
           <div class="modules-grid">
             <div class="module-card" data-module="1">
-              <div class="module-edges"><div class="edge tl pulse"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse"></div></div>
+              <div class="module-edges">
+                <div class="edge tl pulse"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse"></div>
+              </div>
               <div class="module-meta">MODULE 01 <span class="satellite-icon live" style="color:#00ff88;"></span></div>
               <div class="module-name">Multi Clip</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(1)">OPEN MODULE</button></div>
@@ -1194,7 +1179,9 @@
             </div>
 
             <div class="module-card" data-module="2">
-              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div></div>
+              <div class="module-edges">
+                <div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div>
+              </div>
               <div class="module-meta">MODULE 02 <span class="satellite-icon review"></span></div>
               <div class="module-name">LINK2U</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(2)">OPEN MODULE</button></div>
@@ -1209,7 +1196,9 @@
             </div>
 
             <div class="module-card" data-module="3">
-              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.4s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.4s"></div></div>
+              <div class="module-edges">
+                <div class="edge tl pulse" style="animation-delay:.4s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.4s"></div>
+              </div>
               <div class="module-meta">MODULE 03 <span class="satellite-icon review"></span></div>
               <div class="module-name">Thumb Type</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(3)">OPEN MODULE</button></div>
@@ -1224,7 +1213,9 @@
             </div>
 
             <div class="module-card module-row-2-start" data-module="4">
-              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.6s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.6s"></div></div>
+              <div class="module-edges">
+                <div class="edge tl pulse" style="animation-delay:.6s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.6s"></div>
+              </div>
               <div class="module-meta">MODULE 04 <span class="satellite-icon offline"></span></div>
               <div class="module-name">Classified</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(4)">OPEN MODULE</button></div>
@@ -1242,11 +1233,6 @@
 
         <div class="mobile-only">
           <div class="launcher" id="mobile-launcher">
-            <div class="launcher-packets" id="launcher-packets">
-              <div class="launcher-packet" id="packet-1" style="top: 18%;"></div>
-              <div class="launcher-packet" id="packet-2" style="top: 42%;"></div>
-              <div class="launcher-packet" id="packet-3" style="top: 68%;"></div>
-            </div>
             <div class="launcher-header">
               <div class="launcher-kicker">ROGUE LAUNCHER / SYS://MODULES_ACTIVE</div>
               <div class="launcher-topline">
@@ -1264,13 +1250,12 @@
                     <div class="launch-title">
                       <div class="launch-module">PROCESS_01 // DATA_CACHE</div>
                       <div class="launch-name">MULTI CLIP</div>
-                      <div class="launch-statusline"><span class="launch-badge">ONLINE</span><span class="launch-sub" id="launch-sub-1">UPLINK ACTIVE :: READY FOR EXECUTE</span></div>
+                      <div class="launch-statusline"><span class="launch-badge">ONLINE</span><span class="launch-sub">UPLINK ACTIVE :: READY FOR EXECUTE</span></div>
                     </div>
                   </div>
                   <button class="launch-btn" type="button" onclick="launchToggle(1)">EXEC</button>
                 </div>
                 <div class="launch-command" id="launch-command-1">&gt; AUTH OK :: CACHE READY :: EXECUTE MODULE_01</div>
-                <div class="launch-sub" id="launch-meta-1" style="margin-top:8px; color: rgba(0,255,136,0.78);">THREADS :: 12 / MEMORY :: 21MB / UPTIME :: 04:23:11</div>
                 <div class="launch-details" id="launch-details-1">
                   <div>&gt; STATUS: ONLINE</div>
                   <div>&gt; TYPE: CHROME EXTENSION</div>
@@ -1291,13 +1276,12 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_02 // NETWORK_BRIDGE</div>
                       <div class="launch-name">LINK2U</div>
-                      <div class="launch-statusline"><span class="launch-badge yellow">REVIEW</span><span class="launch-sub" id="launch-sub-2">PLAY STORE QUEUE :: APPROVAL PENDING</span></div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">REVIEW</span><span class="launch-sub">PLAY STORE QUEUE :: APPROVAL PENDING</span></div>
                     </div>
                   </div>
                   <button class="launch-btn yellow" type="button" onclick="launchToggle(2)">EXEC</button>
                 </div>
                 <div class="launch-command review" id="launch-command-2">&gt; VALIDATING BUILD :: STORE REVIEW QUEUED</div>
-                <div class="launch-sub" id="launch-meta-2" style="margin-top:8px; color: rgba(255,208,0,0.82);">THREADS :: 04 / MEMORY :: 45MB / UPTIME :: 01:12:44</div>
                 <div class="launch-details" id="launch-details-2" style="border-top-color: rgba(255,208,0,0.14);">
                   <div>&gt; STATUS: IN REVIEW</div>
                   <div>&gt; TYPE: ANDROID APP</div>
@@ -1315,13 +1299,12 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_03 // INPUT_ENGINE</div>
                       <div class="launch-name">THUMB TYPE</div>
-                      <div class="launch-statusline"><span class="launch-badge yellow">BUILD</span><span class="launch-sub" id="launch-sub-3">INPUT STACK :: ACTIVE DEVELOPMENT</span></div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">BUILD</span><span class="launch-sub">INPUT STACK :: ACTIVE DEVELOPMENT</span></div>
                     </div>
                   </div>
                   <button class="launch-btn yellow" type="button" onclick="launchToggle(3)">EXEC</button>
                 </div>
                 <div class="launch-command review" id="launch-command-3">&gt; BUILD CHAIN ACTIVE :: INPUT ENGINE COMPILE</div>
-                <div class="launch-sub" id="launch-meta-3" style="margin-top:8px; color: rgba(255,208,0,0.82);">THREADS :: 07 / MEMORY :: 31MB / UPTIME :: 00:42:08</div>
                 <div class="launch-details" id="launch-details-3" style="border-top-color: rgba(255,208,0,0.14);">
                   <div>&gt; STATUS: IN DEVELOPMENT</div>
                   <div>&gt; TYPE: APP</div>
@@ -1339,13 +1322,12 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_04 // LOCKED_NODE</div>
                       <div class="launch-name">CLASSIFIED</div>
-                      <div class="launch-statusline"><span class="launch-badge red">LOCKED</span><span class="launch-sub" id="launch-sub-4">RESTRICTED ACCESS :: AUTH FAIL</span></div>
+                      <div class="launch-statusline"><span class="launch-badge red">LOCKED</span><span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span></div>
                     </div>
                   </div>
                   <button class="launch-btn red" type="button" onclick="launchToggle(4)">EXEC</button>
                 </div>
                 <div class="launch-command offline" id="launch-command-4">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
-                <div class="launch-sub" id="launch-meta-4" style="margin-top:8px; color: rgba(255,0,64,0.82);">THREADS :: 00 / MEMORY :: 00MB / UPTIME :: LOCKED</div>
                 <div class="launch-details" id="launch-details-4" style="border-top-color: rgba(255,0,64,0.14);">
                   <div>&gt; STATUS: RESTRICTED</div>
                   <div>&gt; ACCESS: DENIED</div>
@@ -1488,27 +1470,6 @@
       ["MODULE STACK :: QUARANTINE", "EDGE NODES :: OFFLINE", "ROUTE TABLE :: FAIL"]
     ];
 
-    const processStats = {
-      1: { threads: [8, 9, 10, 11, 12], memory: [18, 19, 20, 21, 22], uptime: '04:23:11' },
-      2: { threads: [3, 4, 5, 6], memory: [41, 43, 45, 48], uptime: '01:12:44' },
-      3: { threads: [5, 6, 7, 8], memory: [28, 29, 31, 33], uptime: '00:42:08' },
-      4: { threads: [0, 0, 1], memory: [0, 1, 2], uptime: 'LOCKED' }
-    };
-
-    const packetMessages = [
-      'PACKET TRACE :: ROUTE VERIFIED',
-      'NODE HANDSHAKE :: ACCEPTED',
-      'AUTH PIPELINE :: GREEN',
-      'PROCESS SYNC :: COMPLETE',
-      'CACHE BUS :: STABLE',
-      'RELAY GRID :: ACTIVE'
-    ];
-
-    let telemetryIndex = 0;
-    let packetInterval = null;
-    let processInterval = null;
-    let commandInterval = null;
-
     function runBootSequence() {
       const bootContainer = document.getElementById('boot-lines');
       let lineIndex = 0;
@@ -1581,11 +1542,6 @@
               startTerminal();
               startLauncherTyping();
               startTelemetryLoop();
-              startPacketFlow();
-              startProcessStats();
-              startCommandNoise();
-              startAnomalyLoop();
-              updateLauncherCounter();
             }, 1000);
           }, 1600);
         }
@@ -1806,79 +1762,15 @@
 
     function updateTelemetryNow() {
       const pool = isInfected ? telemetryVirus : telemetrySets;
-      telemetryIndex = (telemetryIndex + 1) % pool.length;
-      const next = pool[telemetryIndex];
+      const next = pool[Math.floor(Math.random() * pool.length)];
       document.getElementById('telemetry-line-1').textContent = next[0];
       document.getElementById('telemetry-line-2').textContent = next[1];
       document.getElementById('telemetry-line-3').textContent = next[2];
     }
 
-    function startPacketFlow() {
-      if (packetInterval) clearInterval(packetInterval);
-      const packets = [document.getElementById('packet-1'), document.getElementById('packet-2'), document.getElementById('packet-3')].filter(Boolean);
-      if (!packets.length) return;
-      packetInterval = setInterval(() => {
-        const packet = packets[Math.floor(Math.random() * packets.length)];
-        packet.classList.remove('active');
-        void packet.offsetWidth;
-        packet.classList.add('active');
-      }, 2100);
-    }
-
-    function startProcessStats() {
-      if (processInterval) clearInterval(processInterval);
-      const update = () => {
-        Object.keys(processStats).forEach((key) => {
-          const meta = document.getElementById(`launch-meta-${key}`);
-          const sub = document.getElementById(`launch-sub-${key}`);
-          const stat = processStats[key];
-          if (!meta || !sub) return;
-          const threads = stat.threads[Math.floor(Math.random() * stat.threads.length)];
-          const memory = stat.memory[Math.floor(Math.random() * stat.memory.length)];
-          meta.textContent = `THREADS :: ${String(threads).padStart(2,'0')} / MEMORY :: ${String(memory).padStart(2,'0')}MB / UPTIME :: ${stat.uptime}`;
-          if (Number(key) === 1) sub.textContent = `UPLINK ACTIVE :: ${packetMessages[Math.floor(Math.random() * packetMessages.length)]}`;
-          if (Number(key) === 2) sub.textContent = `PLAY STORE QUEUE :: ${['APPROVAL PENDING','REVIEW ACTIVE','BUILD VERIFIED'][Math.floor(Math.random()*3)]}`;
-          if (Number(key) === 3) sub.textContent = `INPUT STACK :: ${['ACTIVE DEVELOPMENT','BUILD CHAIN LIVE','MODULE SYNC'][Math.floor(Math.random()*3)]}`;
-          if (Number(key) === 4) sub.textContent = `RESTRICTED ACCESS :: ${['AUTH FAIL','NODE SEALED','QUARANTINE'][Math.floor(Math.random()*3)]}`;
-        });
-      };
-      update();
-      processInterval = setInterval(update, 2600);
-    }
-
-    function startCommandNoise() {
-      if (commandInterval) clearInterval(commandInterval);
-      const commands = {
-        1: ['> PROCESS UPDATED :: CACHE BUS STABLE','> ROUTE VERIFIED :: MODULE_01','> MODULE_01 :: EXECUTE READY'],
-        2: ['> REVIEW CHECKPOINT :: PASSED','> STORE QUEUE :: HOLDING','> BUILD SIGNATURE :: VERIFIED'],
-        3: ['> INPUT ENGINE :: COMPILE','> THREAD MAP :: UPDATED','> MODULE_03 :: BUILD ACTIVE'],
-        4: ['> ACCESS DENIED :: AUTH FAIL','> LOCKED NODE :: SEALED','> QUARANTINE :: MAINTAINED']
-      };
-      commandInterval = setInterval(() => {
-        const id = Math.floor(Math.random() * 4) + 1;
-        const el = document.getElementById(`launch-command-${id}`);
-        if (!el) return;
-        const lines = commands[id];
-        el.textContent = lines[Math.floor(Math.random() * lines.length)];
-      }, 3200);
-    }
-
     function startTelemetryLoop() {
       updateTelemetryNow();
       setInterval(updateTelemetryNow, 2800);
-    }
-
-    function startAnomalyLoop() {
-      const overlay = document.getElementById('anomaly-overlay');
-      function triggerAnomaly() {
-        if (window.innerWidth <= 768 || isInfected) return;
-        if (Math.random() < 0.55) return;
-        overlay.classList.remove('active');
-        void overlay.offsetWidth;
-        overlay.classList.add('active');
-        setTimeout(() => overlay.classList.remove('active'), 520);
-      }
-      anomalyTimer = setInterval(triggerAnomaly, 15000);
     }
 
     function toggleModulePanel(n) {
