@@ -13,14 +13,9 @@
     :root {
       --bg: #000;
       --amber: #ffb000;
-      --amber-soft: rgba(255,176,0,0.18);
       --green: #00ff88;
-      --green-soft: rgba(0,255,136,0.14);
       --yellow: #ffd000;
       --red: #ff0040;
-      --gray: rgba(156,163,175,0.9);
-      --card: rgba(8,8,8,0.34);
-      --card-2: rgba(0,0,0,0.24);
     }
 
     body {
@@ -63,10 +58,10 @@
       86% { opacity: 1; }
     }
     @keyframes colorCycle {
-      0% { color: #d4a574; text-shadow: 0 0 10px rgba(212, 165, 116, 0.5); }
-      33% { color: #d49a74; text-shadow: 0 0 10px rgba(212, 154, 116, 0.5); }
-      66% { color: #74d474; text-shadow: 0 0 15px rgba(116, 212, 116, 0.6); }
-      100% { color: #d4a574; text-shadow: 0 0 10px rgba(212, 165, 116, 0.5); }
+      0% { color: #d4a574; text-shadow: 0 0 10px rgba(212,165,116,0.5); }
+      33% { color: #d49a74; text-shadow: 0 0 10px rgba(212,154,116,0.5); }
+      66% { color: #74d474; text-shadow: 0 0 15px rgba(116,212,116,0.6); }
+      100% { color: #d4a574; text-shadow: 0 0 10px rgba(212,165,116,0.5); }
     }
     @keyframes barWave { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
     @keyframes crtTurnOn {
@@ -318,10 +313,21 @@
       pointer-events: none;
     }
 
-    .telemetry-head {$1text-align: right;
+    .telemetry-head {
+      color: rgba(255,176,0,0.78);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      margin-bottom: 6px;
+      text-align: right;
     }
 
-    .telemetry-line {$1text-align: right;
+    .telemetry-line {
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      line-height: 1.45;
+      white-space: nowrap;
+      text-align: right;
       opacity: 0.92;
       text-shadow: 0 0 8px rgba(255,176,0,0.16);
     }
@@ -466,13 +472,594 @@
 
     .anomaly-overlay.active { animation: anomalyFlash 0.5s linear 1; }
 
-    .center-wrap {$1padding: 38px 14px 94px; }
-      .title {$1margin-bottom: 18px;
+    .center-wrap {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 18px 116px;
+    }
+
+    .center-inner {
+      text-align: center;
+      max-width: 980px;
+      width: 100%;
+    }
+
+    .title {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      font-family: monospace;
+      font-weight: 800;
+      letter-spacing: .08em;
+      line-height: .95;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255,255,255,.7), 0 0 40px rgba(255,255,255,.4), 0 0 60px rgba(255,255,255,.2);
+      font-size: clamp(44px, 8vw, 108px);
+      margin-bottom: 14px;
+      user-select: none;
+    }
+
+    .title-sup {
+      position: relative;
+      top: -0.52em;
+      font-size: 0.38em;
+      letter-spacing: 0.06em;
+      color: var(--amber);
+      text-shadow: 0 0 14px rgba(255,176,0,.65), 0 0 24px rgba(255,176,0,.25);
+      margin-left: 10px;
+    }
+
+    .letter-container { position: relative; display: inline-flex; align-items: baseline; }
+
+    .matrix-rain {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+    }
+    .matrix-rain.active { opacity: 1; }
+    .matrix-char {
+      position: absolute;
+      color: var(--red);
+      font-size: 0.3em;
+      text-shadow: 0 0 5px var(--red);
+      animation: matrixFall 0.8s linear infinite;
+      opacity: 0.8;
+    }
+    .virus-glow { text-shadow: 0 0 30px var(--red), 0 0 60px var(--red), 0 0 90px var(--red) !important; }
+
+    .desktop-only { display: block; }
+    .mobile-only { display: none; }
+
+    .modules-wrap { margin-top: 26px; padding: 0 10px; }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 14px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .module-card.module-row-2-start { grid-column: 1; }
+
+    @media (min-width: 640px) {
+      .modules-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+      .module-card.module-row-2-start { grid-column: 1; }
+    }
+
+    .module-card {
+      position: relative;
+      padding: 18px 16px;
+      border: 1px solid rgba(156,163,175,0.22);
+      background: rgba(10,10,10,0.20);
+      backdrop-filter: blur(6px);
+      transition: all 0.25s ease;
+      overflow: hidden;
+    }
+    .module-card:hover {
+      border-color: rgba(156,163,175,0.42);
+      box-shadow: 0 0 22px rgba(255,176,0,0.12);
+      transform: translateY(-1px);
+    }
+
+    .module-edges .edge {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(156,163,175,0.22);
+    }
+    .module-edges .edge.tl { top: 0; left: 0; }
+    .module-edges .edge.tr { top: 0; right: 0; }
+    .module-edges .edge.bl { bottom: 0; left: 0; }
+    .module-edges .edge.br { bottom: 0; right: 0; }
+    .module-edges .edge.pulse {
+      background: rgba(156,163,175,0.65);
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      box-shadow: 0 0 10px rgba(255,255,255,0.38);
+    }
+
+    .module-meta {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: rgba(156,163,175,0.65);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+    .module-name {
+      font-family: monospace;
+      font-size: 18px;
+      color: #fff;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .module-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .module-btn {
+      font-family: monospace;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(156,163,175,0.25);
+      background: rgba(0,0,0,0.25);
+      color: rgba(255,255,255,0.92);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 128px;
+    }
+    .module-btn:hover {
+      border-color: rgba(255,176,0,0.65);
+      box-shadow: 0 0 18px rgba(255,176,0,0.16);
+      color: var(--amber);
+    }
+    .meter {
+      margin-top: 14px;
+      height: 4px;
+      background: rgba(0,0,0,0.45);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .meter > div {
+      height: 100%;
+      background: rgba(156,163,175,0.80);
+      border-radius: 999px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.35);
+    }
+    .meter > div.orange { background: rgba(255,176,0,0.95); box-shadow: 0 0 10px rgba(255,176,0,0.45); }
+    .module-panel {
+      margin-top: 12px;
+      border-top: 1px solid rgba(156,163,175,0.16);
+      padding-top: 12px;
+      text-align: left;
+      display: none;
+      animation: linePrint 0.18s ease-out;
+    }
+    .module-panel.open { display: block; }
+    .panel-line {
+      color: rgba(209,213,219,0.92);
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 2px 0;
+    }
+    .panel-cta {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,176,0,0.35);
+      background: rgba(255,176,0,0.08);
+      color: var(--amber);
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    .cta-link:hover { border-color: rgba(255,176,0,0.75); box-shadow: 0 0 18px rgba(255,176,0,0.16); }
+    .cta-muted {
+      border-color: rgba(156,163,175,0.22);
+      color: rgba(156,163,175,0.85);
+      background: rgba(0,0,0,0.18);
+    }
+
+    .satellite-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      margin-left: 8px;
+      position: relative;
+      color: #00ff88;
+    }
+    .satellite-icon.live, .proc-dot.online { animation: satellitePulse 2s infinite; }
+    .satellite-icon.live::before,
+    .satellite-icon.offline::before,
+    .satellite-icon.review::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+      box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    }
+    .satellite-icon.live::after,
+    .satellite-icon.offline::after,
+    .satellite-icon.review::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      animation: satelliteTransmit 2s infinite;
+    }
+    .satellite-icon.offline { color: var(--red); animation: satellitePulse 1.6s infinite; }
+    .satellite-icon.offline::after { animation-duration: 1.8s; opacity: 0.85; }
+    .satellite-icon.review { color: var(--yellow); animation: satellitePulse 2.2s infinite; }
+    .satellite-icon.review::after { animation-duration: 2.2s; opacity: 0.8; }
+
+    .launcher {
+      position: relative;
+      max-width: 580px;
+      margin: 20px auto 0;
+      text-align: left;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(0,255,136,0.16);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 44px rgba(0,0,0,0.6);
+    }
+
+    .launcher::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: -25%;
+      height: 22%;
+      background: linear-gradient(to bottom, rgba(0,255,136,0), rgba(0,255,136,0.16), rgba(0,255,136,0));
+      animation: telemetrySweep 8s linear infinite;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .launcher-header {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid rgba(0,255,136,0.12);
+      position: relative;
+      overflow: hidden;
+      background: rgba(0,0,0,0.22);
+    }
+    .launcher-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,255,136,0), rgba(0,255,136,0) 3px, rgba(0,255,136,0.05) 3px, rgba(0,255,136,0.05) 6px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .launcher-kicker {
+      position: relative;
+      z-index: 1;
+      font-family: monospace;
+      color: rgba(0,255,136,0.78);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .launcher-topline {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .launcher-typing {
+      font-family: monospace;
+      color: rgba(0,255,136,0.94);
+      font-size: 12px;
+      min-height: 18px;
+      text-shadow: 0 0 10px rgba(0,255,136,0.25);
+      flex: 1;
+    }
+
+    .launcher-counter {
+      font-family: monospace;
+      color: rgba(0,255,136,0.72);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+    }
+
+    .launcher-list {
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .launch-row {
+      position: relative;
+      padding: 12px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,255,136,0.12);
+      background: rgba(0,0,0,0.22);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .launch-row:hover {
+      border-color: rgba(0,255,136,0.28);
+      box-shadow: 0 0 18px rgba(0,255,136,0.08);
+    }
+    .launch-row-4 { margin-top: 2px; }
+    .launch-row::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 1px;
+      background: linear-gradient(to right, rgba(0,255,136,0), rgba(0,255,136,0.35), rgba(0,255,136,0));
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .launch-row.online { border-color: rgba(0,255,136,0.14); }
+    .launch-row.review { border-color: rgba(255,208,0,0.14); }
+    .launch-row.offline { border-color: rgba(255,0,64,0.14); }
+
+    .launch-scan {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(0,255,136,0), rgba(0,255,136,0) 3px, rgba(0,255,136,0.08) 3px, rgba(0,255,136,0.08) 6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+    .launch-row.scanning .launch-scan { opacity: 0.75; }
+
+    .launch-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .launch-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .proc-dot {
+      position: relative;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      margin-top: 4px;
+    }
+    .proc-dot.online { background: rgba(0,255,136,0.92); box-shadow: 0 0 10px rgba(0,255,136,0.4); }
+    .proc-dot.review { background: rgba(255,208,0,0.95); box-shadow: 0 0 10px rgba(255,208,0,0.35); animation: satellitePulse 2.1s infinite; }
+    .proc-dot.offline { background: rgba(255,0,64,0.95); box-shadow: 0 0 10px rgba(255,0,64,0.35); animation: satellitePulse 1.7s infinite; }
+
+    .launch-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+    .launch-module {
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(0,255,136,0.72);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .launch-name {
+      font-family: monospace;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.94);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .launch-statusline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .launch-badge {
+      font-family: monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,255,136,0.16);
+      color: rgba(0,255,136,0.94);
+      background: rgba(0,255,136,0.06);
+    }
+    .launch-badge.yellow { border-color: rgba(255,208,0,0.18); color: rgba(255,208,0,0.95); background: rgba(255,208,0,0.06); }
+    .launch-badge.red { border-color: rgba(255,0,64,0.18); color: rgba(255,0,64,0.95); background: rgba(255,0,64,0.06); }
+    .launch-sub {
+      font-family: monospace;
+      font-size: 11px;
+      color: rgba(209,213,219,0.72);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .launch-btn {
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 10px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,255,136,0.18);
+      background: rgba(0,255,136,0.06);
+      color: rgba(0,255,136,0.92);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 0 0 auto;
+    }
+    .launch-btn:hover { border-color: rgba(0,255,136,0.45); box-shadow: 0 0 18px rgba(0,255,136,0.10); }
+    .launch-btn.yellow { border-color: rgba(255,208,0,0.22); background: rgba(255,208,0,0.05); color: rgba(255,208,0,0.95); }
+    .launch-btn.red { border-color: rgba(255,0,64,0.22); background: rgba(255,0,64,0.05); color: rgba(255,0,64,0.95); }
+
+    .launch-command {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-family: monospace;
+      font-size: 11px;
+      color: rgba(0,255,136,0.85);
+      letter-spacing: 0.12em;
+      display: none;
+    }
+    .launch-command.active { display: block; }
+    .launch-command.review { color: rgba(255,208,0,0.9); }
+    .launch-command.offline { color: rgba(255,0,64,0.9); }
+
+    .launch-details {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,255,136,0.12);
+      color: rgba(209,213,219,0.92);
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .launch-details.open { display: block; }
+    .launch-actions { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .launch-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,255,136,0.20);
+      background: rgba(0,255,136,0.06);
+      color: rgba(0,255,136,0.92);
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .launch-link.yellow { border-color: rgba(255,208,0,0.25); background: rgba(255,208,0,0.06); color: rgba(255,208,0,0.95); }
+    .launch-link.red { border-color: rgba(255,0,64,0.25); background: rgba(255,0,64,0.05); color: rgba(255,0,64,0.95); }
+    .launch-link.gray { border-color: rgba(156,163,175,0.20); background: rgba(0,0,0,0.18); color: rgba(156,163,175,0.92); }
+
+    @media (max-width: 768px) {
+      .desktop-only { display: none; }
+      .mobile-only { display: block; }
+
+      .status-stack {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .telemetry-panel {
+        min-width: 156px;
+        max-width: 46vw;
+        padding: 8px 10px;
+      }
+
+      .telemetry-head,
+      .telemetry-line {
+        text-align: left;
+      }
+
+      .status-container {
+        align-items: flex-end;
+        margin-left: auto;
+      }
+
+      .status-line { font-size: 12px; }
+      .status-latency { font-size: 11px; min-width: 52px; }
+      .status-dot { width: 8px; height: 8px; }
+      .status-bars { height: 12px; }
+      .status-bar { width: 3px; }
+
+      .terminal-interface { display: none !important; }
+
+      .dock {
+        right: 10px;
+        bottom: 10px;
+        gap: 8px;
+        padding: 8px 10px;
+      }
+      .dock-btn { width: 36px; height: 36px; }
+      .audio-pill { padding: 9px 10px; }
+
+      .center-wrap { padding: 54px 14px 94px; }
+      .title {
+        font-size: clamp(38px, 11vw, 64px);
+        letter-spacing: 0.06em;
+        margin-bottom: 18px;
       }
       .title-sup { font-size: 0.34em; top: -0.58em; margin-left: 8px; }
       #scanlines { opacity: 0.02 !important; }
 
-      .launcher { margin-top: 8px; }
+      .launcher { margin-top: 20px; }
       .launcher-header { padding: 10px 12px 8px; }
       .launcher-list { padding: 8px 8px 10px; gap: 7px; }
       .launch-row { padding: 10px 9px; }
@@ -522,6 +1109,13 @@
   </div>
 
   <div class="status-stack">
+    <div class="telemetry-panel" id="telemetry-panel">
+      <div class="telemetry-head">SYS://MONITOR</div>
+      <div class="telemetry-line" id="telemetry-line-1">NODE_53 :: UPLINK ACTIVE</div>
+      <div class="telemetry-line" id="telemetry-line-2">PACKET FLOW :: 2.3MB/S</div>
+      <div class="telemetry-line" id="telemetry-line-3">PROCESS GRID :: NOMINAL</div>
+    </div>
+
     <div class="status-container" id="status-container">
       <div class="status-line">
         <div class="status-dot"></div>
@@ -535,13 +1129,6 @@
         <div class="status-bar active"></div>
         <div class="status-bar"></div>
       </div>
-    </div>
-
-    <div class="telemetry-panel" id="telemetry-panel">
-      <div class="telemetry-head">SYS://MONITOR</div>
-      <div class="telemetry-line" id="telemetry-line-1">NODE_53 :: UPLINK ACTIVE</div>
-      <div class="telemetry-line" id="telemetry-line-2">PACKET FLOW :: 2.3MB/S</div>
-      <div class="telemetry-line" id="telemetry-line-3">PROCESS GRID :: NOMINAL</div>
     </div>
   </div>
 
@@ -574,9 +1161,7 @@
         <div class="modules-wrap desktop-only">
           <div class="modules-grid">
             <div class="module-card" data-module="1">
-              <div class="module-edges">
-                <div class="edge tl pulse"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse"></div>
-              </div>
+              <div class="module-edges"><div class="edge tl pulse"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse"></div></div>
               <div class="module-meta">MODULE 01 <span class="satellite-icon live" style="color:#00ff88;"></span></div>
               <div class="module-name">Multi Clip</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(1)">OPEN MODULE</button></div>
@@ -594,9 +1179,7 @@
             </div>
 
             <div class="module-card" data-module="2">
-              <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div>
-              </div>
+              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div></div>
               <div class="module-meta">MODULE 02 <span class="satellite-icon review"></span></div>
               <div class="module-name">LINK2U</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(2)">OPEN MODULE</button></div>
@@ -611,9 +1194,7 @@
             </div>
 
             <div class="module-card" data-module="3">
-              <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.4s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.4s"></div>
-              </div>
+              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.4s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.4s"></div></div>
               <div class="module-meta">MODULE 03 <span class="satellite-icon review"></span></div>
               <div class="module-name">Thumb Type</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(3)">OPEN MODULE</button></div>
@@ -628,9 +1209,7 @@
             </div>
 
             <div class="module-card module-row-2-start" data-module="4">
-              <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.6s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.6s"></div>
-              </div>
+              <div class="module-edges"><div class="edge tl pulse" style="animation-delay:.6s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.6s"></div></div>
               <div class="module-meta">MODULE 04 <span class="satellite-icon offline"></span></div>
               <div class="module-name">Classified</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(4)">OPEN MODULE</button></div>
@@ -665,10 +1244,7 @@
                     <div class="launch-title">
                       <div class="launch-module">PROCESS_01 // DATA_CACHE</div>
                       <div class="launch-name">MULTI CLIP</div>
-                      <div class="launch-statusline">
-                        <span class="launch-badge">ONLINE</span>
-                        <span class="launch-sub">UPLINK ACTIVE :: READY FOR EXECUTE</span>
-                      </div>
+                      <div class="launch-statusline"><span class="launch-badge">ONLINE</span><span class="launch-sub">UPLINK ACTIVE :: READY FOR EXECUTE</span></div>
                     </div>
                   </div>
                   <button class="launch-btn" type="button" onclick="launchToggle(1)">EXEC</button>
@@ -694,10 +1270,7 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_02 // NETWORK_BRIDGE</div>
                       <div class="launch-name">LINK2U</div>
-                      <div class="launch-statusline">
-                        <span class="launch-badge yellow">REVIEW</span>
-                        <span class="launch-sub">PLAY STORE QUEUE :: APPROVAL PENDING</span>
-                      </div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">REVIEW</span><span class="launch-sub">PLAY STORE QUEUE :: APPROVAL PENDING</span></div>
                     </div>
                   </div>
                   <button class="launch-btn yellow" type="button" onclick="launchToggle(2)">EXEC</button>
@@ -720,10 +1293,7 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_03 // INPUT_ENGINE</div>
                       <div class="launch-name">THUMB TYPE</div>
-                      <div class="launch-statusline">
-                        <span class="launch-badge yellow">BUILD</span>
-                        <span class="launch-sub">INPUT STACK :: ACTIVE DEVELOPMENT</span>
-                      </div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">BUILD</span><span class="launch-sub">INPUT STACK :: ACTIVE DEVELOPMENT</span></div>
                     </div>
                   </div>
                   <button class="launch-btn yellow" type="button" onclick="launchToggle(3)">EXEC</button>
@@ -746,10 +1316,7 @@
                     <div class="launch-title">
                       <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_04 // LOCKED_NODE</div>
                       <div class="launch-name">CLASSIFIED</div>
-                      <div class="launch-statusline">
-                        <span class="launch-badge red">LOCKED</span>
-                        <span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span>
-                      </div>
+                      <div class="launch-statusline"><span class="launch-badge red">LOCKED</span><span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span></div>
                     </div>
                   </div>
                   <button class="launch-btn red" type="button" onclick="launchToggle(4)">EXEC</button>
@@ -900,7 +1467,6 @@
     function runBootSequence() {
       const bootContainer = document.getElementById('boot-lines');
       let lineIndex = 0;
-
       function typeLine() {
         if (lineIndex < bootLines.length) {
           const line = document.createElement('div');
@@ -928,7 +1494,6 @@
           }, 500);
         }
       }
-
       typeLine();
     }
 
@@ -1007,8 +1572,7 @@
       if (audioContext.state === 'suspended') audioContext.resume();
       audioEnabled = !audioEnabled;
       toggle.classList.toggle('active', audioEnabled);
-      if (audioEnabled) startSpaceAmbient();
-      else stopSpaceAmbient();
+      if (audioEnabled) startSpaceAmbient(); else stopSpaceAmbient();
     }
 
     function startSpaceAmbient() {
@@ -1172,8 +1736,7 @@
 
     function updateLatency() {
       if (isInfected) { latencyElement.textContent = '---'; return; }
-      const latency = Math.floor(Math.random() * 16) + 8;
-      latencyElement.textContent = latency + 'ms';
+      latencyElement.textContent = (Math.floor(Math.random() * 16) + 8) + 'ms';
     }
 
     function updateBars() {
@@ -1271,11 +1834,9 @@
       const details = document.getElementById('launch-details-' + n);
       const command = document.getElementById('launch-command-' + n);
       if (!row || !details || !command) return;
-
       const isOpen = details.classList.contains('open');
       document.querySelectorAll('.launch-details.open').forEach(d => d.classList.remove('open'));
       document.querySelectorAll('.launch-command.active').forEach(c => c.classList.remove('active'));
-
       if (!isOpen) {
         row.classList.add('scanning');
         const typing = document.getElementById('launcher-typing');
@@ -1297,13 +1858,10 @@
     const container = document.getElementById('canvas-container');
     const width = container.clientWidth;
     const height = container.clientHeight;
-
     const scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x000000, 15, 60);
-
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(0, 0, 20);
-
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -1311,7 +1869,6 @@
 
     const mouse = { x: 0, y: 0 };
     const targetMouse = { x: 0, y: 0 };
-
     const isMobile = window.innerWidth < 768;
     const particleCount = isMobile ? 800 : window.innerWidth < 1024 ? 1500 : 2000;
 
