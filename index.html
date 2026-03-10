@@ -216,7 +216,7 @@
     .status-container {
       position: fixed;
       top: 20px;
-      right: 80px;
+      right: 16px;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
@@ -937,26 +937,10 @@
     .launch-row.scanning .launch-scan { opacity: 0.75; }
 
     /* Mobile responsiveness */
-    @media (max-width: 768px) {$1.logo-53 { display: none; }
-
-      .dock { right: 10px; bottom: 10px; gap: 8px; padding: 8px 10px; }
-      .dock-btn { width: 36px; height: 36px; }
-      .audio-pill { padding: 9px 10px; font-size: 12px; }
-
-      .center-wrap { padding: 42px 14px 96px; }
-
-      /* Keep the title a touch calmer on phone */
-      .title { font-size: clamp(38px, 11vw, 64px); letter-spacing: 0.06em; }
-      .title-sup { font-size: 0.34em; top: -0.58em; margin-left: 8px; }
-
-      /* Tone down particles UI overlap with top elements on mobile */
-      $1
-      .status-container { top: 10px !important; right: 2px !important; left: auto !important; transform: none !important; margin: 0 !important; }
+    @media (max-width: 768px) {$1.status-container { top: 10px !important; right: 10px !important; left: auto !important; transform: none !important; margin: 0 !important; align-items: flex-end !important; }
     }
 
-    @media (min-width: 768px) {
-      .logo-53 { top: 18px; right: 18px; font-size: 24px; }
-      .status-container { top: 30px; right: 110px; }
+    @media (min-width: 768px) {$1.status-container { top: 18px; right: 18px !important; left: auto !important; transform: none !important; margin: 0 !important; align-items: flex-end !important; }
       .terminal-interface { top: 30px; left: 30px; width: 400px; height: 200px; }
       .dock { right: 30px; bottom: 30px; }
       .status-line { font-size: 18px; }
