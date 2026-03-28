@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThumbType V2 — Privacy Policy | SY5TEM N3XT</title>
+  <style>
+    :root {
+      --bg: #0d0d14;
+      --bg2: #13102a;
+      --text: #d0d0e8;
+      --text-muted: #8888aa;
+      --accent: #cc88ff;
+      --green: #00e676;
+      --red: #ff6b6b;
+      --border: rgba(255,255,255,0.08);
+      --card: rgba(255,255,255,0.04);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+      min-height: 100vh;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(204,136,255,0.12);
+      border: 1px solid rgba(204,136,255,0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 40px;
+    }
+    .toc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .toc-card h2 {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .toc-card ol {
+      padding-left: 20px;
+    }
+    .toc-card li {
+      margin-bottom: 6px;
+    }
+    .toc-card a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .toc-card a:hover { text-decoration: underline; }
+    section {
+      margin-bottom: 48px;
+    }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 20px 0 8px;
+    }
+    p { margin-bottom: 14px; }
+    ul, ol {
+      padding-left: 22px;
+      margin-bottom: 14px;
+    }
+    li { margin-bottom: 6px; }
+    .highlight-card {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .highlight-card.green {
+      background: rgba(0,230,118,0.06);
+      border: 1px solid rgba(0,230,118,0.25);
+    }
+    .highlight-card.red {
+      background: rgba(255,107,107,0.06);
+      border: 1px solid rgba(255,107,107,0.25);
+    }
+    .highlight-card.purple {
+      background: rgba(204,136,255,0.06);
+      border: 1px solid rgba(204,136,255,0.25);
+    }
+    .highlight-card.blue {
+      background: rgba(79,195,247,0.06);
+      border: 1px solid rgba(79,195,247,0.25);
+    }
+    .highlight-card p { margin-bottom: 0; }
+    .perm-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .perm-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .perm-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .perm-table tr:last-child td { border-bottom: none; }
+    .perm-name {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .tag.never { background: rgba(0,230,118,0.15); color: var(--green); }
+    .tag.local { background: rgba(79,195,247,0.15); color: #4fc3f7; }
+    .tag.third-party { background: rgba(255,165,0,0.15); color: #ffb74d; }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    strong { color: #fff; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="badge">Privacy Policy</div>
+  <h1>ThumbType V2</h1>
+  <p class="subtitle">
+    Effective Date: March 28, 2026 &nbsp;·&nbsp; Last Updated: March 28, 2026<br>
+    Developer: <strong>SY5TEM N3XT</strong> &nbsp;·&nbsp; App Package: <code>com.sy5temnext.thumbtype</code>
+  </p>
+
+  <div class="highlight-card green">
+    <p><strong>Short version:</strong> SY5TEM N3XT does not collect, store, or transmit your personal data to our servers. Everything the app stores stays on your device. The only data that ever leaves your device is text you explicitly send to a third-party AI provider using your own API key — and it goes directly to that provider, never through us.</p>
+  </div>
+
+  <div class="toc-card">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#overview">What ThumbType Does</a></li>
+      <li><a href="#data-we-collect">Data We Collect — None</a></li>
+      <li><a href="#keyboard-access">Keyboard &amp; Input Method Access</a></li>
+      <li><a href="#ai-brain">AI Brain Feature &amp; Third-Party AI Providers</a></li>
+      <li><a href="#contacts">Contacts Access</a></li>
+      <li><a href="#microphone">Microphone &amp; Voice Input</a></li>
+      <li><a href="#local-storage">Local On-Device Storage</a></li>
+      <li><a href="#permissions">Permissions Explained</a></li>
+      <li><a href="#third-parties">Third-Party Services</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. OVERVIEW -->
+  <section id="overview">
+    <h2>1. What ThumbType Does</h2>
+    <p>ThumbType V2 is a custom Android keyboard (Input Method Editor / IME) developed by SY5TEM N3XT. It includes the following features:</p>
+    <ul>
+      <li><strong>Custom Keyboard:</strong> A full replacement keyboard for typing on Android devices.</li>
+      <li><strong>AI Brain (Optional):</strong> Rewrites typed text using a third-party AI provider of your choice. Requires you to supply your own API key from Google, OpenAI, or Anthropic.</li>
+      <li><strong>Voice Typing:</strong> Converts spoken words to text using Android's built-in speech recognition.</li>
+      <li><strong>Contact Capture:</strong> Lets you scan QR codes or speak contact details to quickly save new contacts to your device address book.</li>
+      <li><strong>Send Module / Contact Library:</strong> Displays your device contacts inside the keyboard for quick selection while composing messages.</li>
+      <li><strong>Address Book:</strong> A local on-device contact manager within the app.</li>
+      <li><strong>QR Code Creator:</strong> Generates QR codes locally on your device.</li>
+      <li><strong>Notepad:</strong> A local notepad for drafting text.</li>
+      <li><strong>Launchpad:</strong> A quick-access launcher for sharing files (photos, documents, audio).</li>
+    </ul>
+  </section>
+
+  <!-- 2. DATA WE COLLECT -->
+  <section id="data-we-collect">
+    <h2>2. Data We Collect — None</h2>
+
+    <div class="highlight-card green">
+      <p><strong>SY5TEM N3XT does not operate any servers that receive your data. We do not collect, store, process, or sell any personal information, usage data, analytics, crash reports, or advertising identifiers.</strong></p>
+    </div>
+
+    <p>We do not collect:</p>
+    <ul>
+      <li>Text you type</li>
+      <li>Messages you compose or send</li>
+      <li>Your contacts or contact information</li>
+      <li>Your API keys</li>
+      <li>Your name, email address, or account information</li>
+      <li>Device identifiers or advertising IDs</li>
+      <li>Location data</li>
+      <li>Usage statistics or analytics</li>
+      <li>Crash or diagnostic reports</li>
+    </ul>
+
+    <p>There are no analytics SDKs, no crash reporting libraries, no advertising SDKs, and no SY5TEM N3XT backend servers in this application.</p>
+  </section>
+
+  <!-- 3. KEYBOARD ACCESS -->
+  <section id="keyboard-access">
+    <h2>3. Keyboard &amp; Input Method Access</h2>
+
+    <div class="highlight-card red">
+      <p><strong>Important Notice About Keyboard Apps:</strong> Android requires that we disclose clearly: as an Input Method Editor (IME), ThumbType has the technical capability to read text as it is typed in any app where the keyboard is active. This is standard behavior for all Android keyboards.</p>
+    </div>
+
+    <p>Here is exactly what ThumbType does and does not do with text input:</p>
+
+    <h3>What ThumbType does with typed text</h3>
+    <ul>
+      <li><strong>Standard keyboard function:</strong> Typed characters are sent to the app you are currently typing in (e.g., a messaging app, email, browser). This is the normal, expected behavior of any keyboard.</li>
+      <li><strong>AI rewriting (only when you tap the robot button):</strong> If you have set up the AI Brain feature and you explicitly tap the robot (🤖) button, the text currently in the input field is sent to your chosen third-party AI provider (Google, OpenAI, or Anthropic) using your own API key. This transmission goes directly from your device to the AI provider — it does not pass through SY5TEM N3XT.</li>
+    </ul>
+
+    <h3>What ThumbType does NOT do with typed text</h3>
+    <ul>
+      <li>We do not record, log, or store any text you type.</li>
+      <li>We do not transmit your typing to SY5TEM N3XT or any SY5TEM N3XT server.</li>
+      <li>We do not monitor, analyze, or profile your typing patterns.</li>
+      <li>Text is never sent to any AI provider unless you explicitly trigger it by tapping the AI button.</li>
+      <li>Password fields and sensitive input fields are handled by Android's system-level protections; ThumbType respects these flags and does not process text from password fields.</li>
+    </ul>
+  </section>
+
+  <!-- 4. AI BRAIN -->
+  <section id="ai-brain">
+    <h2>4. AI Brain Feature &amp; Third-Party AI Providers</h2>
+
+    <p>The AI Brain feature is <strong>entirely optional</strong>. You can use ThumbType as a full-featured keyboard without ever setting up AI Brain.</p>
+
+    <h3>How AI Brain works</h3>
+    <ol>
+      <li>You create your own account directly with an AI provider (Google, OpenAI, or Anthropic).</li>
+      <li>You obtain an API key from that provider and enter it in ThumbType's AI Brain settings.</li>
+      <li>Your API key is stored locally on your device only (see Section 7).</li>
+      <li>When you tap the robot button, the text in the current input field is sent directly from your device to your chosen provider's API endpoint.</li>
+      <li>The AI provider returns a rewritten version of the text, which ThumbType inserts back into the input field.</li>
+    </ol>
+
+    <div class="highlight-card purple">
+      <p><strong>SY5TEM N3XT is not an intermediary.</strong> Your text travels directly from your device to the AI provider. SY5TEM N3XT never sees, receives, or stores the text you send to AI providers.</p>
+    </div>
+
+    <h3>Third-party AI providers and their privacy policies</h3>
+    <p>When you use AI Brain, your text is subject to the privacy policy of the provider you have selected. Please review their policies:</p>
+    <ul>
+      <li><strong>Google Gemini:</strong> <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a></li>
+      <li><strong>OpenAI (ChatGPT):</strong> <a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI Privacy Policy</a></li>
+      <li><strong>Anthropic (Claude):</strong> <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic Privacy Policy</a></li>
+    </ul>
+
+    <h3>Billing and charges</h3>
+    <p>Any costs, charges, or credits associated with AI API usage are between you and your chosen provider. SY5TEM N3XT does not receive payment and is not responsible for any charges you incur. Please monitor your API usage in your provider's dashboard.</p>
+
+    <h3>AI Brain in Contact Capture</h3>
+    <p>The Contact Capture feature also uses your OpenAI API key (if configured) to parse spoken contact information into structured fields. The same rules apply: your voice-captured text is sent directly to OpenAI's API using your own key. SY5TEM N3XT does not receive this data.</p>
+  </section>
+
+  <!-- 5. CONTACTS -->
+  <section id="contacts">
+    <h2>5. Contacts Access</h2>
+
+    <p>ThumbType requests two contacts-related permissions: <code>READ_CONTACTS</code> and <code>WRITE_CONTACTS</code>.</p>
+
+    <h3>READ_CONTACTS — Send Module &amp; Contact Library</h3>
+    <p>The Send Module's Contact Library feature reads your device contacts to display them inside the keyboard, allowing you to quickly select a recipient while composing a message. Your contacts are:</p>
+    <ul>
+      <li>Read directly from your device's local contacts database.</li>
+      <li>Displayed only within the ThumbType keyboard interface.</li>
+      <li>Never transmitted off your device by SY5TEM N3XT.</li>
+      <li>Never stored in any SY5TEM N3XT database or cloud service.</li>
+    </ul>
+
+    <h3>WRITE_CONTACTS — Contact Capture</h3>
+    <p>The Contact Capture feature allows you to scan a QR code or speak a person's information to quickly create a new contact. When you confirm saving a contact, ThumbType writes it to your device's local contacts app. This data:</p>
+    <ul>
+      <li>Is saved only to your device's local contacts storage.</li>
+      <li>Is never transmitted to SY5TEM N3XT.</li>
+    </ul>
+
+    <p>Both permissions are requested at runtime and can be denied. Denying these permissions simply disables the relevant features; the keyboard continues to work normally.</p>
+  </section>
+
+  <!-- 6. MICROPHONE -->
+  <section id="microphone">
+    <h2>6. Microphone &amp; Voice Input</h2>
+
+    <p>ThumbType requests the <code>RECORD_AUDIO</code> permission for two voice features:</p>
+
+    <h3>Voice Typing on the Keyboard</h3>
+    <p>The keyboard includes a voice input button that activates Android's built-in Speech Recognition service (provided by Google). When you tap the microphone button:</p>
+    <ul>
+      <li>Audio is processed by Android's native SpeechRecognizer framework.</li>
+      <li>The transcribed text is returned to the keyboard and inserted into the input field.</li>
+      <li>SY5TEM N3XT does not receive, store, or process your audio or voice transcription.</li>
+      <li>Audio processing is governed by <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a> as the Android SpeechRecognizer provider.</li>
+    </ul>
+
+    <h3>Voice Contact Capture</h3>
+    <p>In the Contact Capture screen, you can speak a contact's information aloud. The audio is processed by Android's SpeechRecognizer to produce text, and then that text may be sent to OpenAI's API (using your own API key) to parse the contact fields. SY5TEM N3XT does not receive your audio or the transcribed text.</p>
+
+    <p>The <code>RECORD_AUDIO</code> permission is only active while you are actively using a voice feature. The microphone is not accessed passively or in the background.</p>
+  </section>
+
+  <!-- 7. LOCAL STORAGE -->
+  <section id="local-storage">
+    <h2>7. Local On-Device Storage</h2>
+
+    <p>ThumbType stores the following data <strong>locally on your device only</strong> using Android's SharedPreferences and local storage. None of this data is transmitted to SY5TEM N3XT.</p>
+
+    <ul>
+      <li><strong>AI API Keys:</strong> Stored in private SharedPreferences (the <code>thumbtype_ai</code> preference file). Only your app can read these. Keys are never transmitted to SY5TEM N3XT.</li>
+      <li><strong>Active AI Provider Preference:</strong> Which provider (Google, OpenAI, Anthropic) you have selected as active.</li>
+      <li><strong>AI Disclaimer Agreement:</strong> A flag recording whether you have read and agreed to the AI Brain disclaimer.</li>
+      <li><strong>Keyboard Settings:</strong> Your keyboard skin, color preferences, and layout customizations.</li>
+      <li><strong>Address Book:</strong> Contact records you have added in the app's built-in address book. Stored locally on your device.</li>
+      <li><strong>Identity Hub Profiles:</strong> Your personal and business profile information for the networking features. Stored locally only.</li>
+      <li><strong>Notepad Content:</strong> Text notes you create in the Notepad feature. Stored locally only.</li>
+    </ul>
+
+    <p>All locally stored data can be deleted by clearing the app's data or uninstalling the app.</p>
+  </section>
+
+  <!-- 8. PERMISSIONS -->
+  <section id="permissions">
+    <h2>8. Permissions Explained</h2>
+
+    <table class="perm-table">
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Why it is needed</th>
+          <th>Data Destination</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="perm-name">INTERNET</span></td>
+          <td>Required to send text to third-party AI providers (Google Gemini, OpenAI, Anthropic) when you tap the AI Brain button. Not used for any SY5TEM N3XT communication.</td>
+          <td><span class="tag third-party">AI Provider Only</span></td>
+        </tr>
+        <tr>
+          <td><span class="perm-name">RECORD_AUDIO</span></td>
+          <td>Required for the voice typing button on the keyboard and voice contact capture. Audio is processed by Android's SpeechRecognizer (Google).</td>
+          <td><span class="tag third-party">Android / Google Speech</span></td>
+        </tr>
+        <tr>
+          <td><span class="perm-name">READ_CONTACTS</span></td>
+          <td>Required for the Send Module's Contact Library to display your contacts inside the keyboard for quick recipient selection.</td>
+          <td><span class="tag local">On-Device Only</span></td>
+        </tr>
+        <tr>
+          <td><span class="perm-name">WRITE_CONTACTS</span></td>
+          <td>Required for the Contact Capture feature to save a newly captured contact to your device's address book.</td>
+          <td><span class="tag local">On-Device Only</span></td>
+        </tr>
+        <tr>
+          <td><span class="perm-name">VIBRATE</span></td>
+          <td>Required for haptic feedback (key tap vibration) on the keyboard.</td>
+          <td><span class="tag never">Device Hardware Only</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 9. THIRD PARTIES -->
+  <section id="third-parties">
+    <h2>9. Third-Party Services</h2>
+
+    <p>ThumbType integrates with the following third-party services. SY5TEM N3XT does not control these services and their use of your data is governed by their own privacy policies.</p>
+
+    <h3>AI Providers (Optional — only if you configure AI Brain)</h3>
+    <ul>
+      <li><strong>Google Gemini API</strong> — receives your text when you use AI Brain with your Google API key. Governed by Google's Privacy Policy.</li>
+      <li><strong>OpenAI API (ChatGPT)</strong> — receives your text when you use AI Brain with your OpenAI API key. Also used in Contact Capture voice parsing if your OpenAI key is active. Governed by OpenAI's Privacy Policy.</li>
+      <li><strong>Anthropic API (Claude)</strong> — receives your text when you use AI Brain with your Anthropic API key. Governed by Anthropic's Privacy Policy.</li>
+    </ul>
+
+    <h3>Google Speech Recognition (Android System)</h3>
+    <p>Used for voice typing on the keyboard and voice contact capture. This is Android's built-in SpeechRecognizer and is governed by Google's Privacy Policy.</p>
+
+    <h3>ZXing</h3>
+    <p>ThumbType uses the ZXing open-source library for QR code generation and scanning. ZXing processes data entirely on-device and does not transmit any data.</p>
+
+    <p><strong>There are no advertising networks, analytics SDKs, or data broker integrations in ThumbType.</strong></p>
+  </section>
+
+  <!-- 10. CHILDREN -->
+  <section id="children">
+    <h2>10. Children's Privacy</h2>
+
+    <p>ThumbType is not directed at children under the age of 13. We do not knowingly collect personal information from children under 13.</p>
+
+    <p><strong>Important notice regarding the AI Brain feature:</strong> The AI Brain feature connects to third-party AI services that require account creation and may involve billing. Users under 18 should not set up API keys without the express permission and supervision of a parent or legal guardian. SY5TEM N3XT is not responsible for any charges incurred by minors through third-party AI service accounts.</p>
+
+    <p>If you are a parent or guardian and believe your child has provided personal information to us, please contact us at the address below and we will take steps to address the situation.</p>
+  </section>
+
+  <!-- 11. SECURITY -->
+  <section id="security">
+    <h2>11. Security</h2>
+
+    <p>We take reasonable steps to protect the information stored on your device:</p>
+    <ul>
+      <li>API keys are stored in Android's private SharedPreferences storage, which is sandboxed to the ThumbType app and cannot be accessed by other apps without root access.</li>
+      <li>All communications to AI providers use HTTPS (TLS encryption).</li>
+      <li>ThumbType does not operate any cloud servers or databases, eliminating server-side data breach risk for your personal information.</li>
+    </ul>
+
+    <p>Because we store no data on our own servers, there is no SY5TEM N3XT server that can be breached to expose your personal information.</p>
+  </section>
+
+  <!-- 12. CHANGES -->
+  <section id="changes">
+    <h2>12. Changes to This Policy</h2>
+
+    <p>If we make material changes to this Privacy Policy, we will update the "Last Updated" date at the top of this page. We may also notify you through an in-app notice. Continued use of ThumbType after changes are posted constitutes your acceptance of the updated policy.</p>
+
+    <p>We encourage you to review this policy periodically. Previous versions are available upon request.</p>
+  </section>
+
+  <!-- 13. CONTACT -->
+  <section id="contact">
+    <h2>13. Contact Us</h2>
+
+    <p>If you have questions, concerns, or requests regarding this Privacy Policy or ThumbType's data practices, please contact us:</p>
+
+    <div class="highlight-card blue">
+      <p>
+        <strong>SY5TEM N3XT</strong><br>
+        Website: <a href="https://sy5temn3xt.app" target="_blank">sy5temn3xt.app</a>
+      </p>
+    </div>
+
+    <p>We will respond to privacy-related inquiries as promptly as possible.</p>
+  </section>
+
+  <hr class="divider" />
+
+  <div class="highlight-card green">
+    <p><strong>Summary of our commitment:</strong> SY5TEM N3XT built ThumbType on a privacy-first foundation. We do not collect your data, we do not sell your data, and we do not run servers that receive your personal information. The only network traffic from ThumbType is the text you intentionally send to an AI provider of your choice, using your own account and key, going directly to that provider — never through us.</p>
+  </div>
+
+  <div class="footer">
+    <p>© 2026 SY5TEM N3XT · <a href="https://sy5temn3xt.app">sy5temn3xt.app</a></p>
+    <p style="margin-top:8px; font-size:12px;">This policy applies to ThumbType V2 (com.sy5temnext.thumbtype) on Android.</p>
+  </div>
+
+</div>
+</body>
+</html>
