@@ -219,7 +219,7 @@
     <p>ThumbType V2 is a custom Android keyboard (Input Method Editor / IME) developed by SY5TEM N3XT. It includes the following features:</p>
     <ul>
       <li><strong>Custom Keyboard:</strong> A full replacement keyboard for typing on Android devices.</li>
-      <li><strong>AI Brain (Optional):</strong> Rewrites typed text using a third-party AI provider of your choice. Requires you to supply your own API key from Google, OpenAI, or Anthropic.</li>
+      <li><strong>AI Brain (Optional):</strong> Rewrites typed text using OpenAI's API. Requires you to supply your own OpenAI API key.</li>
       <li><strong>Voice Typing:</strong> Converts spoken words to text using Android's built-in speech recognition.</li>
       <li><strong>Contact Capture:</strong> Lets you scan QR codes or speak contact details to quickly save new contacts to your device address book.</li>
       <li><strong>Send Module / Contact Library:</strong> Displays your device contacts inside the keyboard for quick selection while composing messages.</li>
@@ -267,7 +267,7 @@
     <h3>What ThumbType does with typed text</h3>
     <ul>
       <li><strong>Standard keyboard function:</strong> Typed characters are sent to the app you are currently typing in (e.g., a messaging app, email, browser). This is the normal, expected behavior of any keyboard.</li>
-      <li><strong>AI rewriting (only when you tap the robot button):</strong> If you have set up the AI Brain feature and you explicitly tap the robot (🤖) button, the text currently in the input field is sent to your chosen third-party AI provider (Google, OpenAI, or Anthropic) using your own API key. This transmission goes directly from your device to the AI provider — it does not pass through SY5TEM N3XT.</li>
+      <li><strong>AI rewriting (only when you tap the robot button):</strong> If you have set up the AI Brain feature and you explicitly tap the robot (🤖) button, the text currently in the input field is sent directly to OpenAI using your own API key. This transmission goes directly from your device to OpenAI — it does not pass through SY5TEM N3XT.</li>
     </ul>
 
     <h3>What ThumbType does NOT do with typed text</h3>
@@ -288,8 +288,8 @@
 
     <h3>How AI Brain works</h3>
     <ol>
-      <li>You create your own account directly with an AI provider (Google, OpenAI, or Anthropic).</li>
-      <li>You obtain an API key from that provider and enter it in ThumbType's AI Brain settings.</li>
+      <li>You create your own account directly with OpenAI.</li>
+      <li>You obtain an API key from OpenAI and enter it in ThumbType's AI Brain settings.</li>
       <li>Your API key is stored locally on your device only (see Section 7).</li>
       <li>When you tap the robot button, the text in the current input field is sent directly from your device to your chosen provider's API endpoint.</li>
       <li>The AI provider returns a rewritten version of the text, which ThumbType inserts back into the input field.</li>
@@ -299,12 +299,10 @@
       <p><strong>SY5TEM N3XT is not an intermediary.</strong> Your text travels directly from your device to the AI provider. SY5TEM N3XT never sees, receives, or stores the text you send to AI providers.</p>
     </div>
 
-    <h3>Third-party AI providers and their privacy policies</h3>
-    <p>When you use AI Brain, your text is subject to the privacy policy of the provider you have selected. Please review their policies:</p>
+    <h3>Third-party AI provider and their privacy policy</h3>
+    <p>When you use AI Brain, your text is subject to OpenAI's privacy policy. Please review it:</p>
     <ul>
-      <li><strong>Google Gemini:</strong> <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy</a></li>
       <li><strong>OpenAI (ChatGPT):</strong> <a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI Privacy Policy</a></li>
-      <li><strong>Anthropic (Claude):</strong> <a href="https://www.anthropic.com/privacy" target="_blank">Anthropic Privacy Policy</a></li>
     </ul>
 
     <h3>Billing and charges</h3>
@@ -368,7 +366,7 @@
 
     <ul>
       <li><strong>AI API Keys:</strong> Stored in private SharedPreferences (the <code>thumbtype_ai</code> preference file). Only your app can read these. Keys are never transmitted to SY5TEM N3XT.</li>
-      <li><strong>Active AI Provider Preference:</strong> Which provider (Google, OpenAI, Anthropic) you have selected as active.</li>
+      <li><strong>Active AI Provider Preference:</strong> Whether you have set up OpenAI as your AI Brain provider.</li>
       <li><strong>AI Disclaimer Agreement:</strong> A flag recording whether you have read and agreed to the AI Brain disclaimer.</li>
       <li><strong>Keyboard Settings:</strong> Your keyboard skin, color preferences, and layout customizations.</li>
       <li><strong>Address Book:</strong> Contact records you have added in the app's built-in address book. Stored locally on your device.</li>
@@ -394,7 +392,7 @@
       <tbody>
         <tr>
           <td><span class="perm-name">INTERNET</span></td>
-          <td>Required to send text to third-party AI providers (Google Gemini, OpenAI, Anthropic) when you tap the AI Brain button. Not used for any SY5TEM N3XT communication.</td>
+          <td>Required to send text to OpenAI when you tap the AI Brain button. Not used for any SY5TEM N3XT communication.</td>
           <td><span class="tag third-party">AI Provider Only</span></td>
         </tr>
         <tr>
@@ -427,11 +425,9 @@
 
     <p>ThumbType integrates with the following third-party services. SY5TEM N3XT does not control these services and their use of your data is governed by their own privacy policies.</p>
 
-    <h3>AI Providers (Optional — only if you configure AI Brain)</h3>
+    <h3>AI Provider (Optional — only if you configure AI Brain)</h3>
     <ul>
-      <li><strong>Google Gemini API</strong> — receives your text when you use AI Brain with your Google API key. Governed by Google's Privacy Policy.</li>
       <li><strong>OpenAI API (ChatGPT)</strong> — receives your text when you use AI Brain with your OpenAI API key. Also used in Contact Capture voice parsing if your OpenAI key is active. Governed by OpenAI's Privacy Policy.</li>
-      <li><strong>Anthropic API (Claude)</strong> — receives your text when you use AI Brain with your Anthropic API key. Governed by Anthropic's Privacy Policy.</li>
     </ul>
 
     <h3>Google Speech Recognition (Android System)</h3>
