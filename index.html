@@ -234,6 +234,25 @@
       text-shadow: 0 0 20px rgba(255,0,0,0.8);
     }
 
+    .telemetry-panel.virus {
+      border-color: rgba(255,0,64,0.3);
+      box-shadow: 0 0 18px rgba(255,0,64,0.15);
+    }
+    .telemetry-panel.virus::before {
+      background: repeating-linear-gradient(0deg, rgba(255,0,64,0), rgba(255,0,64,0) 3px, rgba(255,0,64,0.04) 3px, rgba(255,0,64,0.04) 6px);
+    }
+    .telemetry-panel.virus::after {
+      background: linear-gradient(to bottom, rgba(255,0,64,0), rgba(255,0,64,0.18), rgba(255,0,64,0));
+    }
+    .telemetry-panel.virus .telemetry-head {
+      color: rgba(255,0,64,0.9);
+      text-shadow: 0 0 10px rgba(255,0,64,0.5);
+    }
+    .telemetry-panel.virus .telemetry-line {
+      color: rgba(255,0,64,0.85);
+      text-shadow: 0 0 8px rgba(255,0,64,0.3);
+    }
+
     .status-line {
       display: flex;
       align-items: center;
@@ -1709,6 +1728,7 @@
       document.getElementById('main-title').classList.add('virus-glow');
       document.getElementById('terminal-interface').classList.add('virus');
       document.getElementById('status-container').classList.add('virus');
+      document.getElementById('telemetry-panel').classList.add('virus');
       document.getElementById('status-text').textContent = 'OFFLINE';
       startMatrixRain();
       if (typeof particleSystem !== 'undefined') particleSystem.material.color.setHex(0xff0040);
@@ -1725,6 +1745,7 @@
       document.getElementById('main-title').classList.remove('virus-glow');
       document.getElementById('terminal-interface').classList.remove('virus');
       document.getElementById('status-container').classList.remove('virus');
+      document.getElementById('telemetry-panel').classList.remove('virus');
       document.getElementById('status-text').textContent = 'CONNECTED';
       stopMatrixRain();
       if (typeof particleSystem !== 'undefined') particleSystem.material.color.setHex(0xffffff);
