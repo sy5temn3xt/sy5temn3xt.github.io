@@ -1253,11 +1253,28 @@
               <div class="module-edges">
                 <div class="edge tl pulse" style="animation-delay:.8s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.8s"></div>
               </div>
-              <div class="module-meta">MODULE 05 <span class="satellite-icon offline"></span></div>
-              <div class="module-name">Classified</div>
+              <div class="module-meta">MODULE 05 <span class="satellite-icon review"></span></div>
+              <div class="module-name">SAY</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(5)">OPEN MODULE</button></div>
-              <div class="meter"><div style="width:30%; animation: loadingBar 2s ease-out 0.8s;"></div></div>
+              <div class="meter"><div class="orange" style="width:50%; animation: loadingBar 2s ease-out 0.8s;"></div></div>
               <div class="module-panel" id="module-panel-5">
+                <div class="panel-line">STATUS: PENDING LAUNCH</div>
+                <div class="panel-line">TYPE: ANDROID APP</div>
+                <div class="panel-line">PROCESS: PLAY STORE SUBMISSION</div>
+                <div class="panel-line">ACTION: AWAITING LAUNCH</div>
+                <div class="panel-cta"><a class="cta-link cta-muted" href="#" onclick="return false;">COMING SOON</a></div>
+              </div>
+            </div>
+
+            <div class="module-card" data-module="6">
+              <div class="module-edges">
+                <div class="edge tl pulse" style="animation-delay:1.0s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:1.0s"></div>
+              </div>
+              <div class="module-meta">MODULE 06 <span class="satellite-icon offline"></span></div>
+              <div class="module-name">Classified</div>
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(6)">OPEN MODULE</button></div>
+              <div class="meter"><div style="width:30%; animation: loadingBar 2s ease-out 1.0s;"></div></div>
+              <div class="module-panel" id="module-panel-6">
                 <div class="panel-line">STATUS: RESTRICTED</div>
                 <div class="panel-line">TYPE: UNKNOWN</div>
                 <div class="panel-line">PROCESS: LOCKED NODE</div>
@@ -1274,7 +1291,7 @@
               <div class="launcher-kicker">ROGUE LAUNCHER / SYS://MODULES_ACTIVE</div>
               <div class="launcher-topline">
                 <div class="launcher-typing" id="launcher-typing"></div>
-                <div class="launcher-counter" id="launcher-counter">PROC 05 / LIVE 03</div>
+                <div class="launcher-counter" id="launcher-counter">PROC 06 / LIVE 03</div>
               </div>
             </div>
 
@@ -1373,21 +1390,44 @@
                 </div>
               </div>
 
-              <div class="launch-row launch-row-4 offline" data-launch="5">
+              <div class="launch-row review" data-launch="5">
+                <div class="launch-scan"></div>
+                <div class="launch-top">
+                  <div class="launch-left">
+                    <div class="proc-dot review"></div>
+                    <div class="launch-title">
+                      <div class="launch-module" style="color: rgba(255,208,0,0.85);">PROCESS_05 // VOICE_OVERLAY</div>
+                      <div class="launch-name">SAY</div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">REVIEW</span><span class="launch-sub">PLAY STORE SUBMISSION :: APPROVAL PENDING</span></div>
+                    </div>
+                  </div>
+                  <button class="launch-btn yellow" type="button" onclick="launchToggle(5)">EXEC</button>
+                </div>
+                <div class="launch-command review" id="launch-command-5">&gt; STORE SUBMISSION QUEUED :: PLAY STORE REVIEW PENDING</div>
+                <div class="launch-details" id="launch-details-5" style="border-top-color: rgba(255,208,0,0.14);">
+                  <div>&gt; STATUS: PENDING LAUNCH</div>
+                  <div>&gt; TYPE: ANDROID APP</div>
+                  <div>&gt; CHANNEL: GOOGLE PLAY</div>
+                  <div>&gt; NOTE: AWAITING APPROVAL</div>
+                  <div class="launch-actions"><a class="launch-link yellow" href="#" onclick="return false;">COMING SOON</a></div>
+                </div>
+              </div>
+
+              <div class="launch-row launch-row-4 offline" data-launch="6">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
                     <div class="proc-dot offline"></div>
                     <div class="launch-title">
-                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_05 // LOCKED_NODE</div>
+                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_06 // LOCKED_NODE</div>
                       <div class="launch-name">CLASSIFIED</div>
                       <div class="launch-statusline"><span class="launch-badge red">LOCKED</span><span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span></div>
                     </div>
                   </div>
-                  <button class="launch-btn red" type="button" onclick="launchToggle(5)">EXEC</button>
+                  <button class="launch-btn red" type="button" onclick="launchToggle(6)">EXEC</button>
                 </div>
-                <div class="launch-command offline" id="launch-command-5">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
-                <div class="launch-details" id="launch-details-5" style="border-top-color: rgba(255,0,64,0.14);">
+                <div class="launch-command offline" id="launch-command-6">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
+                <div class="launch-details" id="launch-details-6" style="border-top-color: rgba(255,0,64,0.14);">
                   <div>&gt; STATUS: RESTRICTED</div>
                   <div>&gt; ACCESS: DENIED</div>
                   <div>&gt; PROCESS: LOCKED NODE</div>
