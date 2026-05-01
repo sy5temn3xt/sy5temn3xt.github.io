@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ThumbType V2 — Privacy Policy | SY5TEM N3XT</title>
+  <title>ThumbType V3 — Privacy Policy | SY5TEM N3XT</title>
   <style>
     :root {
       --bg: #0d0d14;
@@ -184,9 +184,9 @@
 <div class="container">
 
   <div class="badge">Privacy Policy</div>
-  <h1>ThumbType V2</h1>
+  <h1>ThumbType V3</h1>
   <p class="subtitle">
-    Effective Date: March 28, 2026 &nbsp;·&nbsp; Last Updated: March 28, 2026<br>
+    Effective Date: March 28, 2026 &nbsp;·&nbsp; Last Updated: April 30, 2026<br>
     Developer: <strong>SY5TEM N3XT</strong> &nbsp;·&nbsp; App Package: <code>com.sy5temnext.thumbtype</code>
   </p>
 
@@ -344,16 +344,16 @@
     <p>ThumbType requests the <code>RECORD_AUDIO</code> permission for two voice features:</p>
 
     <h3>Voice Typing on the Keyboard</h3>
-    <p>The keyboard includes a voice input button that activates Android's built-in Speech Recognition service (provided by Google). When you tap the microphone button:</p>
+    <p>The keyboard includes a voice input button powered by <strong>Vosk</strong>, a fully offline speech recognition engine. When you tap the microphone button:</p>
     <ul>
-      <li>Audio is processed by Android's native SpeechRecognizer framework.</li>
+      <li>Audio is processed entirely on your device — nothing is sent to any server.</li>
       <li>The transcribed text is returned to the keyboard and inserted into the input field.</li>
       <li>SY5TEM N3XT does not receive, store, or process your audio or voice transcription.</li>
-      <li>Audio processing is governed by <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a> as the Android SpeechRecognizer provider.</li>
+      <li>No internet connection is required for voice typing.</li>
     </ul>
 
     <h3>Voice Contact Capture</h3>
-    <p>In the Contact Capture screen, you can speak a contact's information aloud. The audio is processed by Android's SpeechRecognizer to produce text, and then that text may be sent to OpenAI's API (using your own API key) to parse the contact fields. SY5TEM N3XT does not receive your audio or the transcribed text.</p>
+    <p>In the Contact Capture screen, you can speak a contact's information aloud. The audio is processed on-device to produce text, and then that text may be sent to OpenAI's API (using your own API key) to parse the contact fields. SY5TEM N3XT does not receive your audio or the transcribed text.</p>
 
     <p>The <code>RECORD_AUDIO</code> permission is only active while you are actively using a voice feature. The microphone is not accessed passively or in the background.</p>
   </section>
@@ -370,6 +370,7 @@
       <li><strong>AI Disclaimer Agreement:</strong> A flag recording whether you have read and agreed to the AI Brain disclaimer.</li>
       <li><strong>Keyboard Settings:</strong> Your keyboard skin, color preferences, and layout customizations.</li>
       <li><strong>Address Book:</strong> Contact records you have added in the app's built-in address book. Stored locally on your device.</li>
+      <li><strong>Personal Dictionary:</strong> Words you have manually added or that were auto-learned from your typing (e.g. names, usernames). Stored locally in private SharedPreferences. Never transmitted anywhere.</li>
       <li><strong>Identity Hub Profiles:</strong> Your personal and business profile information for the networking features. Stored locally only.</li>
       <li><strong>Notepad Content:</strong> Text notes you create in the Notepad feature. Stored locally only.</li>
     </ul>
