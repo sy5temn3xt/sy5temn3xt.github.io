@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSH KEY GEN :: SY5TEM N3XT</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #000;
+      --amber: #ffb000;
+      --green: #00ff88;
+      --yellow: #ffd000;
+      --red: #ff0040;
+    }
+
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: 'VT323', monospace;
+      min-height: 100vh;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(4px); } }
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      5% { opacity: 0.8; }
+      10% { opacity: 1; }
+      15% { opacity: 0.3; }
+      20% { opacity: 1; }
+      50% { opacity: 1; }
+      52% { opacity: 0.4; }
+      54% { opacity: 1; }
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes linePrint { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 0.92; transform: translateX(0); } }
+    @keyframes copyFlash { 0%, 100% { background: rgba(255,176,0,0.08); } 50% { background: rgba(255,176,0,0.28); } }
+
+    .scanlines-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.04;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 4px);
+      animation: scanlines 8s linear infinite;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,176,0,0.7);
+      text-decoration: none;
+      font-size: 16px;
+      letter-spacing: 0.12em;
+      margin-bottom: 40px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--amber); }
+    .back-link::before { content: '<'; font-size: 20px; }
+
+    /* Page header */
+    .page-header {
+      margin-bottom: 48px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .page-kicker {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      color: rgba(255,176,0,0.55);
+      margin-bottom: 10px;
+    }
+    .page-title {
+      font-size: clamp(36px, 6vw, 72px);
+      letter-spacing: 0.1em;
+      color: var(--amber);
+      text-shadow: 0 0 20px rgba(255,176,0,0.5), 0 0 40px rgba(255,176,0,0.2);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .page-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.08em;
+      line-height: 1.5;
+    }
+
+    /* Section headers */
+    .section {
+      margin-bottom: 44px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    .section-label {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      color: rgba(255,176,0,0.55);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      color: #fff;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '//';
+      color: var(--amber);
+      opacity: 0.7;
+    }
+
+    /* Terminal code blocks */
+    .terminal-block {
+      background: rgba(10, 10, 10, 0.9);
+      border: 1px solid rgba(255,176,0,0.18);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .terminal-block::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, rgba(255,176,0,0), rgba(255,176,0,0) 3px, rgba(255,176,0,0.015) 3px, rgba(255,176,0,0.015) 6px);
+      pointer-events: none;
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 1px solid rgba(255,176,0,0.1);
+      background: rgba(255,176,0,0.04);
+    }
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red { background: rgba(255,0,64,0.7); }
+    .terminal-dot.yellow { background: rgba(255,208,0,0.7); }
+    .terminal-dot.green { background: rgba(0,255,136,0.7); }
+    .terminal-label {
+      font-size: 12px;
+      color: rgba(255,176,0,0.5);
+      letter-spacing: 0.18em;
+    }
+    .copy-btn {
+      font-family: 'VT323', monospace;
+      font-size: 13px;
+      color: rgba(255,176,0,0.55);
+      background: none;
+      border: 1px solid rgba(255,176,0,0.18);
+      border-radius: 4px;
+      padding: 2px 10px;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { color: var(--amber); border-color: rgba(255,176,0,0.5); }
+    .copy-btn.copied { color: var(--green); border-color: rgba(0,255,136,0.5); }
+
+    .terminal-body {
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--amber);
+      text-shadow: 0 0 6px rgba(255,176,0,0.4);
+      overflow-x: auto;
+    }
+    .terminal-body .prompt { color: rgba(255,176,0,0.5); user-select: none; }
+    .terminal-body .cmd { color: var(--amber); }
+    .terminal-body .flag { color: #00d4ff; }
+    .terminal-body .comment {
+      color: rgba(255,255,255,0.28);
+      font-size: 14px;
+      display: block;
+      margin-top: 2px;
+    }
+    .terminal-body .output {
+      color: rgba(255,255,255,0.6);
+      font-size: 15px;
+    }
+
+    /* Step list */
+    .steps-list {
+      list-style: none;
+      counter-reset: step-counter;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .step {
+      counter-increment: step-counter;
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .step-num {
+      font-size: 22px;
+      color: var(--amber);
+      text-shadow: 0 0 10px rgba(255,176,0,0.5);
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .step-num::before { content: counter(step-counter, decimal-leading-zero); }
+    .step-content { flex: 1; }
+    .step-title {
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .step-desc {
+      font-size: 16px;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.04em;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    /* Platform tabs */
+    .platform-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      font-family: 'VT323', monospace;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      padding: 4px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,176,0,0.22);
+      background: rgba(255,176,0,0.04);
+      color: rgba(255,176,0,0.55);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: rgba(255,176,0,0.5); color: var(--amber); }
+    .tab-btn.active {
+      border-color: rgba(255,176,0,0.7);
+      background: rgba(255,176,0,0.1);
+      color: var(--amber);
+      text-shadow: 0 0 8px rgba(255,176,0,0.4);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Info box */
+    .info-box {
+      border: 1px solid rgba(255,176,0,0.18);
+      border-left: 3px solid rgba(255,176,0,0.7);
+      background: rgba(255,176,0,0.04);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+    .info-box.green {
+      border-color: rgba(0,255,136,0.18);
+      border-left-color: rgba(0,255,136,0.7);
+      background: rgba(0,255,136,0.04);
+    }
+    .info-box.red {
+      border-color: rgba(255,0,64,0.18);
+      border-left-color: rgba(255,0,64,0.7);
+      background: rgba(255,0,64,0.04);
+    }
+    .info-label {
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      color: rgba(255,176,0,0.7);
+      margin-bottom: 6px;
+    }
+    .info-box.green .info-label { color: rgba(0,255,136,0.8); }
+    .info-box.red .info-label { color: rgba(255,0,64,0.8); }
+    .info-text {
+      font-size: 16px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.55;
+      letter-spacing: 0.04em;
+    }
+
+    /* Key display */
+    .key-display {
+      background: rgba(0,255,136,0.04);
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .key-display-label {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: rgba(0,255,136,0.6);
+      margin-bottom: 10px;
+    }
+    .key-display-value {
+      font-size: 14px;
+      color: rgba(0,255,136,0.9);
+      text-shadow: 0 0 8px rgba(0,255,136,0.3);
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,176,0,0.1);
+      margin: 48px 0;
+    }
+
+    /* Footer */
+    .page-footer {
+      text-align: center;
+      padding: 20px 0;
+      color: rgba(255,176,0,0.35);
+      font-size: 14px;
+      letter-spacing: 0.14em;
+    }
+    .page-footer a {
+      color: rgba(255,176,0,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .page-footer a:hover { color: var(--amber); }
+  </style>
+</head>
+<body>
+  <div class="scanlines-bg"></div>
+
+  <div class="page-wrap">
+
+    <a href="/" class="back-link">BACK TO BASE</a>
+
+    <div class="page-header">
+      <div class="page-kicker">SYS://TOOLS/SSH_KEYGEN</div>
+      <div class="page-title">SSH KEY GEN</div>
+      <div class="page-subtitle">GENERATE &amp; CONFIGURE SSH KEYS :: STEP-BY-STEP PROTOCOL</div>
+    </div>
+
+    <!-- What is an SSH key -->
+    <div class="section">
+      <div class="section-label">MODULE_INFO</div>
+      <div class="section-title">WHAT IS AN SSH KEY?</div>
+      <div class="info-box">
+        <div class="info-label">// OVERVIEW</div>
+        <div class="info-text">
+          An SSH key is a cryptographic key pair used to authenticate securely without a password.
+          It consists of a <strong style="color:var(--amber)">private key</strong> (kept secret on your machine)
+          and a <strong style="color:var(--green)">public key</strong> (shared with servers / GitHub / etc.).
+          The algorithm recommended today is <strong style="color:#fff">Ed25519</strong> — fast, secure, and compact.
+        </div>
+      </div>
+    </div>
+
+    <!-- Platform selection + steps -->
+    <div class="section">
+      <div class="section-label">EXECUTE_PROTOCOL</div>
+      <div class="section-title">GENERATE YOUR KEY</div>
+
+      <div class="platform-tabs">
+        <button class="tab-btn active" onclick="switchTab('linux')" id="tab-linux">LINUX / MAC</button>
+        <button class="tab-btn" onclick="switchTab('windows')" id="tab-windows">WINDOWS</button>
+      </div>
+
+      <!-- Linux / Mac -->
+      <div class="tab-panel active" id="panel-linux">
+        <ol class="steps-list">
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">OPEN TERMINAL</div>
+              <div class="step-desc">
+                Launch your terminal application. On macOS use <strong style="color:var(--amber)">Terminal</strong>
+                or <strong style="color:var(--amber)">iTerm2</strong>. On Linux use your distro's terminal emulator.
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">RUN KEYGEN COMMAND</div>
+              <div class="step-desc">
+                Generate an Ed25519 key pair. Replace the email with your own.
+              </div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">BASH</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'ssh-keygen -t ed25519 -C \"you@example.com\"')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">$ </span><span class="cmd">ssh-keygen</span>
+                  <span class="flag"> -t ed25519</span>
+                  <span class="flag"> -C</span>
+                  <span> "you@example.com"</span>
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-label">// NOTE</div>
+                <div class="info-text">If your system does not support Ed25519, use <code style="color:var(--amber)">-t rsa -b 4096</code> as a fallback.</div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">CHOOSE FILE LOCATION</div>
+              <div class="step-desc">
+                The default path is fine for most users. Press <strong style="color:var(--amber)">Enter</strong> to accept it.
+              </div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">PROMPT</span>
+                </div>
+                <div class="terminal-body">
+                  <span class="output">Enter file in which to save the key (~/.ssh/id_ed25519): </span>
+                  <span style="display:inline-block;width:8px;height:14px;background:var(--amber);animation:blink 1s infinite;vertical-align:middle;box-shadow:0 0 6px rgba(255,176,0,0.8);"></span>
+                  <span class="comment"># press Enter to use the default location</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">SET A PASSPHRASE</div>
+              <div class="step-desc">
+                Enter a strong passphrase (recommended) or press <strong style="color:var(--amber)">Enter</strong> twice to skip.
+                A passphrase encrypts your private key on disk.
+              </div>
+              <div class="info-box green">
+                <div class="info-label">// TIP</div>
+                <div class="info-text">Use <code style="color:var(--green)">ssh-agent</code> to cache your passphrase so you don't have to type it every time.</div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">VIEW YOUR PUBLIC KEY</div>
+              <div class="step-desc">Copy the public key — this is what you add to GitHub, servers, etc.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">BASH</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'cat ~/.ssh/id_ed25519.pub')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">$ </span><span class="cmd">cat</span><span> ~/.ssh/id_ed25519.pub</span>
+                </div>
+              </div>
+              <div class="key-display">
+                <div class="key-display-label">// EXAMPLE OUTPUT</div>
+                <div class="key-display-value">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... you@example.com</div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">COPY KEY TO CLIPBOARD</div>
+              <div class="step-desc">Use the appropriate command for your OS to copy the key to your clipboard.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">MACOS</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'pbcopy < ~/.ssh/id_ed25519.pub')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">$ </span><span class="cmd">pbcopy</span><span> &lt; ~/.ssh/id_ed25519.pub</span>
+                  <span class="comment"># macOS clipboard</span>
+                </div>
+              </div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">LINUX</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'xclip -selection clipboard < ~/.ssh/id_ed25519.pub')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">$ </span><span class="cmd">xclip</span><span class="flag"> -selection clipboard</span><span> &lt; ~/.ssh/id_ed25519.pub</span>
+                  <span class="comment"># Linux (requires xclip)</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">ADD TO SSH AGENT (OPTIONAL)</div>
+              <div class="step-desc">Start the agent and add your key so you do not need to enter the passphrase repeatedly.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">BASH</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'eval \"$(ssh-agent -s)\"\nssh-add ~/.ssh/id_ed25519')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">$ </span><span class="cmd">eval</span><span> "$(ssh-agent -s)"</span>
+                  <span class="comment"># start the agent</span>
+                  <br>
+                  <span class="prompt">$ </span><span class="cmd">ssh-add</span><span> ~/.ssh/id_ed25519</span>
+                  <span class="comment"># add your key</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ol>
+      </div>
+
+      <!-- Windows -->
+      <div class="tab-panel" id="panel-windows">
+        <ol class="steps-list">
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">OPEN POWERSHELL OR CMD</div>
+              <div class="step-desc">
+                Right-click the Start button and select <strong style="color:var(--amber)">Windows Terminal</strong>,
+                <strong style="color:var(--amber)">PowerShell</strong>, or
+                <strong style="color:var(--amber)">Command Prompt</strong>.
+                OpenSSH ships with Windows 10 (1809+) by default.
+              </div>
+              <div class="info-box">
+                <div class="info-label">// CHECK OPENSSH</div>
+                <div class="info-text">Run <code style="color:var(--amber)">ssh -V</code> to confirm OpenSSH is installed. If not, install it via <em>Settings → Apps → Optional Features → OpenSSH Client</em>.</div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">RUN KEYGEN COMMAND</div>
+              <div class="step-desc">The same command works in PowerShell and CMD on Windows.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">POWERSHELL</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'ssh-keygen -t ed25519 -C \"you@example.com\"')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">PS&gt; </span><span class="cmd">ssh-keygen</span>
+                  <span class="flag"> -t ed25519</span>
+                  <span class="flag"> -C</span>
+                  <span> "you@example.com"</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">ACCEPT DEFAULT LOCATION</div>
+              <div class="step-desc">
+                Press <strong style="color:var(--amber)">Enter</strong> to save the key to the default location:
+                <code style="color:var(--amber)">C:\Users\YourName\.ssh\id_ed25519</code>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">SET A PASSPHRASE</div>
+              <div class="step-desc">Enter a passphrase (recommended) or press <strong style="color:var(--amber)">Enter</strong> twice to skip.</div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">COPY YOUR PUBLIC KEY</div>
+              <div class="step-desc">Use PowerShell to copy the key to your clipboard.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">POWERSHELL</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'Get-Content $env:USERPROFILE\\.ssh\\id_ed25519.pub | Set-Clipboard')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">PS&gt; </span>
+                  <span class="cmd">Get-Content</span>
+                  <span> $env:USERPROFILE\.ssh\id_ed25519.pub</span>
+                  <span class="flag"> |</span>
+                  <span class="cmd"> Set-Clipboard</span>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="step">
+            <div class="step-num"></div>
+            <div class="step-content">
+              <div class="step-title">ADD TO SSH AGENT (OPTIONAL)</div>
+              <div class="step-desc">Start the OpenSSH agent service and add your key.</div>
+              <div class="terminal-block">
+                <div class="terminal-bar">
+                  <div class="terminal-dots">
+                    <div class="terminal-dot red"></div>
+                    <div class="terminal-dot yellow"></div>
+                    <div class="terminal-dot green"></div>
+                  </div>
+                  <span class="terminal-label">POWERSHELL (ADMIN)</span>
+                  <button class="copy-btn" onclick="copyCmd(this, 'Set-Service -Name ssh-agent -StartupType Automatic\nStart-Service ssh-agent\nssh-add $env:USERPROFILE\\.ssh\\id_ed25519')">COPY</button>
+                </div>
+                <div class="terminal-body">
+                  <span class="prompt">PS&gt; </span><span class="cmd">Set-Service</span><span class="flag"> -Name</span><span> ssh-agent</span><span class="flag"> -StartupType</span><span> Automatic</span>
+                  <br>
+                  <span class="prompt">PS&gt; </span><span class="cmd">Start-Service</span><span> ssh-agent</span>
+                  <br>
+                  <span class="prompt">PS&gt; </span><span class="cmd">ssh-add</span><span> $env:USERPROFILE\.ssh\id_ed25519</span>
+                </div>
+              </div>
+              <div class="info-box">
+                <div class="info-label">// NOTE</div>
+                <div class="info-text">The <code style="color:var(--amber)">Set-Service</code> command requires an elevated (Administrator) PowerShell window.</div>
+              </div>
+            </div>
+          </li>
+
+        </ol>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Where to use -->
+    <div class="section">
+      <div class="section-label">DEPLOY_TARGETS</div>
+      <div class="section-title">WHERE TO ADD YOUR PUBLIC KEY</div>
+
+      <div class="info-box green">
+        <div class="info-label">// GITHUB</div>
+        <div class="info-text">Settings → SSH and GPG keys → New SSH key → paste your public key.</div>
+      </div>
+
+      <div class="info-box green">
+        <div class="info-label">// REMOTE SERVER</div>
+        <div class="info-text">Append your public key to <code style="color:var(--green)">~/.ssh/authorized_keys</code> on the remote host, or use:</div>
+      </div>
+
+      <div class="terminal-block">
+        <div class="terminal-bar">
+          <div class="terminal-dots">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+          </div>
+          <span class="terminal-label">BASH</span>
+          <button class="copy-btn" onclick="copyCmd(this, 'ssh-copy-id user@your-server.com')">COPY</button>
+        </div>
+        <div class="terminal-body">
+          <span class="prompt">$ </span><span class="cmd">ssh-copy-id</span><span> user@your-server.com</span>
+          <span class="comment"># copies your public key to the remote server automatically</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Security notes -->
+    <div class="section">
+      <div class="section-label">SECURITY_PROTOCOL</div>
+      <div class="section-title">SECURITY NOTES</div>
+
+      <div class="info-box red">
+        <div class="info-label">// WARNING</div>
+        <div class="info-text">
+          NEVER share your private key (<code style="color:var(--red)">~/.ssh/id_ed25519</code>).
+          Only the <strong style="color:#fff">.pub</strong> file is meant to be shared.
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-label">// BEST PRACTICES</div>
+        <div class="info-text">
+          Use a unique key per device. Rotate keys periodically.
+          Always set a passphrase. Keep your private key file permissions at <code style="color:var(--amber)">600</code>
+          (<code style="color:var(--amber)">chmod 600 ~/.ssh/id_ed25519</code>).
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      SY5TEM N3XT :: <a href="/">RETURN TO BASE</a>
+    </div>
+
+  </div>
+
+  <script>
+    function switchTab(platform) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + platform).classList.add('active');
+      document.getElementById('panel-' + platform).classList.add('active');
+    }
+
+    function copyCmd(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'COPIED';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'COPY';
+          btn.classList.remove('copied');
+        }, 1500);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = 'COPIED';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'COPY';
+          btn.classList.remove('copied');
+        }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
