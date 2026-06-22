@@ -1198,13 +1198,29 @@
 
             <div class="module-card" data-module="2">
               <div class="module-edges">
-                <div class="edge tl pulse" style="animation-delay:.2s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.2s"></div>
+                <div class="edge tl pulse" style="animation-delay:.15s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.15s"></div>
               </div>
-              <div class="module-meta">MODULE 02 <span class="satellite-icon offline"></span></div>
-              <div class="module-name">Classified</div>
+              <div class="module-meta">MODULE 02 <span class="satellite-icon review" style="color:#ffd000;"></span></div>
+              <div class="module-name">Type Right</div>
               <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(2)">OPEN MODULE</button></div>
-              <div class="meter"><div style="width:30%; animation: loadingBar 2s ease-out 0.2s;"></div></div>
+              <div class="meter"><div style="width:65%; background: rgba(255,208,0,0.95); box-shadow: 0 0 10px rgba(255,208,0,0.45); animation: loadingBar 2s ease-out 0.15s;"></div></div>
               <div class="module-panel" id="module-panel-2">
+                <div class="panel-line">STATUS: INTERNAL TEST</div>
+                <div class="panel-line">TYPE: ANDROID APP</div>
+                <div class="panel-line">PROCESS: CLOSED TESTING</div>
+                <div class="panel-line">ACTION: JOIN TEST</div>
+                <div class="panel-cta"><a class="cta-link" style="border-color: rgba(255,208,0,0.35); background: rgba(255,208,0,0.08); color: #ffd000;" href="https://play.google.com/apps/internaltest/4701686193407270563">JOIN TEST</a></div>
+              </div>
+            </div>
+            <div class="module-card" data-module="3">
+              <div class="module-edges">
+                <div class="edge tl pulse" style="animation-delay:.3s"></div><div class="edge tr"></div><div class="edge bl"></div><div class="edge br pulse" style="animation-delay:.3s"></div>
+              </div>
+              <div class="module-meta">MODULE 03 <span class="satellite-icon offline"></span></div>
+              <div class="module-name">Classified</div>
+              <div class="module-actions"><button class="module-btn" type="button" onclick="toggleModulePanel(3)">OPEN MODULE</button></div>
+              <div class="meter"><div style="width:30%; animation: loadingBar 2s ease-out 0.2s;"></div></div>
+              <div class="module-panel" id="module-panel-3">
                 <div class="panel-line">STATUS: RESTRICTED</div>
                 <div class="panel-line">TYPE: UNKNOWN</div>
                 <div class="panel-line">PROCESS: LOCKED NODE</div>
@@ -1221,7 +1237,7 @@
               <div class="launcher-kicker">ROGUE LAUNCHER / SYS://MODULES_ACTIVE</div>
               <div class="launcher-topline">
                 <div class="launcher-typing" id="launcher-typing"></div>
-                <div class="launcher-counter" id="launcher-counter">PROC 02 / LIVE 01</div>
+                <div class="launcher-counter" id="launcher-counter">PROC 03 / LIVE 01</div>
               </div>
             </div>
 
@@ -1249,21 +1265,44 @@
                 </div>
               </div>
 
-              <div class="launch-row offline" data-launch="2">
+              <div class="launch-row review" data-launch="2">
+                <div class="launch-scan"></div>
+                <div class="launch-top">
+                  <div class="launch-left">
+                    <div class="proc-dot review"></div>
+                    <div class="launch-title">
+                      <div class="launch-module" style="color: rgba(255,208,0,0.9);">PROCESS_02 // KEYBOARD_AI</div>
+                      <div class="launch-name">TYPE RIGHT</div>
+                      <div class="launch-statusline"><span class="launch-badge yellow">INTERNAL TEST</span><span class="launch-sub">CLOSED TESTING :: UPLINK PENDING</span></div>
+                    </div>
+                  </div>
+                  <button class="launch-btn yellow" type="button" onclick="launchToggle(2)">EXEC</button>
+                </div>
+                <div class="launch-command review" id="launch-command-2">&gt; MODULE_02 :: CLOSED TEST ACTIVE :: JOIN PIPELINE</div>
+                <div class="launch-details" id="launch-details-2" style="border-top-color: rgba(255,208,0,0.14);">
+                  <div>&gt; STATUS: INTERNAL TEST</div>
+                  <div>&gt; TYPE: ANDROID APP</div>
+                  <div>&gt; CHANNEL: CLOSED TESTING</div>
+                  <div>&gt; ACTION: JOIN TEST</div>
+                  <div class="launch-actions"><a class="launch-link yellow" href="https://play.google.com/apps/internaltest/4701686193407270563">JOIN TEST</a></div>
+                </div>
+              </div>
+
+              <div class="launch-row offline" data-launch="3">
                 <div class="launch-scan"></div>
                 <div class="launch-top">
                   <div class="launch-left">
                     <div class="proc-dot offline"></div>
                     <div class="launch-title">
-                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_02 // LOCKED_NODE</div>
+                      <div class="launch-module" style="color: rgba(255,0,64,0.9);">PROCESS_03 // LOCKED_NODE</div>
                       <div class="launch-name">CLASSIFIED</div>
                       <div class="launch-statusline"><span class="launch-badge red">LOCKED</span><span class="launch-sub">RESTRICTED ACCESS :: AUTH FAIL</span></div>
                     </div>
                   </div>
-                  <button class="launch-btn red" type="button" onclick="launchToggle(2)">EXEC</button>
+                  <button class="launch-btn red" type="button" onclick="launchToggle(3)">EXEC</button>
                 </div>
-                <div class="launch-command offline" id="launch-command-2">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
-                <div class="launch-details" id="launch-details-2" style="border-top-color: rgba(255,0,64,0.14);">
+                <div class="launch-command offline" id="launch-command-3">&gt; ACCESS DENIED :: NODE SEALED :: QUARANTINE ACTIVE</div>
+                <div class="launch-details" id="launch-details-3" style="border-top-color: rgba(255,0,64,0.14);">
                   <div>&gt; STATUS: RESTRICTED</div>
                   <div>&gt; ACCESS: DENIED</div>
                   <div>&gt; PROCESS: LOCKED NODE</div>
@@ -1770,8 +1809,8 @@
         const typing = document.getElementById('launcher-typing');
         if (typing) {
           const msg = n === 1 ? '> MODULE_01 :: AUTH OK :: EXECUTE' :
-                     n === 2 ? '> MODULE_02 :: REVIEW PIPELINE :: QUEUED' :
-                     n === 3 ? '> MODULE_03 :: BUILD CHAIN :: ACTIVE' :
+                     n === 2 ? '> MODULE_02 :: CLOSED TEST ACTIVE :: JOIN PIPELINE' :
+                     n === 3 ? '> MODULE_03 :: NODE SEALED :: ACCESS DENIED' :
                                '> MODULE_04 :: ACCESS DENIED';
           fastType(typing, msg, 14);
         }
